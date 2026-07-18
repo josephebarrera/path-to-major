@@ -13,24 +13,6 @@ const EXAMPLES = [
     skills: ["Programming", "Leadership"],
   },
   {
-    category: "Theater",
-    activity: "Lead Role, Fall Musical",
-    major: "Theater / Performing Arts",
-    score: 91,
-    feedback:
-      "A strong fit for Theater or Performing Arts, where stage presence and collaborative rehearsal stand out.",
-    skills: ["Performance", "Collaboration"],
-  },
-  {
-    category: "Volunteer",
-    activity: "Volunteer, Pediatric Ward",
-    major: "Nursing",
-    score: 88,
-    feedback:
-      "Aligns well with Nursing or Pre-Med, where patient interaction and empathy are clear strengths.",
-    skills: ["Patient Care", "Empathy"],
-  },
-  {
     category: "Club",
     activity: "VP of Marketing, DECA Chapter",
     major: "Business Administration",
@@ -40,44 +22,35 @@ const EXAMPLES = [
     skills: ["Leadership", "Communication"],
   },
   {
-    category: "Volunteer",
-    activity: "Peer Tutor, Algebra I",
-    major: "Education",
-    score: 70,
+    category: "Job",
+    activity: "Weekend Cashier, Grocery Store",
+    major: "Computer Science",
+    score: 32,
     feedback:
-      "Shows patience and clear communication for Education. A more structured teaching role, such as an after school program, would build this out further.",
-    skills: ["Communication", "Patience"],
-  },
-  {
-    category: "Music",
-    activity: "First Chair Violin, Regional Orchestra",
-    major: "Music",
-    score: 92,
-    feedback:
-      "An excellent fit for a Music major, where technical mastery and ensemble collaboration shine through.",
-    skills: ["Technique", "Discipline"],
+      "Builds reliability and customer service, but has little direct connection to Computer Science. Ask about helping with the store's inventory system, or start a small coding project on the side.",
+    skills: ["Responsibility", "Customer Service"],
   },
 ];
 
 const FEATURES = [
   {
     icon: Target,
-    accent:
-      "bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400",
+    gradient:
+      "radial-gradient(120% 140% at 0% 0%, oklch(0.58 0.19 265 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.46 0.16 270), oklch(0.35 0.13 295))",
     title: "Align to your major",
     body: "Pick your intended major and see how each activity connects to it.",
   },
   {
     icon: Sparkles,
-    accent:
-      "bg-violet-500/10 text-violet-600 dark:bg-violet-400/10 dark:text-violet-400",
+    gradient:
+      "radial-gradient(120% 140% at 50% 0%, oklch(0.58 0.19 290 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.46 0.16 270), oklch(0.35 0.13 295))",
     title: "AI feedback, instantly",
     body: "Every activity gets a personalized breakdown of skills, relevance, and next steps.",
   },
   {
     icon: TrendingUp,
-    accent:
-      "bg-emerald-500/10 text-emerald-600 dark:bg-emerald-400/10 dark:text-emerald-400",
+    gradient:
+      "radial-gradient(120% 140% at 100% 0%, oklch(0.58 0.19 310 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.46 0.16 270), oklch(0.35 0.13 295))",
     title: "Track hours over time",
     body: "Log sessions as you go and watch your total hours grow throughout high school.",
   },
@@ -87,26 +60,26 @@ export default function Landing() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-3 z-50 mx-auto max-w-6xl px-4 sm:top-4 sm:px-6">
-        <div className="glass glass-noise flex items-center justify-between rounded-full px-4 py-2.5 sm:px-6 sm:py-3">
+        <div className="glass glass-noise flex items-center justify-between rounded-full px-3 py-2 sm:px-6 sm:py-3">
           <Link
             href="/"
-            className="relative z-10 flex items-center gap-2 text-lg font-semibold tracking-tight"
+            className="relative z-10 flex items-center gap-2 whitespace-nowrap text-base font-semibold tracking-tight sm:text-lg"
           >
-            <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Compass className="h-4 w-4" />
             </span>
             PathToMajor
           </Link>
-          <nav className="relative z-10 flex items-center gap-3 text-sm">
+          <nav className="relative z-10 flex items-center gap-2 whitespace-nowrap text-sm sm:gap-3">
             <Link
               href="/auth"
-              className="text-muted-foreground hover:text-foreground"
+              className="hidden rounded-full border border-border bg-white/60 px-4 py-2 font-medium text-foreground backdrop-blur transition hover:bg-white sm:inline-block dark:bg-white/10 dark:hover:bg-white/20"
             >
               Sign in
             </Link>
             <Link
               href="/auth?mode=signup"
-              className="rounded-full bg-primary px-4 py-2 font-medium text-primary-foreground transition hover:opacity-90"
+              className="rounded-full bg-primary px-3 py-2 font-medium text-primary-foreground transition hover:opacity-90 sm:px-4"
             >
               Get started
             </Link>
@@ -138,18 +111,26 @@ export default function Landing() {
             }}
           />
 
-          <div className="relative mx-auto inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/40 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur dark:border-white/10 dark:bg-white/5">
-            <Sparkles className="h-3.5 w-3.5" />
-            Personalized to your major, not generic advice
+          <div className="relative mx-auto flex flex-col items-center gap-3">
+            <span
+              className="grid h-14 w-14 place-items-center rounded-2xl text-white shadow-lg sm:h-16 sm:w-16"
+              style={{ background: "var(--gradient-primary)" }}
+            >
+              <Compass className="h-7 w-7 sm:h-8 sm:w-8" />
+            </span>
+            <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground uppercase">
+              PathToMajor
+            </span>
           </div>
           <h1 className="relative mx-auto mt-4 max-w-3xl text-3xl font-semibold leading-[1.1] sm:mt-6 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
             Know exactly what to do outside of class for your{" "}
             <span className="text-gradient">future major</span>.
           </h1>
           <p className="relative mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:mt-6 sm:text-lg">
-            PathToMajor helps college-bound students see how their activities,
-            projects, and leadership connect to the major they want, like
-            Computer Science, Nursing, or Business, then shows what to add next.
+            Colleges want more than good grades, but it's hard to know if what
+            you're doing actually counts. PathToMajor shows how your activities,
+            projects, and leadership connect to the major you're aiming for, and
+            exactly what to add next.
           </p>
           <div className="relative mt-6 flex flex-wrap justify-center gap-3 sm:mt-8">
             <Link
@@ -176,9 +157,9 @@ export default function Landing() {
               Real feedback, any major
             </h2>
             <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-              A few examples of the AI feedback students receive across STEM,
-              the arts, business, and beyond. Not every activity is a perfect
-              match, and that's useful to know too.
+              Three real examples: a strong fit, a decent one, and one that
+              needs work. You get honest scores you can act on, not
+              participation trophies.
             </p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -222,14 +203,18 @@ export default function Landing() {
 
         <section className="mt-10 grid gap-4 sm:grid-cols-3">
           {FEATURES.map((f) => (
-            <div key={f.title} className="glass-panel p-6">
-              <span
-                className={`grid h-10 w-10 place-items-center rounded-xl ${f.accent}`}
-              >
+            <div
+              key={f.title}
+              className="grain-overlay rounded-2xl border border-white/25 p-6 shadow-lg"
+              style={{ background: f.gradient }}
+            >
+              <span className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/30 bg-white/20 text-white backdrop-blur">
                 <f.icon className="h-5 w-5" />
               </span>
-              <h3 className="mt-4 text-base font-semibold">{f.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
+              <h3 className="relative mt-4 text-base font-semibold text-white">
+                {f.title}
+              </h3>
+              <p className="relative mt-2 text-sm text-white/80">{f.body}</p>
             </div>
           ))}
         </section>
