@@ -37,7 +37,13 @@ export function AlignmentRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="stroke-primary transition-[stroke-dashoffset] duration-700 ease-out"
+          className={`transition-[stroke-dashoffset] duration-700 ease-out ${
+            score >= 80
+              ? "stroke-emerald-500 dark:stroke-emerald-400"
+              : score >= 55
+                ? "stroke-amber-500 dark:stroke-amber-400"
+                : "stroke-rose-500 dark:stroke-rose-400"
+          }`}
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center text-xs font-semibold">
