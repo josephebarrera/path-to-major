@@ -4,8 +4,9 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { NewActivityModal } from "~/components/new-activity-modal";
-import { ACTIVITY_CATEGORIES } from "~/lib/majors";
+import { ActivityFormModal } from "~/components/activity-form-modal";
+import { activityTimeLabel } from "~/lib/dates";
+import { ACTIVITY_CATEGORIES, categoryStyle } from "~/lib/majors";
 import type { Tables } from "~/lib/supabase/types";
 
 type Activity = Tables<"activities">;
@@ -75,14 +76,22 @@ export function ActivitiesList({
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((a) => {
             const hours = hoursByActivity[a.id] ?? 0;
+            const style = categoryStyle(a.category);
             return (
               <Link
                 key={a.id}
                 href={`/activities/${a.id}`}
-                className="glass-panel group p-5 transition hover:shadow-lg"
+                className="glass-panel group relative isolate overflow-hidden p-5 transition duration-200 hover:-translate-y-1 hover:shadow-xl"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-secondary-foreground">
+                <div
+                  aria-hidden
+                  className="absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-30 blur-2xl transition-opacity duration-200 group-hover:opacity-50"
+                  style={{ background: style.glow }}
+                />
+                <div className="relative flex items-start justify-between gap-2">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
+                  >
                     {a.category}
                   </span>
                   {a.ai_relevance_score != null && (
@@ -91,15 +100,15 @@ export function ActivitiesList({
                     </span>
                   )}
                 </div>
-                <h3 className="mt-3 line-clamp-2 text-base font-semibold">
+                <h3 className="relative mt-3 line-clamp-2 text-base font-semibold">
                   {a.name}
                 </h3>
                 {a.organization && (
-                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                  <p className="relative mt-0.5 truncate text-xs text-muted-foreground">
                     {a.organization}
                   </p>
                 )}
-                <div className="mt-4 flex items-end justify-between">
+                <div className="relative mt-4 flex items-end justify-between">
                   <div className="flex flex-wrap gap-1">
                     {(a.ai_skills ?? []).slice(0, 3).map((s) => (
                       <span
@@ -111,12 +120,20 @@ export function ActivitiesList({
                     ))}
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-semibold">
-                      {hours.toFixed(1)}h
-                    </div>
-                    <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                      total
-                    </div>
+                    {a.tracks_hours ? (
+                      <>
+                        <div className="text-lg font-semibold">
+                          {hours.toFixed(1)}h
+                        </div>
+                        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                          total
+                        </div>
+                      </>
+                    ) : (
+                      <div className="max-w-[9rem] text-xs font-medium text-muted-foreground">
+                        {activityTimeLabel(a)}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Link>
@@ -126,7 +143,7 @@ export function ActivitiesList({
       )}
 
       {showNew && (
-        <NewActivityModal
+        <ActivityFormModal
           onClose={() => {
             setShowNew(false);
             router.replace("/activities");
