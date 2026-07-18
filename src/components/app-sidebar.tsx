@@ -54,7 +54,7 @@ export function AppSidebar({ intendedMajors }: { intendedMajors: string[] }) {
               }`}
             >
               <item.icon
-                className={`h-4 w-4 ${active ? "text-violet-600" : "text-white/75"}`}
+                className={`h-4 w-4 ${active ? "text-blue-600" : "text-white/75"}`}
               />
               {item.label}
             </Link>

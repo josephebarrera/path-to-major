@@ -85,7 +85,7 @@ export default async function DashboardPage() {
         />
         <KPI
           icon={Clock}
-          accent="bg-violet-500/15 text-violet-600 dark:bg-violet-400/15 dark:text-violet-400"
+          accent="bg-orange-500/15 text-orange-600 dark:bg-orange-400/15 dark:text-orange-400"
           label="Total hours"
           value={totalHours.toFixed(1)}
           sub={`${allLogs.length} sessions logged`}

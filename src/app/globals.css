@@ -97,29 +97,31 @@
     ),
     radial-gradient(
       900px 700px at 100% 0%,
-      oklch(0.88 0.11 330 / 0.45),
+      oklch(0.88 0.1 50 / 0.45),
       transparent 60%
     ),
     radial-gradient(
       800px 700px at 50% 110%,
-      oklch(0.9 0.1 190 / 0.4),
+      oklch(0.9 0.1 220 / 0.4),
       transparent 60%
     ),
     radial-gradient(
       1000px 900px at 90% 90%,
-      oklch(0.9 0.08 60 / 0.35),
+      oklch(0.9 0.1 40 / 0.35),
       transparent 60%
     );
 
+  /* Signature brand gradient — "Blue Flame": deep blue burning through a
+     warm orange, no purple/violet anywhere in the identity. */
   --gradient-primary: linear-gradient(
     135deg,
-    oklch(0.65 0.19 265),
-    oklch(0.68 0.16 320)
+    oklch(0.42 0.15 254),
+    oklch(0.72 0.19 45)
   );
   --gradient-accent: linear-gradient(
     135deg,
-    oklch(0.78 0.14 220),
-    oklch(0.82 0.12 300)
+    oklch(0.55 0.17 240),
+    oklch(0.8 0.15 55)
   );
 
   --sidebar: oklch(1 0 0 / 0.5);
@@ -172,17 +174,17 @@
     ),
     radial-gradient(
       900px 700px at 100% 0%,
-      oklch(0.52 0.19 330 / 0.42),
+      oklch(0.55 0.18 45 / 0.42),
       transparent 60%
     ),
     radial-gradient(
       800px 700px at 50% 110%,
-      oklch(0.5 0.16 190 / 0.32),
+      oklch(0.5 0.16 220 / 0.32),
       transparent 60%
     ),
     radial-gradient(
       1000px 900px at 90% 90%,
-      oklch(0.5 0.14 60 / 0.28),
+      oklch(0.55 0.16 35 / 0.28),
       transparent 60%
     );
 
@@ -293,8 +295,8 @@
   }
 }
 
-/* Vibrant aurora sidebar — a deep, saturated multi-stop gradient (violet core,
-   fuchsia and gold edges) with film grain. Dark enough for white text. */
+/* Vibrant aurora sidebar — a deep, saturated multi-stop gradient (blue core,
+   orange edges, "Blue Flame") with film grain. Dark enough for white text. */
 @utility aurora-sidebar {
   position: relative;
   isolation: isolate;
@@ -304,30 +306,30 @@
   background:
     radial-gradient(
       80% 55% at 15% 0%,
-      oklch(0.55 0.22 290 / 0.95),
+      oklch(0.5 0.2 254 / 0.95),
       transparent 55%
     ),
     radial-gradient(
       70% 45% at 100% 8%,
-      oklch(0.6 0.24 340 / 0.85),
+      oklch(0.65 0.2 45 / 0.85),
       transparent 55%
     ),
     radial-gradient(
       90% 55% at 50% 52%,
-      oklch(0.42 0.18 285 / 0.9),
+      oklch(0.4 0.16 248 / 0.9),
       transparent 65%
     ),
     radial-gradient(
       80% 50% at 0% 100%,
-      oklch(0.55 0.2 260 / 0.85),
+      oklch(0.52 0.19 258 / 0.85),
       transparent 55%
     ),
     radial-gradient(
       70% 45% at 92% 96%,
-      oklch(0.62 0.2 320 / 0.8),
+      oklch(0.6 0.18 35 / 0.8),
       transparent 55%
     ),
-    linear-gradient(170deg, oklch(0.4 0.12 290), oklch(0.34 0.1 310));
+    linear-gradient(170deg, oklch(0.36 0.1 255), oklch(0.32 0.08 250));
 
   &::after {
     content: "";
@@ -364,9 +366,9 @@
   animation: float 7s ease-in-out infinite;
 }
 
-/* Warm aurora banner — saturated multi-stop gradient with heavy film grain,
-   like a sunset seen through frosted glass. The overlay-blended noise leaves
-   pure white/black content (buttons, text) untouched. */
+/* Blue Flame banner — deep blue burning through a warm orange, with a soft
+   white flare, and heavy film grain. The overlay-blended noise leaves pure
+   white/black content (buttons, text) untouched. */
 @utility aurora-panel {
   position: relative;
   isolation: isolate;
@@ -376,30 +378,30 @@
   background:
     radial-gradient(
       90% 160% at 0% 30%,
-      oklch(0.82 0.13 95 / 0.95),
+      oklch(0.7 0.17 45 / 0.95),
       transparent 50%
     ),
     radial-gradient(
       70% 130% at 32% -10%,
-      oklch(0.55 0.19 25 / 0.9),
+      oklch(0.55 0.19 30 / 0.9),
       transparent 55%
     ),
     radial-gradient(
       80% 150% at 58% 45%,
-      oklch(0.42 0.17 305 / 0.95),
+      oklch(0.4 0.15 254 / 0.95),
       transparent 60%
     ),
     radial-gradient(
       90% 160% at 100% 20%,
-      oklch(0.66 0.15 50 / 0.9),
+      oklch(0.66 0.16 45 / 0.9),
       transparent 55%
     ),
     radial-gradient(
       80% 120% at 75% 110%,
-      oklch(0.8 0.08 320 / 0.7),
+      oklch(0.93 0.03 240 / 0.55),
       transparent 60%
     ),
-    linear-gradient(150deg, oklch(0.55 0.1 300), oklch(0.6 0.12 60));
+    linear-gradient(150deg, oklch(0.4 0.12 254), oklch(0.6 0.14 45));
 
   &::after {
     content: "";

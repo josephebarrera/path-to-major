@@ -36,21 +36,21 @@ const FEATURES = [
   {
     icon: Target,
     gradient:
-      "radial-gradient(120% 140% at 0% 0%, oklch(0.58 0.19 265 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.46 0.16 270), oklch(0.35 0.13 295))",
+      "radial-gradient(120% 140% at 0% 0%, oklch(0.55 0.18 254 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.32 0.1 258), oklch(0.55 0.16 45))",
     title: "Align to your major",
     body: "Pick your intended major and see how each activity connects to it.",
   },
   {
     icon: Sparkles,
     gradient:
-      "radial-gradient(120% 140% at 50% 0%, oklch(0.58 0.19 290 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.46 0.16 270), oklch(0.35 0.13 295))",
+      "radial-gradient(120% 140% at 50% 0%, oklch(0.92 0.04 55 / 0.9), transparent 60%), linear-gradient(150deg, oklch(0.32 0.1 258), oklch(0.55 0.16 45))",
     title: "AI feedback, instantly",
     body: "Every activity gets a personalized breakdown of skills, relevance, and next steps.",
   },
   {
     icon: TrendingUp,
     gradient:
-      "radial-gradient(120% 140% at 100% 0%, oklch(0.58 0.19 310 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.46 0.16 270), oklch(0.35 0.13 295))",
+      "radial-gradient(120% 140% at 100% 0%, oklch(0.68 0.18 40 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.32 0.1 258), oklch(0.55 0.16 45))",
     title: "Track hours over time",
     body: "Log sessions as you go and watch your total hours grow throughout high school.",
   },
