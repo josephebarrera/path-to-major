@@ -1,6 +1,7 @@
 import { Clock, Plus, Sparkles, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { formatMajors } from "~/lib/majors";
+import { activityTimeLabel } from "~/lib/dates";
+import { categoryStyle, formatMajors } from "~/lib/majors";
 import { createClient } from "~/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -49,22 +50,22 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-sm text-muted-foreground">Welcome back</p>
-          <h1 className="text-3xl font-semibold">
+      <div className="aurora-panel flex flex-wrap items-end justify-between gap-4 p-6 sm:p-8">
+        <div className="relative">
+          <p className="text-sm text-white/80">Welcome back</p>
+          <h1 className="text-3xl font-semibold text-white">
             Hi {profile?.display_name?.split(" ")[0] ?? "there"} 👋
           </h1>
           {majorLabel && (
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-white/80">
               Building your path to{" "}
-              <span className="font-medium text-foreground">{majorLabel}</span>
+              <span className="font-medium text-white">{majorLabel}</span>
             </p>
           )}
         </div>
         <Link
           href="/activities?new=true"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+          className="relative inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-neutral-900 shadow-sm transition hover:bg-white/90"
         >
           <Plus className="h-4 w-4" /> Add activity
         </Link>
@@ -73,6 +74,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <KPI
           icon={Target}
+          accent="bg-blue-500/15 text-blue-600 dark:bg-blue-400/15 dark:text-blue-400"
           label="Major alignment"
           value={`${avgRelevance || "—"}${avgRelevance ? "%" : ""}`}
           sub={
@@ -83,12 +85,14 @@ export default async function DashboardPage() {
         />
         <KPI
           icon={Clock}
+          accent="bg-violet-500/15 text-violet-600 dark:bg-violet-400/15 dark:text-violet-400"
           label="Total hours"
           value={totalHours.toFixed(1)}
           sub={`${allLogs.length} sessions logged`}
         />
         <KPI
           icon={TrendingUp}
+          accent="bg-emerald-500/15 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-400"
           label="Activities"
           value={String(acts.length)}
           sub={acts.length ? "keep going" : "start your first"}
@@ -110,33 +114,48 @@ export default async function DashboardPage() {
             <EmptyActivities />
           ) : (
             <div className="mt-4 space-y-2">
-              {recent.map((a) => (
-                <Link
-                  key={a.id}
-                  href={`/activities/${a.id}`}
-                  className="flex items-center justify-between rounded-xl border border-white/60 bg-white/50 p-4 transition hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-secondary-foreground">
-                        {a.category}
-                      </span>
-                      {a.ai_relevance_score != null && (
-                        <span className="text-xs text-muted-foreground">
-                          {a.ai_relevance_score}% aligned
+              {recent.map((a) => {
+                const style = categoryStyle(a.category);
+                return (
+                  <Link
+                    key={a.id}
+                    href={`/activities/${a.id}`}
+                    className="flex items-center justify-between rounded-xl border border-white/60 bg-white/50 p-4 transition hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
+                        >
+                          {a.category}
                         </span>
+                        {a.ai_relevance_score != null && (
+                          <span className="text-xs text-muted-foreground">
+                            {a.ai_relevance_score}% aligned
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 truncate font-medium">{a.name}</div>
+                    </div>
+                    <div className="text-right text-sm">
+                      {a.tracks_hours ? (
+                        <>
+                          <div className="font-medium">
+                            {(hoursByActivity.get(a.id) ?? 0).toFixed(1)}h
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            total
+                          </div>
+                        </>
+                      ) : (
+                        <div className="max-w-[8rem] text-xs text-muted-foreground">
+                          {activityTimeLabel(a)}
+                        </div>
                       )}
                     </div>
-                    <div className="mt-1 truncate font-medium">{a.name}</div>
-                  </div>
-                  <div className="text-right text-sm">
-                    <div className="font-medium">
-                      {(hoursByActivity.get(a.id) ?? 0).toFixed(1)}h
-                    </div>
-                    <div className="text-xs text-muted-foreground">total</div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
@@ -179,22 +198,28 @@ export default async function DashboardPage() {
 
 function KPI({
   icon: Icon,
+  accent,
   label,
   value,
   sub,
 }: {
   icon: typeof Target;
+  accent: string;
   label: string;
   value: string;
   sub: string;
 }) {
   return (
     <div className="glass-panel p-5">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground">
-        <Icon className="h-3.5 w-3.5" />
+      <div className="flex items-center gap-2.5 text-xs uppercase tracking-wide text-muted-foreground">
+        <span
+          className={`grid h-8 w-8 place-items-center rounded-lg ${accent}`}
+        >
+          <Icon className="h-4 w-4" />
+        </span>
         {label}
       </div>
-      <div className="mt-2 text-3xl font-semibold">{value}</div>
+      <div className="mt-3 text-3xl font-semibold">{value}</div>
       <div className="mt-1 text-xs text-muted-foreground">{sub}</div>
     </div>
   );

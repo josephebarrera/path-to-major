@@ -29,17 +29,17 @@ export function AppSidebar({ intendedMajors }: { intendedMajors: string[] }) {
   const majorLabel = formatMajors(intendedMajors);
 
   return (
-    <aside className="glass-panel sticky top-6 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col p-4 md:flex">
+    <aside className="aurora-sidebar sticky top-6 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col p-4 md:flex">
       <Link
         href="/dashboard"
-        className="flex items-center gap-2 px-2 py-2 text-base font-semibold"
+        className="relative z-10 flex items-center gap-2 px-2 py-2 text-base font-semibold text-white"
       >
-        <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
+        <span className="grid h-8 w-8 place-items-center rounded-xl border border-white/30 bg-white/20 text-white backdrop-blur">
           <Compass className="h-4 w-4" />
         </span>
         PathToMajor
       </Link>
-      <nav className="mt-6 flex flex-col gap-1">
+      <nav className="relative z-10 mt-6 flex flex-col gap-1">
         {NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -49,27 +49,29 @@ export function AppSidebar({ intendedMajors }: { intendedMajors: string[] }) {
               href={item.href}
               className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
                 active
-                  ? "bg-white/80 font-medium text-foreground shadow-sm dark:bg-white/10"
-                  : "text-muted-foreground hover:bg-white/50 hover:text-foreground dark:hover:bg-white/10"
+                  ? "bg-white font-medium text-neutral-900 shadow-md"
+                  : "text-white/75 hover:bg-white/15 hover:text-white"
               }`}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon
+                className={`h-4 w-4 ${active ? "text-violet-600" : "text-white/75"}`}
+              />
               {item.label}
             </Link>
           );
         })}
       </nav>
-      <div className="mt-auto pt-4">
+      <div className="relative z-10 mt-auto pt-4">
         {majorLabel && (
-          <div className="rounded-xl border border-white/60 bg-white/40 p-3 text-xs dark:border-white/10 dark:bg-white/5">
-            <div className="text-muted-foreground">Pursuing</div>
-            <div className="mt-0.5 font-medium">{majorLabel}</div>
+          <div className="rounded-xl border border-white/30 bg-white/15 p-3 text-xs backdrop-blur">
+            <div className="text-white/70">Pursuing</div>
+            <div className="mt-0.5 font-medium text-white">{majorLabel}</div>
           </div>
         )}
         <form action={signOut}>
           <button
             type="submit"
-            className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground hover:bg-white/50 hover:text-foreground dark:hover:bg-white/10"
+            className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/15 hover:text-white"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
@@ -93,7 +95,7 @@ export function MobileNav() {
             key={item.href}
             href={item.href}
             className={`flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] ${
-              active ? "text-foreground" : "text-muted-foreground"
+              active ? "font-medium text-foreground" : "text-muted-foreground"
             }`}
           >
             <item.icon className="h-5 w-5" />
