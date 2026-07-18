@@ -263,6 +263,16 @@
   background: var(--gradient-primary);
 }
 
+/* Scales the landing hero's vertical padding continuously with viewport
+   height instead of jumping at fixed breakpoints, so it never overflows a
+   short browser window regardless of the exact height. */
+@utility hero-padding {
+  padding-block: 3rem;
+  @media (min-width: 640px) {
+    padding-block: clamp(1.75rem, 6.5dvh, 7rem);
+  }
+}
+
 /* Film-grain overlay for surfaces that bring their own gradient background.
    Overlay blending leaves pure white/black content untouched. */
 @utility grain-overlay {

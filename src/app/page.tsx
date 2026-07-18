@@ -24,10 +24,10 @@ const EXAMPLES = [
   {
     category: "Job",
     activity: "Weekend Cashier, Grocery Store",
-    major: "Computer Science",
+    major: "Nursing",
     score: 32,
     feedback:
-      "Builds reliability and customer service, but has little direct connection to Computer Science. Ask about helping with the store's inventory system, or start a small coding project on the side.",
+      "Builds reliability and customer service, which matter in patient care, but has little direct connection to Nursing coursework or clinical experience. Look into hospital volunteering or shadowing a healthcare provider to strengthen this.",
     skills: ["Responsibility", "Customer Service"],
   },
 ];
@@ -88,7 +88,7 @@ export default function Landing() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-12">
-        <section className="glass-panel relative overflow-hidden px-6 py-12 text-center sm:px-14 sm:py-28 [@media(max-height:800px)]:sm:py-16 [@media(max-height:650px)]:sm:py-10">
+        <section className="glass-panel hero-padding relative overflow-hidden px-6 text-center sm:px-14">
           <div
             aria-hidden
             className="animate-float absolute -top-16 -left-10 h-56 w-56 rounded-full opacity-60 blur-3xl"
@@ -122,7 +122,7 @@ export default function Landing() {
               PathToMajor
             </span>
           </div>
-          <h1 className="relative mx-auto mt-4 max-w-3xl text-3xl font-semibold leading-[1.1] sm:mt-6 sm:text-5xl sm:leading-[1.05] lg:text-6xl">
+          <h1 className="relative mx-auto mt-4 max-w-3xl text-3xl font-semibold leading-[1.1] sm:mt-6 sm:text-5xl sm:leading-[1.05] lg:text-6xl [@media(max-height:820px)]:lg:text-5xl">
             Know exactly what to do outside of class for your{" "}
             <span className="text-gradient">future major</span>.
           </h1>
@@ -164,7 +164,10 @@ export default function Landing() {
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {EXAMPLES.map((ex) => (
-              <div key={ex.activity} className="glass-panel p-5 text-left">
+              <div
+                key={ex.activity}
+                className="glass-panel flex h-full flex-col p-5 text-left"
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
@@ -186,7 +189,7 @@ export default function Landing() {
                 <p className="mt-3 text-xs text-muted-foreground">
                   "{ex.feedback}"
                 </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
+                <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
                   {ex.skills.map((s) => (
                     <span
                       key={s}
