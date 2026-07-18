@@ -20,16 +20,20 @@ type Activity = Tables<"activities">;
 
 export function ActivityFormModal({
   activity,
+  defaultStartGrade,
   onClose,
 }: {
   activity?: Activity;
+  defaultStartGrade?: number;
   onClose: () => void;
 }) {
   const router = useRouter();
   const editing = !!activity;
   const [saving, setSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [gradeError, setGradeError] = useState<string | null>(null);
   const nameRef = useRef<HTMLInputElement>(null);
+  const gradeRef = useRef<HTMLSelectElement>(null);
   const [form, setForm] = useState({
     name: activity?.name ?? "",
     category: activity?.category ?? ("Club" as string),
@@ -39,12 +43,21 @@ export function ActivityFormModal({
     skills: activity?.skills?.join(", ") ?? "",
     start_date: activity?.start_date ?? "",
     end_date: activity?.end_date ?? "",
-    start_grade: activity?.start_grade ? String(activity.start_grade) : "",
+    start_grade: activity?.started_before_hs
+      ? "pre"
+      : activity?.start_grade
+        ? String(activity.start_grade)
+        : defaultStartGrade
+          ? String(defaultStartGrade)
+          : "",
     end_grade: activity?.end_grade ? String(activity.end_grade) : "",
+    is_summer: activity?.is_summer ?? false,
     tracks_hours: activity?.tracks_hours ?? true,
     time_commitment: activity?.time_commitment ?? "",
   });
-  const [useGradeRange, setUseGradeRange] = useState(!!activity?.start_grade);
+  const [showDates, setShowDates] = useState(
+    !!(activity?.start_date || activity?.end_date),
+  );
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,8 +69,16 @@ export function ActivityFormModal({
       return;
     }
     setNameError(null);
+    if (!form.start_grade) {
+      setGradeError("Pick the grade you started this activity in.");
+      gradeRef.current?.focus();
+      return;
+    }
+    setGradeError(null);
     setSaving(true);
     try {
+      const startedBeforeHs = form.start_grade === "pre";
+      const numericStartGrade = startedBeforeHs ? 9 : Number(form.start_grade);
       const payload = {
         name: form.name.trim(),
         category: form.category,
@@ -68,12 +89,18 @@ export function ActivityFormModal({
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean),
-        startDate: useGradeRange ? null : form.start_date || null,
-        endDate: useGradeRange ? null : form.end_date || null,
-        startGrade:
-          useGradeRange && form.start_grade ? Number(form.start_grade) : null,
-        endGrade:
-          useGradeRange && form.end_grade ? Number(form.end_grade) : null,
+        startDate: showDates ? form.start_date || null : null,
+        endDate: showDates ? form.end_date || null : null,
+        startGrade: numericStartGrade,
+        endGrade: form.is_summer
+          ? numericStartGrade < 12
+            ? numericStartGrade + 1
+            : null
+          : form.end_grade
+            ? Number(form.end_grade)
+            : null,
+        isSummer: form.is_summer,
+        startedBeforeHs,
         tracksHours: form.tracks_hours,
         timeCommitment: form.tracks_hours
           ? null
@@ -188,31 +215,62 @@ export function ActivityFormModal({
               className="w-full rounded-xl border border-border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10"
             />
           </Field>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">
-              {useGradeRange ? "Grade range" : "Dates"}
+          <label className="flex items-start gap-2.5 rounded-xl border border-border bg-white/80 px-3 py-2.5 text-sm dark:bg-white/10">
+            <input
+              type="checkbox"
+              checked={form.is_summer}
+              onChange={(e) =>
+                setForm({ ...form, is_summer: e.target.checked })
+              }
+              className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+            />
+            <span>
+              <span className="block font-medium text-foreground">
+                This was a summer program
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                Happened between school years rather than during one, like a
+                summer internship.
+              </span>
             </span>
-            <button
-              type="button"
-              onClick={() => setUseGradeRange(!useGradeRange)}
-              className="text-xs font-medium text-primary hover:underline"
-            >
-              {useGradeRange
-                ? "Use exact dates instead"
-                : "Use grade level instead"}
-            </button>
-          </div>
-          {useGradeRange ? (
+          </label>
+          {form.is_summer ? (
+            <Field label="Summer after" required>
+              <select
+                ref={gradeRef}
+                value={form.start_grade}
+                onChange={(e) => {
+                  setForm({ ...form, start_grade: e.target.value });
+                  if (gradeError) setGradeError(null);
+                }}
+                className={`w-full rounded-xl border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10 ${
+                  gradeError ? "border-destructive" : "border-border"
+                }`}
+              >
+                <option value="">Select grade</option>
+                <option value="pre">Before 9th grade</option>
+                <option value="9">9th grade</option>
+                <option value="10">10th grade</option>
+                <option value="11">11th grade</option>
+                <option value="12">12th grade</option>
+              </select>
+            </Field>
+          ) : (
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Started in">
+              <Field label="Started in" required>
                 <select
+                  ref={gradeRef}
                   value={form.start_grade}
-                  onChange={(e) =>
-                    setForm({ ...form, start_grade: e.target.value })
-                  }
-                  className="w-full rounded-xl border border-border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10"
+                  onChange={(e) => {
+                    setForm({ ...form, start_grade: e.target.value });
+                    if (gradeError) setGradeError(null);
+                  }}
+                  className={`w-full rounded-xl border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10 ${
+                    gradeError ? "border-destructive" : "border-border"
+                  }`}
                 >
                   <option value="">Select grade</option>
+                  <option value="pre">Before 9th grade</option>
                   <option value="9">9th grade</option>
                   <option value="10">10th grade</option>
                   <option value="11">11th grade</option>
@@ -227,7 +285,7 @@ export function ActivityFormModal({
                   }
                   className="w-full rounded-xl border border-border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10"
                 >
-                  <option value="">Still doing this / N/A</option>
+                  <option value="">Still doing this</option>
                   <option value="9">9th grade</option>
                   <option value="10">10th grade</option>
                   <option value="11">11th grade</option>
@@ -235,9 +293,13 @@ export function ActivityFormModal({
                 </select>
               </Field>
             </div>
-          ) : (
+          )}
+          {gradeError && (
+            <p className="-mt-2 text-xs text-destructive">{gradeError}</p>
+          )}
+          {showDates ? (
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Start">
+              <Field label="Start date">
                 <input
                   type="date"
                   value={form.start_date}
@@ -247,7 +309,7 @@ export function ActivityFormModal({
                   className="w-full rounded-xl border border-border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10"
                 />
               </Field>
-              <Field label="End (optional)">
+              <Field label="End date (optional)">
                 <input
                   type="date"
                   value={form.end_date}
@@ -258,12 +320,14 @@ export function ActivityFormModal({
                 />
               </Field>
             </div>
-          )}
-          {useGradeRange && (
-            <p className="-mt-1 text-xs text-muted-foreground">
-              For activities with no fixed dates, like a sport you play every
-              year.
-            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowDates(true)}
+              className="text-left text-xs font-medium text-primary hover:underline"
+            >
+              + Add exact start/end dates
+            </button>
           )}
           <label className="flex items-start gap-2.5 rounded-xl border border-border bg-white/80 px-3 py-2.5 text-sm dark:bg-white/10">
             <input

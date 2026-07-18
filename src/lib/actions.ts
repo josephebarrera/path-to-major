@@ -67,8 +67,10 @@ export async function createActivity(input: {
   skills: string[];
   startDate: string | null;
   endDate: string | null;
-  startGrade: number | null;
+  startGrade: number;
   endGrade: number | null;
+  isSummer: boolean;
+  startedBeforeHs: boolean;
   tracksHours: boolean;
   timeCommitment: string | null;
 }) {
@@ -92,6 +94,8 @@ export async function createActivity(input: {
       end_date: input.endDate,
       start_grade: input.startGrade,
       end_grade: input.endGrade,
+      is_summer: input.isSummer,
+      started_before_hs: input.startedBeforeHs,
       tracks_hours: input.tracksHours,
       time_commitment: input.timeCommitment,
     })
@@ -115,8 +119,10 @@ export async function updateActivity(
     skills: string[];
     startDate: string | null;
     endDate: string | null;
-    startGrade: number | null;
+    startGrade: number;
     endGrade: number | null;
+    isSummer: boolean;
+    startedBeforeHs: boolean;
     tracksHours: boolean;
     timeCommitment: string | null;
   },
@@ -140,6 +146,8 @@ export async function updateActivity(
       end_date: input.endDate,
       start_grade: input.startGrade,
       end_grade: input.endGrade,
+      is_summer: input.isSummer,
+      started_before_hs: input.startedBeforeHs,
       tracks_hours: input.tracksHours,
       time_commitment: input.timeCommitment,
       // The edit may fix details the AI feedback was based on, so clear the

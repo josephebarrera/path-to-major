@@ -2,7 +2,11 @@ import Link from "next/link";
 import { ActivityHeaderActions } from "~/components/activity-header-actions";
 import { AutoAnalyzeActivity } from "~/components/auto-analyze-activity";
 import { HourLogPanel } from "~/components/hour-log-panel";
-import { activityTimeLabel, gradeRangeLabel } from "~/lib/dates";
+import {
+  activityTimeLabel,
+  formatLocalDate,
+  gradeRangeLabel,
+} from "~/lib/dates";
 import { categoryStyle } from "~/lib/majors";
 import { createClient } from "~/lib/supabase/server";
 
@@ -72,7 +76,21 @@ export default async function ActivityDetailPage({
             )}
             {activity.start_grade && (
               <p className="mt-1 text-sm text-muted-foreground">
-                {gradeRangeLabel(activity.start_grade, activity.end_grade)}
+                {gradeRangeLabel(
+                  activity.start_grade,
+                  activity.end_grade,
+                  activity.is_summer,
+                  activity.started_before_hs,
+                )}
+              </p>
+            )}
+            {activity.start_date && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                {formatLocalDate(activity.start_date)}
+                {" – "}
+                {activity.end_date
+                  ? formatLocalDate(activity.end_date)
+                  : "Present"}
               </p>
             )}
           </div>

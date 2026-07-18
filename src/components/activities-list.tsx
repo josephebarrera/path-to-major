@@ -5,11 +5,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ActivityFormModal } from "~/components/activity-form-modal";
-import { activityTimeLabel } from "~/lib/dates";
+import { activityTimeLabel, gradesForActivity } from "~/lib/dates";
 import { ACTIVITY_CATEGORIES, categoryStyle } from "~/lib/majors";
 import type { Tables } from "~/lib/supabase/types";
 
 type Activity = Tables<"activities">;
+
+const GRADE_TABS = ["All", 9, 10, 11, 12] as const;
+const GRADE_TAB_LABEL: Record<(typeof GRADE_TABS)[number], string> = {
+  All: "All",
+  9: "9th",
+  10: "10th",
+  11: "11th",
+  12: "12th",
+};
 
 export function ActivitiesList({
   activities,
@@ -22,10 +31,14 @@ export function ActivitiesList({
 }) {
   const router = useRouter();
   const [filter, setFilter] = useState<string>("All");
+  const [gradeFilter, setGradeFilter] =
+    useState<(typeof GRADE_TABS)[number]>("All");
   const [showNew, setShowNew] = useState(openNewDefault);
 
   const filtered = activities.filter(
-    (a) => filter === "All" || a.category === filter,
+    (a) =>
+      (filter === "All" || a.category === filter) &&
+      (gradeFilter === "All" || gradesForActivity(a).includes(gradeFilter)),
   );
 
   return (
@@ -44,6 +57,23 @@ export function ActivitiesList({
         >
           <Plus className="h-4 w-4" /> Add activity
         </button>
+      </div>
+
+      <div className="flex gap-1 rounded-full bg-white/60 p-1 dark:bg-white/10">
+        {GRADE_TABS.map((g) => (
+          <button
+            type="button"
+            key={g}
+            onClick={() => setGradeFilter(g)}
+            className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+              gradeFilter === g
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {GRADE_TAB_LABEL[g]}
+          </button>
+        ))}
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -67,9 +97,9 @@ export function ActivitiesList({
         <div className="glass-panel p-12 text-center">
           <p className="text-sm font-medium">No activities here yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {filter === "All"
+            {filter === "All" && gradeFilter === "All"
               ? "Add your first activity to get personalized AI feedback."
-              : `Nothing in ${filter} yet. Try another category or add one.`}
+              : "Nothing matches these filters yet. Try another tab, category, or add one."}
           </p>
         </div>
       ) : (
@@ -144,6 +174,7 @@ export function ActivitiesList({
 
       {showNew && (
         <ActivityFormModal
+          defaultStartGrade={gradeFilter === "All" ? undefined : gradeFilter}
           onClose={() => {
             setShowNew(false);
             router.replace("/activities");
