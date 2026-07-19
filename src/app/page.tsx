@@ -211,6 +211,23 @@ export default function Landing() {
           Takes less than 5 minutes to see your first AI feedback.
         </section>
       </main>
+
+      <footer className="border-t border-white/10">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm font-semibold tracking-tight"
+          >
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
+              <Compass className="h-3.5 w-3.5" />
+            </span>
+            PathToMajor
+          </Link>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} PathToMajor. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
