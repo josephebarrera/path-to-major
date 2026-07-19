@@ -65,27 +65,27 @@ const FEATURES = [
 export default function Landing() {
   return (
     <div className="min-h-screen">
-      <header className="sticky top-3 z-50 mx-auto max-w-6xl px-4 sm:top-4 sm:px-6">
-        <div className="flex items-center justify-between rounded-full border border-white/15 bg-card px-3 py-2 shadow-lg sm:px-6 sm:py-3">
+      <header className="sticky top-4 z-50 mx-auto max-w-6xl px-4 sm:top-5 sm:px-6">
+        <div className="flex items-center justify-between rounded-full border border-white/15 bg-card px-4 py-3 shadow-xl sm:px-7 sm:py-4">
           <Link
             href="/"
-            className="flex items-center gap-2 whitespace-nowrap text-base font-semibold tracking-tight sm:text-lg"
+            className={`flex items-center gap-2 whitespace-nowrap text-base font-bold tracking-tight sm:text-lg ${poppins.className}`}
           >
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Compass className="h-4 w-4" />
             </span>
             PathToMajor
           </Link>
-          <nav className="flex items-center gap-2 whitespace-nowrap text-sm sm:gap-3">
+          <nav className="flex items-center gap-3 whitespace-nowrap text-sm sm:gap-5">
             <Link
               href="/auth"
-              className="hidden rounded-full border border-white/15 bg-white/5 px-4 py-2 font-medium text-white transition hover:bg-white/10 sm:inline-block"
+              className="hidden font-medium text-muted-foreground transition hover:text-foreground sm:inline-block"
             >
               Sign in
             </Link>
             <Link
               href="/auth?mode=signup"
-              className="rounded-full bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 sm:px-4"
+              className="rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground shadow-sm transition hover:opacity-90 sm:px-5"
             >
               Get started
             </Link>
