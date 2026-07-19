@@ -51,22 +51,22 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="aurora-panel flex flex-wrap items-end justify-between gap-4 p-6 sm:p-8">
-        <div className="relative">
-          <p className="text-sm text-white/80">Welcome back</p>
-          <h1 className="text-3xl font-semibold text-white">
-            Hi {profile?.display_name?.split(" ")[0] ?? "there"} 👋
+      <div className="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-white/15 bg-card p-6 shadow-lg sm:p-8">
+        <div>
+          <p className="text-sm text-muted-foreground">Welcome back</p>
+          <h1 className="text-3xl font-semibold">
+            Hi {profile?.display_name?.split(" ")[0] ?? "there"}
           </h1>
           {majorLabel && (
-            <p className="mt-1 text-sm text-white/80">
+            <p className="mt-1 text-sm text-muted-foreground">
               Building your path to{" "}
-              <span className="font-medium text-white">{majorLabel}</span>
+              <span className="font-medium text-foreground">{majorLabel}</span>
             </p>
           )}
         </div>
         <Link
           href="/activities?new=true"
-          className="relative inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-neutral-900 shadow-sm transition hover:bg-white/90"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
         >
           <Plus className="h-4 w-4" /> Add activity
         </Link>
