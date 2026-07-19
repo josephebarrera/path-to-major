@@ -1,4 +1,10 @@
-import { Clock, Compass, Sparkles, Target, TrendingUp } from "lucide-react";
+import {
+  ClipboardCheck,
+  Clock,
+  Compass,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { AlignmentRing } from "~/components/alignment-ring";
@@ -45,7 +51,7 @@ const FEATURES = [
     body: "Pick your intended major and see how each activity connects to it.",
   },
   {
-    icon: Sparkles,
+    icon: ClipboardCheck,
     title: "AI feedback, instantly",
     body: "Every activity gets a personalized breakdown of skills, relevance, and next steps.",
   },
