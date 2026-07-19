@@ -42,7 +42,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
           PathToMajor
         </div>
 
-        <div className="glass-panel p-8">
+        <div className="glass-panel-navy p-8">
           <div className="mb-6 flex gap-1.5">
             {[0, 1, 2].map((i) => (
               <div

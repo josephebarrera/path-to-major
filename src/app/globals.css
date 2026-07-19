@@ -76,7 +76,6 @@
   /* Liquid Glass tokens — smoked glass: deep brand-navy tint with light
      borders so panels read clearly against the Sky Flame gradient */
   --glass: oklch(0.27 0.055 252 / 0.6);
-  --glass-strong: oklch(0.29 0.055 252 / 0.78);
   --glass-border: oklch(1 0 0 / 0.22);
   --glass-highlight: oklch(1 0 0 / 0.2);
   --glass-panel-from: oklch(0.28 0.055 252 / 0.62);
@@ -86,9 +85,19 @@
   --glass-inset:
     inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(0 0 0 / 0.2);
 
-  /* Blue Flame backdrop — "Sky Flame": the full signature sweep. This is the
-     app's only look: smoked-glass panels float over this gradient. */
-  --aurora: linear-gradient(135deg, #0a1a3f 0%, #5c88c9 48%, #f97316 100%);
+  /* Blue Flame backdrop — disciplined take: the hue journey survives (deep
+     navy through blue, warmth in the corner) but the lightness range is
+     compressed so white text holds contrast at every scroll position — no
+     more per-section text-color patches. Orange demoted from a full gradient
+     stop to a low-intensity corner glow. */
+  --aurora:
+    radial-gradient(
+      70% 60% at 100% 100%,
+      rgb(249 115 22 / 0.3),
+      transparent 65%
+    ),
+    radial-gradient(55% 45% at 90% 0%, rgb(92 136 201 / 0.3), transparent 60%),
+    linear-gradient(135deg, #0a1a3f 0%, #1b3563 52%, #2a4c8a 100%);
 
   /* Signature brand gradient — "Blue Flame": deep blue burning through a
      warm orange, no purple/violet anywhere in the identity. */
@@ -168,13 +177,6 @@
   box-shadow: var(--glass-shadow), var(--glass-inset);
 }
 
-@utility glass-strong {
-  background-color: var(--glass-strong);
-  backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-inset);
-}
-
 @utility glass-panel {
   background: linear-gradient(
     180deg,
@@ -213,26 +215,6 @@
   padding-block: 3rem;
   @media (min-width: 640px) {
     padding-block: clamp(1.75rem, 6.5dvh, 7rem);
-  }
-}
-
-/* Film-grain overlay for surfaces that bring their own gradient background.
-   Overlay blending leaves pure white/black content untouched. */
-@utility grain-overlay {
-  position: relative;
-  isolation: isolate;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    border-radius: inherit;
-    background-image: var(--grain);
-    background-size: var(--grain-size);
-    opacity: 0.35;
-    mix-blend-mode: overlay;
-    pointer-events: none;
   }
 }
 
@@ -353,24 +335,6 @@
     background-image: var(--grain);
     background-size: var(--grain-size);
     opacity: 0.35;
-    mix-blend-mode: overlay;
-    pointer-events: none;
-  }
-}
-
-@utility glass-noise {
-  position: relative;
-  isolation: isolate;
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    border-radius: inherit;
-    background-image: var(--grain);
-    background-size: var(--grain-size);
-    opacity: 0.4;
     mix-blend-mode: overlay;
     pointer-events: none;
   }

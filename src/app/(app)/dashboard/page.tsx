@@ -74,7 +74,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <KPI
           icon={Target}
-          accent="bg-blue-400/15 text-blue-400"
+          accent="bg-white/10 text-foreground/80"
           label="Major alignment"
           value={`${avgRelevance || "—"}${avgRelevance ? "%" : ""}`}
           sub={
@@ -85,14 +85,14 @@ export default async function DashboardPage() {
         />
         <KPI
           icon={Clock}
-          accent="bg-orange-400/15 text-orange-400"
+          accent="bg-white/10 text-foreground/80"
           label="Total hours"
           value={totalHours.toFixed(1)}
           sub={`${allLogs.length} sessions logged`}
         />
         <KPI
           icon={TrendingUp}
-          accent="bg-emerald-400/15 text-emerald-400"
+          accent="bg-white/10 text-foreground/80"
           label="Activities"
           value={String(acts.length)}
           sub={acts.length ? "keep going" : "start your first"}

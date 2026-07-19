@@ -95,7 +95,7 @@ function AuthPageInner() {
           PathToMajor
         </Link>
 
-        <div className="glass-panel p-8">
+        <div className="glass-panel-navy p-8">
           <h1 className="text-2xl font-semibold">
             {mode === "signup" ? "Create your account" : "Welcome back"}
           </h1>

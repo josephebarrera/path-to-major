@@ -94,7 +94,7 @@ export function ActivitiesList({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="glass-panel p-12 text-center">
+        <div className="glass-panel-navy p-12 text-center">
           <p className="text-sm font-medium">No activities here yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {filter === "All" && gradeFilter === "All"

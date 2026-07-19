@@ -32,9 +32,6 @@ const EXAMPLES = [
   },
 ];
 
-const FEATURE_GRADIENT =
-  "radial-gradient(120% 140% at 100% 0%, oklch(0.68 0.18 40 / 0.85), transparent 60%), linear-gradient(150deg, oklch(0.32 0.1 258), oklch(0.55 0.16 45))";
-
 const FEATURES = [
   {
     icon: Target,
@@ -57,20 +54,20 @@ export default function Landing() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-3 z-50 mx-auto max-w-6xl px-4 sm:top-4 sm:px-6">
-        <div className="glass glass-noise flex items-center justify-between rounded-full px-3 py-2 sm:px-6 sm:py-3">
+        <div className="glass flex items-center justify-between rounded-full px-3 py-2 sm:px-6 sm:py-3">
           <Link
             href="/"
-            className="relative z-10 flex items-center gap-2 whitespace-nowrap text-base font-semibold tracking-tight sm:text-lg"
+            className="flex items-center gap-2 whitespace-nowrap text-base font-semibold tracking-tight sm:text-lg"
           >
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Compass className="h-4 w-4" />
             </span>
             PathToMajor
           </Link>
-          <nav className="relative z-10 flex items-center gap-2 whitespace-nowrap text-sm sm:gap-3">
+          <nav className="flex items-center gap-2 whitespace-nowrap text-sm sm:gap-3">
             <Link
               href="/auth"
-              className="hidden rounded-full bg-[#0a1a3f] px-4 py-2 font-medium text-white transition hover:bg-[#132a5c] sm:inline-block"
+              className="hidden rounded-full border border-white/15 bg-white/10 px-4 py-2 font-medium text-white transition hover:bg-white/20 sm:inline-block"
             >
               Sign in
             </Link>
@@ -138,7 +135,7 @@ export default function Landing() {
             </Link>
             <Link
               href="/auth"
-              className="rounded-full bg-[#0a1a3f] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#132a5c]"
+              className="rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/20"
             >
               I already have an account
             </Link>
@@ -150,10 +147,10 @@ export default function Landing() {
 
         <section className="mt-10 sm:mt-14">
           <div className="text-center">
-            <h2 className="text-2xl font-semibold text-[#0a1a3f] sm:text-3xl">
+            <h2 className="text-2xl font-semibold sm:text-3xl">
               Real feedback, any major
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm font-medium text-[#0a1a3f]/80 sm:text-base">
+            <p className="mx-auto mt-2 max-w-xl text-sm text-foreground/80 sm:text-base">
               Three real examples: a strong fit, a decent one, and one that
               needs work. You get honest scores you can act on, not
               participation trophies.
@@ -205,21 +202,18 @@ export default function Landing() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="grain-overlay rounded-2xl border border-white/25 p-6 shadow-lg"
-              style={{ background: FEATURE_GRADIENT }}
+              className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg"
             >
-              <span className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/30 bg-white/20 text-white backdrop-blur">
+              <span className="grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/10 text-foreground">
                 <f.icon className="h-5 w-5" />
               </span>
-              <h3 className="relative mt-4 text-base font-semibold text-white">
-                {f.title}
-              </h3>
-              <p className="relative mt-2 text-sm text-white/80">{f.body}</p>
+              <h3 className="mt-4 text-base font-semibold">{f.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
             </div>
           ))}
         </section>
 
-        <section className="mt-4 flex items-center justify-center gap-2 text-xs font-medium text-[#0a1a3f]/80">
+        <section className="mt-4 flex items-center justify-center gap-2 text-xs text-foreground/80">
           <Clock className="h-3.5 w-3.5" />
           Takes less than 5 minutes to see your first AI feedback.
         </section>
