@@ -1,7 +1,13 @@
 import { Clock, Compass, Sparkles, Target, TrendingUp } from "lucide-react";
+import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { AlignmentRing } from "~/components/alignment-ring";
 import { ShimmerButton } from "~/components/ui/shimmer-button";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
 
 const EXAMPLES = [
   {
@@ -120,7 +126,9 @@ export default function Landing() {
               PathToMajor
             </span>
           </div>
-          <h1 className="relative mx-auto mt-4 max-w-3xl text-3xl font-semibold leading-[1.1] sm:mt-6 sm:text-5xl sm:leading-[1.05] lg:text-6xl [@media(max-height:820px)]:lg:text-5xl">
+          <h1
+            className={`relative mx-auto mt-4 max-w-3xl text-3xl font-bold leading-[1.1] sm:mt-6 sm:text-5xl sm:leading-[1.05] lg:text-6xl [@media(max-height:820px)]:lg:text-5xl ${poppins.className}`}
+          >
             Know exactly what to do outside of class for your{" "}
             <span className="text-gradient">future major</span>.
           </h1>
@@ -151,7 +159,9 @@ export default function Landing() {
 
         <section className="mt-10 sm:mt-14">
           <div className="text-center">
-            <h2 className="text-2xl font-semibold sm:text-3xl">
+            <h2
+              className={`text-2xl font-bold sm:text-3xl ${poppins.className}`}
+            >
               Real feedback, any major
             </h2>
             <p className="mx-auto mt-2 max-w-xl text-sm text-foreground/80 sm:text-base">
@@ -211,7 +221,9 @@ export default function Landing() {
               <span className="grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/10 text-foreground">
                 <f.icon className="h-5 w-5" />
               </span>
-              <h3 className="mt-4 text-base font-semibold">{f.title}</h3>
+              <h3 className={`mt-4 text-base font-bold ${poppins.className}`}>
+                {f.title}
+              </h3>
               <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
             </div>
           ))}
