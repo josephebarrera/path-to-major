@@ -74,7 +74,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <KPI
           icon={Target}
-          accent="bg-blue-500/15 text-blue-600 dark:bg-blue-400/15 dark:text-blue-400"
+          accent="bg-blue-400/15 text-blue-400"
           label="Major alignment"
           value={`${avgRelevance || "—"}${avgRelevance ? "%" : ""}`}
           sub={
@@ -85,14 +85,14 @@ export default async function DashboardPage() {
         />
         <KPI
           icon={Clock}
-          accent="bg-orange-500/15 text-orange-600 dark:bg-orange-400/15 dark:text-orange-400"
+          accent="bg-orange-400/15 text-orange-400"
           label="Total hours"
           value={totalHours.toFixed(1)}
           sub={`${allLogs.length} sessions logged`}
         />
         <KPI
           icon={TrendingUp}
-          accent="bg-emerald-500/15 text-emerald-600 dark:bg-emerald-400/15 dark:text-emerald-400"
+          accent="bg-emerald-400/15 text-emerald-400"
           label="Activities"
           value={String(acts.length)}
           sub={acts.length ? "keep going" : "start your first"}
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="glass-panel p-6 lg:col-span-2">
+        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Recent activities</h2>
             <Link
@@ -120,7 +120,7 @@ export default async function DashboardPage() {
                   <Link
                     key={a.id}
                     href={`/activities/${a.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/60 bg-white/50 p-4 transition hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
@@ -160,7 +160,7 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="glass-panel p-6">
+        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-accent" />
             <h2 className="text-lg font-semibold">What's next?</h2>
@@ -174,7 +174,7 @@ export default async function DashboardPage() {
               {suggestions.map((s) => (
                 <li
                   key={`${s.a}-${s.s}`}
-                  className="rounded-xl border border-white/60 bg-white/50 p-3 dark:border-white/10 dark:bg-white/5"
+                  className="rounded-xl border border-white/10 bg-white/5 p-3"
                 >
                   <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
                     from {s.a}
@@ -210,8 +210,8 @@ function KPI({
   sub: string;
 }) {
   return (
-    <div className="glass-panel p-5">
-      <div className="flex items-center gap-2.5 text-xs uppercase tracking-wide text-muted-foreground">
+    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
+      <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-foreground/90">
         <span
           className={`grid h-8 w-8 place-items-center rounded-lg ${accent}`}
         >

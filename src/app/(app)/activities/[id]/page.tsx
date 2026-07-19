@@ -48,7 +48,7 @@ export default async function ActivityDetailPage({
         ← Back to activities
       </Link>
 
-      <div className="glass-panel relative isolate overflow-hidden p-8">
+      <div className="glass-panel-navy relative isolate overflow-hidden p-8">
         <div
           aria-hidden
           className="absolute -right-16 -top-16 h-56 w-56 rounded-full opacity-25 blur-3xl"
@@ -127,7 +127,7 @@ export default async function ActivityDetailPage({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="glass-panel p-6 lg:col-span-2">
+        <div className="glass-panel-navy p-6 lg:col-span-2">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold">AI feedback</h2>
           </div>
@@ -154,7 +154,7 @@ export default async function ActivityDetailPage({
                     {activity.ai_skills.map((s) => (
                       <span
                         key={s}
-                        className="rounded-full bg-white/70 px-2.5 py-1 text-xs dark:bg-white/10"
+                        className="rounded-full bg-white/10 px-2.5 py-1 text-xs"
                       >
                         {s}
                       </span>
@@ -191,7 +191,7 @@ export default async function ActivityDetailPage({
                     {activity.ai_related.map((s) => (
                       <span
                         key={s}
-                        className="rounded-full border border-border bg-white/60 px-2.5 py-1 text-xs dark:bg-white/10"
+                        className="rounded-full border border-border bg-white/10 px-2.5 py-1 text-xs"
                       >
                         {s}
                       </span>
@@ -206,7 +206,7 @@ export default async function ActivityDetailPage({
         {activity.tracks_hours ? (
           <HourLogPanel activityId={activity.id} logs={allLogs} />
         ) : (
-          <div className="glass-panel p-6">
+          <div className="glass-panel-navy p-6">
             <h2 className="text-lg font-semibold">Time commitment</h2>
             <p className="mt-3 text-sm text-muted-foreground">
               {activityTimeLabel(activity)}
@@ -220,7 +220,7 @@ export default async function ActivityDetailPage({
 
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/60 bg-white/50 p-4 dark:border-white/10 dark:bg-white/5">
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
       <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
         {label}
       </div>

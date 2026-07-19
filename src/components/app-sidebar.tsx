@@ -86,7 +86,7 @@ export function MobileNav() {
   const items = NAV.slice(0, 5);
 
   return (
-    <div className="glass fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-white/40 py-2 md:hidden dark:border-white/10">
+    <div className="glass fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-white/10 py-2 md:hidden">
       {items.map((item) => {
         const active =
           pathname === item.href || pathname.startsWith(`${item.href}/`);

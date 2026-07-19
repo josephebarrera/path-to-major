@@ -39,10 +39,10 @@ export function AlignmentRing({
           strokeLinecap="round"
           className={`transition-[stroke-dashoffset] duration-700 ease-out ${
             score >= 80
-              ? "stroke-emerald-500 dark:stroke-emerald-400"
+              ? "stroke-emerald-400"
               : score >= 55
-                ? "stroke-amber-500 dark:stroke-amber-400"
-                : "stroke-rose-500 dark:stroke-rose-400"
+                ? "stroke-amber-400"
+                : "stroke-rose-400"
           }`}
         />
       </svg>

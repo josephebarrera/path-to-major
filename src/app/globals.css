@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --font-sans:
     "Inter", "SF Pro Display", ui-sans-serif, system-ui, -apple-system,
@@ -46,70 +44,51 @@
 :root {
   --radius: 0.9rem;
 
-  /* Warm off-white canvas with iridescent light */
-  --background: oklch(0.985 0.006 90);
-  --foreground: oklch(0.22 0.02 265);
+  /* Film grain, defined once and shared by every grainy surface. Quality
+     rules: explicit SVG dimensions matching the tile size so it rasterizes
+     1:1 (no resampling mush); grayscale so it flecks both darker AND lighter
+     like real film; low octave count so it stays pure high-frequency texture
+     with no low-frequency "dirty screen" clumping; and softened alpha so it's
+     felt more than seen. Composite with mix-blend-mode: overlay. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.5' intercept='0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-size: 250px 250px;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.02 265);
-  --popover: oklch(0.995 0.004 260);
-  --popover-foreground: oklch(0.22 0.02 265);
-
-  /* Deep ink primary — Apple-like */
-  --primary: oklch(0.28 0.03 265);
-  --primary-foreground: oklch(0.985 0.004 260);
-
-  --secondary: oklch(0.96 0.008 260);
-  --secondary-foreground: oklch(0.28 0.03 265);
-
-  --muted: oklch(0.955 0.007 260);
-  --muted-foreground: oklch(0.48 0.02 260);
-
-  --accent: oklch(0.7 0.18 260);
-  --accent-foreground: oklch(0.99 0.004 260);
-
+  --background: oklch(0.16 0.025 252);
+  --foreground: oklch(0.97 0.004 250);
+  --card: oklch(0.22 0.045 252);
+  --card-foreground: oklch(0.97 0.004 250);
+  --popover: oklch(0.2 0.045 252);
+  --popover-foreground: oklch(0.97 0.004 250);
+  --primary: oklch(0.97 0.004 250);
+  --primary-foreground: oklch(0.2 0.025 252);
+  --secondary: oklch(0.28 0.045 252);
+  --secondary-foreground: oklch(0.97 0.004 250);
+  --muted: oklch(0.28 0.045 252);
+  --muted-foreground: oklch(0.85 0.015 250);
+  --accent: oklch(0.72 0.17 50);
+  --accent-foreground: oklch(0.99 0 0);
   --destructive: oklch(0.62 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: oklch(0.65 0.14 250);
 
-  --border: oklch(0.92 0.008 260);
-  --input: oklch(0.94 0.008 260);
-  --ring: oklch(0.7 0.15 260);
-
-  /* Liquid Glass tokens */
-  --glass: oklch(1 0 0 / 0.55);
-  --glass-strong: oklch(1 0 0 / 0.75);
-  --glass-border: oklch(1 0 0 / 0.5);
-  --glass-highlight: oklch(1 0 0 / 0.9);
-  --glass-panel-from: oklch(1 0 0 / 0.7);
-  --glass-panel-to: oklch(1 0 0 / 0.35);
+  /* Liquid Glass tokens — smoked glass: deep brand-navy tint with light
+     borders so panels read clearly against the Sky Flame gradient */
+  --glass: oklch(0.27 0.055 252 / 0.6);
+  --glass-strong: oklch(0.29 0.055 252 / 0.78);
+  --glass-border: oklch(1 0 0 / 0.22);
+  --glass-highlight: oklch(1 0 0 / 0.2);
+  --glass-panel-from: oklch(0.28 0.055 252 / 0.62);
+  --glass-panel-to: oklch(0.22 0.055 252 / 0.42);
   --glass-shadow:
-    0 10px 40px -12px oklch(0.4 0.05 265 / 0.18),
-    0 2px 8px -2px oklch(0.4 0.05 265 / 0.08);
+    0 10px 40px -12px oklch(0 0 0 / 0.5), 0 2px 8px -2px oklch(0 0 0 / 0.35);
   --glass-inset:
-    inset 0 1px 0 0 oklch(1 0 0 / 0.8), inset 0 -1px 0 0 oklch(1 0 0 / 0.1);
+    inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(0 0 0 / 0.2);
 
-  /* Ambient iridescent aurora — layered radial gradients */
-  --aurora:
-    radial-gradient(
-      1200px 700px at 8% -10%,
-      oklch(0.85 0.12 250 / 0.55),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 700px at 100% 0%,
-      oklch(0.88 0.1 50 / 0.45),
-      transparent 60%
-    ),
-    radial-gradient(
-      800px 700px at 50% 110%,
-      oklch(0.9 0.1 220 / 0.4),
-      transparent 60%
-    ),
-    radial-gradient(
-      1000px 900px at 90% 90%,
-      oklch(0.9 0.1 40 / 0.35),
-      transparent 60%
-    );
+  /* Blue Flame backdrop — "Sky Flame": the full signature sweep. This is the
+     app's only look: smoked-glass panels float over this gradient. */
+  --aurora: linear-gradient(135deg, #0a1a3f 0%, #5c88c9 48%, #f97316 100%);
 
   /* Signature brand gradient — "Blue Flame": deep blue burning through a
      warm orange, no purple/violet anywhere in the identity. */
@@ -123,78 +102,22 @@
     oklch(0.55 0.17 240),
     oklch(0.8 0.15 55)
   );
+  /* Gradient for headline text — must hold contrast against the navy glass
+     panels it sits on. */
+  --gradient-text: linear-gradient(
+    135deg,
+    oklch(0.86 0.09 245),
+    oklch(0.78 0.17 50)
+  );
 
-  --sidebar: oklch(1 0 0 / 0.5);
-  --sidebar-foreground: oklch(0.28 0.02 265);
-  --sidebar-primary: oklch(0.28 0.03 265);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.94 0.01 260 / 0.6);
-  --sidebar-accent-foreground: oklch(0.22 0.02 265);
-  --sidebar-border: oklch(1 0 0 / 0.4);
-  --sidebar-ring: oklch(0.7 0.15 260);
-}
-
-.dark {
-  --background: oklch(0.16 0.02 265);
-  --foreground: oklch(0.97 0.004 260);
-  --card: oklch(0.22 0.02 265);
-  --card-foreground: oklch(0.97 0.004 260);
-  --popover: oklch(0.2 0.02 265);
-  --popover-foreground: oklch(0.97 0.004 260);
-  --primary: oklch(0.97 0.004 260);
-  --primary-foreground: oklch(0.2 0.02 265);
-  --secondary: oklch(0.26 0.02 265);
-  --secondary-foreground: oklch(0.97 0.004 260);
-  --muted: oklch(0.26 0.02 265);
-  --muted-foreground: oklch(0.72 0.02 260);
-  --accent: oklch(0.7 0.18 260);
-  --accent-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.1);
-  --ring: oklch(0.65 0.15 260);
-
-  /* Liquid Glass tokens — dark: tinted with the surface color, not white */
-  --glass: oklch(0.32 0.02 265 / 0.55);
-  --glass-strong: oklch(0.36 0.02 265 / 0.75);
-  --glass-border: oklch(1 0 0 / 0.12);
-  --glass-highlight: oklch(1 0 0 / 0.16);
-  --glass-panel-from: oklch(0.34 0.02 265 / 0.7);
-  --glass-panel-to: oklch(0.2 0.02 265 / 0.45);
-  --glass-shadow:
-    0 10px 40px -12px oklch(0 0 0 / 0.5), 0 2px 8px -2px oklch(0 0 0 / 0.35);
-  --glass-inset:
-    inset 0 1px 0 0 oklch(1 0 0 / 0.14), inset 0 -1px 0 0 oklch(0 0 0 / 0.2);
-
-  /* Ambient aurora — deeper, more saturated so it reads against a dark canvas */
-  --aurora:
-    radial-gradient(
-      1200px 700px at 8% -10%,
-      oklch(0.5 0.19 250 / 0.5),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 700px at 100% 0%,
-      oklch(0.55 0.18 45 / 0.42),
-      transparent 60%
-    ),
-    radial-gradient(
-      800px 700px at 50% 110%,
-      oklch(0.5 0.16 220 / 0.32),
-      transparent 60%
-    ),
-    radial-gradient(
-      1000px 900px at 90% 90%,
-      oklch(0.55 0.16 35 / 0.28),
-      transparent 60%
-    );
-
-  --sidebar: oklch(0.24 0.02 265 / 0.55);
-  --sidebar-foreground: oklch(0.95 0.004 260);
-  --sidebar-primary: oklch(0.97 0.004 260);
-  --sidebar-primary-foreground: oklch(0.2 0.02 265);
-  --sidebar-accent: oklch(0.32 0.02 265 / 0.6);
-  --sidebar-accent-foreground: oklch(0.97 0.004 260);
+  --sidebar: oklch(0.24 0.045 252 / 0.55);
+  --sidebar-foreground: oklch(0.95 0.004 250);
+  --sidebar-primary: oklch(0.97 0.004 250);
+  --sidebar-primary-foreground: oklch(0.2 0.025 252);
+  --sidebar-accent: oklch(0.32 0.025 252 / 0.6);
+  --sidebar-accent-foreground: oklch(0.97 0.004 250);
   --sidebar-border: oklch(1 0 0 / 0.1);
+  --sidebar-ring: oklch(0.7 0.14 250);
 }
 
 @layer base {
@@ -207,7 +130,10 @@
   }
   body {
     background-color: var(--background);
-    background-image: var(--aurora);
+    /* Grain layer (overlay-blended) on top of the Blue Flame sweep */
+    background-image: var(--grain), var(--aurora);
+    background-size: var(--grain-size), auto;
+    background-blend-mode: overlay, normal;
     background-attachment: fixed;
     color: var(--color-foreground);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
@@ -228,9 +154,9 @@
   }
 
   /* Native <option> popups always render on a light OS-drawn background,
-     regardless of page theme, so keep their text dark/legible in both modes. */
+     so keep their text dark/legible against it. */
   select option {
-    color: oklch(0.22 0.02 265);
+    color: oklch(0.22 0.02 252);
     background-color: white;
   }
 }
@@ -254,6 +180,21 @@
     180deg,
     var(--glass-panel-from),
     var(--glass-panel-to)
+  );
+  backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--glass-shadow), var(--glass-inset);
+}
+
+/* Same glass treatment as glass-panel, but a near-opaque navy fill so the
+   blue-to-orange aurora backdrop doesn't bleed through and wash out content
+   that needs to read cleanly (e.g. the activity detail cards). */
+@utility glass-panel-navy {
+  background: linear-gradient(
+    165deg,
+    oklch(0.24 0.05 258 / 0.97),
+    oklch(0.16 0.045 258 / 0.97)
   );
   backdrop-filter: blur(30px) saturate(180%);
   border: 1px solid var(--glass-border);
@@ -287,9 +228,9 @@
     inset: 0;
     z-index: 1;
     border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 140px 140px;
-    opacity: 0.5;
+    background-image: var(--grain);
+    background-size: var(--grain-size);
+    opacity: 0.35;
     mix-blend-mode: overlay;
     pointer-events: none;
   }
@@ -337,16 +278,16 @@
     inset: 0;
     z-index: 1;
     border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 140px 140px;
-    opacity: 0.5;
+    background-image: var(--grain);
+    background-size: var(--grain-size);
+    opacity: 0.35;
     mix-blend-mode: overlay;
     pointer-events: none;
   }
 }
 
 @utility text-gradient {
-  background: var(--gradient-primary);
+  background: var(--gradient-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -409,9 +350,9 @@
     inset: 0;
     z-index: 1;
     border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 140px 140px;
-    opacity: 0.55;
+    background-image: var(--grain);
+    background-size: var(--grain-size);
+    opacity: 0.35;
     mix-blend-mode: overlay;
     pointer-events: none;
   }
@@ -427,9 +368,10 @@
     inset: 0;
     z-index: 1;
     border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 160px 160px;
-    opacity: 0.5;
+    background-image: var(--grain);
+    background-size: var(--grain-size);
+    opacity: 0.4;
+    mix-blend-mode: overlay;
     pointer-events: none;
   }
 }

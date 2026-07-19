@@ -48,7 +48,7 @@ export function RecommendationsView({
           type="button"
           onClick={refresh}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white/70 px-4 py-2 text-sm hover:bg-white disabled:opacity-50 dark:bg-white/10 dark:hover:bg-white/20"
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-card px-4 py-2 text-sm hover:bg-secondary disabled:opacity-50"
         >
           <RefreshCw
             className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
@@ -58,13 +58,16 @@ export function RecommendationsView({
       </div>
 
       {recommendations.length === 0 ? (
-        <div className="glass-panel p-8 text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-white/15 bg-card p-8 text-sm text-muted-foreground shadow-lg">
           No recommendations yet.
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {recommendations.map((r) => (
-            <div key={`${r.category}-${r.title}`} className="glass-panel p-6">
+            <div
+              key={`${r.category}-${r.title}`}
+              className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg"
+            >
               <div className="flex items-center justify-between">
                 <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-secondary-foreground">
                   {r.category}

@@ -48,12 +48,12 @@ export function ProfileForm({
         </p>
       </div>
 
-      <div className="glass-panel space-y-4 p-6">
+      <div className="rounded-2xl border border-white/15 bg-card space-y-4 p-6 shadow-lg">
         <Row label="Name">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-border bg-white/80 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
           />
         </Row>
         <Row label="Grade">
@@ -66,7 +66,7 @@ export function ProfileForm({
                 className={`rounded-xl border py-2 text-sm font-medium transition ${
                   grade === g
                     ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-white/60 text-foreground dark:bg-white/10"
+                    : "border-white/10 bg-white/5 text-foreground"
                 }`}
               >
                 {g}th

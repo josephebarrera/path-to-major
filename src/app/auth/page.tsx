@@ -109,7 +109,7 @@ function AuthPageInner() {
             type="button"
             onClick={google}
             disabled={loading}
-            className="mt-6 w-full rounded-full border border-border bg-white/70 py-2.5 text-sm font-medium text-foreground backdrop-blur transition hover:bg-white disabled:opacity-50 dark:bg-white/10 dark:hover:bg-white/20"
+            className="mt-6 w-full rounded-full border border-border bg-white/10 py-2.5 text-sm font-medium text-foreground backdrop-blur transition hover:bg-white/20 disabled:opacity-50"
           >
             Continue with Google
           </button>
@@ -128,7 +128,7 @@ function AuthPageInner() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
                 maxLength={80}
-                className="w-full rounded-xl border border-border bg-white/70 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring dark:bg-white/10"
+                className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
               />
             )}
             <input
@@ -137,7 +137,7 @@ function AuthPageInner() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="w-full rounded-xl border border-border bg-white/70 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring dark:bg-white/10"
+              className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
             />
             <input
               required
@@ -146,7 +146,7 @@ function AuthPageInner() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full rounded-xl border border-border bg-white/70 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring dark:bg-white/10"
+              className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
             />
             <button
               type="submit"

@@ -59,7 +59,7 @@ export function ActivitiesList({
         </button>
       </div>
 
-      <div className="flex gap-1 rounded-full bg-white/60 p-1 dark:bg-white/10">
+      <div className="flex gap-1 rounded-full border border-white/15 bg-card p-1">
         {GRADE_TABS.map((g) => (
           <button
             type="button"
@@ -68,7 +68,7 @@ export function ActivitiesList({
             className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
               gradeFilter === g
                 ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
             }`}
           >
             {GRADE_TAB_LABEL[g]}
@@ -85,7 +85,7 @@ export function ActivitiesList({
             className={`rounded-full px-3 py-1 text-xs font-medium transition ${
               filter === c
                 ? "bg-primary text-primary-foreground"
-                : "bg-white/60 text-muted-foreground hover:bg-white dark:bg-white/10 dark:hover:bg-white/20"
+                : "border border-white/15 bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
             }`}
           >
             {c}
@@ -111,7 +111,7 @@ export function ActivitiesList({
               <Link
                 key={a.id}
                 href={`/activities/${a.id}`}
-                className="glass-panel group relative isolate overflow-hidden p-5 transition duration-200 hover:-translate-y-1 hover:shadow-xl"
+                className="group relative isolate overflow-hidden rounded-2xl border border-white/15 bg-card p-5 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-white/25 hover:shadow-xl"
               >
                 <div
                   aria-hidden
@@ -143,7 +143,7 @@ export function ActivitiesList({
                     {(a.ai_skills ?? []).slice(0, 3).map((s) => (
                       <span
                         key={s}
-                        className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] text-muted-foreground dark:bg-white/10"
+                        className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-muted-foreground"
                       >
                         {s}
                       </span>

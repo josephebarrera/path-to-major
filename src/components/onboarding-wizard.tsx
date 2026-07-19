@@ -66,7 +66,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
-                className="mt-5 w-full rounded-xl border border-border bg-white/70 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring dark:bg-white/10"
+                className="mt-5 w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
               />
               <button
                 type="button"
@@ -94,7 +94,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                     className={`rounded-xl border py-4 text-sm font-medium transition ${
                       grade === g
                         ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-white/60 text-foreground hover:bg-white dark:bg-white/10 dark:hover:bg-white/20"
+                        : "border-border bg-white/10 text-foreground hover:bg-white/20"
                     }`}
                   >
                     {g}th
@@ -105,7 +105,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 <button
                   type="button"
                   onClick={() => setStep(0)}
-                  className="flex-1 rounded-full border border-border bg-white/60 py-2.5 text-sm text-foreground dark:bg-white/10"
+                  className="flex-1 rounded-full border border-border bg-white/10 py-2.5 text-sm text-foreground"
                 >
                   Back
                 </button>
@@ -146,7 +146,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 rounded-full border border-border bg-white/60 py-2.5 text-sm text-foreground dark:bg-white/10"
+                  className="flex-1 rounded-full border border-border bg-white/10 py-2.5 text-sm text-foreground"
                 >
                   Back
                 </button>
