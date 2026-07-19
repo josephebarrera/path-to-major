@@ -1,6 +1,7 @@
 import { Clock, Compass, Sparkles, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { AlignmentRing } from "~/components/alignment-ring";
+import { ShimmerButton } from "~/components/ui/shimmer-button";
 
 const EXAMPLES = [
   {
@@ -71,11 +72,14 @@ export default function Landing() {
             >
               Sign in
             </Link>
-            <Link
-              href="/auth?mode=signup"
-              className="rounded-full bg-primary px-3 py-2 font-medium text-primary-foreground transition hover:opacity-90 sm:px-4"
-            >
-              Get started
+            <Link href="/auth?mode=signup">
+              <ShimmerButton
+                background="#0a1a3f"
+                shimmerColor="#f97316"
+                className="px-3 py-2 text-sm font-medium sm:px-4"
+              >
+                Get started
+              </ShimmerButton>
             </Link>
           </nav>
         </div>

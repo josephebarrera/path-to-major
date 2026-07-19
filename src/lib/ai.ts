@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { env } from "~/env";
 import { formatMajors } from "~/lib/majors";
 import { createClient } from "~/lib/supabase/server";
 
@@ -23,18 +24,55 @@ type Recommendation = {
 const NOT_CONFIGURED_SUMMARY =
   "AI feedback isn't turned on yet for this app. Add an LLM API key and wire it into callAI() in src/lib/ai.ts to enable personalized analysis.";
 
+const GEMINI_MODEL = "gemini-2.5-flash";
+
 /**
- * Placeholder for the real LLM call. No API key is configured yet, so this
- * returns nothing and callers fall back to honest "not configured" copy
- * instead of fake AI-sounding text. To enable real feedback, call your
- * provider here (e.g. Anthropic's Messages API) with `system` and `user`,
- * and return the parsed JSON response matching what each caller expects.
+ * Calls the Google Gemini API with JSON output mode. Returns {} when no API
+ * key is configured so callers fall back to honest "not configured" copy
+ * instead of fake AI-sounding text.
  */
 async function callAI(
-  _system: string,
-  _user: string,
+  system: string,
+  user: string,
 ): Promise<Record<string, unknown>> {
-  return {};
+  if (!env.GEMINI_API_KEY) return {};
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": env.GEMINI_API_KEY,
+      },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: system }] },
+        contents: [{ role: "user", parts: [{ text: user }] }],
+        generationConfig: {
+          response_mime_type: "application/json",
+        },
+      }),
+    },
+  );
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(
+      `AI request failed (${res.status}). ${detail.slice(0, 200)}`,
+    );
+  }
+
+  const data = (await res.json()) as {
+    candidates?: { content?: { parts?: { text?: string }[] } }[];
+  };
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("AI returned an empty response");
+
+  try {
+    return JSON.parse(text) as Record<string, unknown>;
+  } catch {
+    throw new Error("AI returned a response that couldn't be parsed");
+  }
 }
 
 export async function analyzeActivity(activityId: string): Promise<Analysis> {

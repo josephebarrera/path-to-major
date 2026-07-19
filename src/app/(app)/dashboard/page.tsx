@@ -1,5 +1,6 @@
 import { Clock, Plus, Sparkles, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { NumberTicker } from "~/components/ui/number-ticker";
 import { activityTimeLabel } from "~/lib/dates";
 import { categoryStyle, formatMajors } from "~/lib/majors";
 import { createClient } from "~/lib/supabase/server";
@@ -76,7 +77,9 @@ export default async function DashboardPage() {
           icon={Target}
           accent="bg-white/10 text-foreground/80"
           label="Major alignment"
-          value={`${avgRelevance || "—"}${avgRelevance ? "%" : ""}`}
+          value={avgRelevance}
+          suffix="%"
+          emptyLabel="—"
           sub={
             analyzed.length
               ? `across ${analyzed.length} analyzed`
@@ -87,14 +90,15 @@ export default async function DashboardPage() {
           icon={Clock}
           accent="bg-white/10 text-foreground/80"
           label="Total hours"
-          value={totalHours.toFixed(1)}
+          value={totalHours}
+          decimalPlaces={1}
           sub={`${allLogs.length} sessions logged`}
         />
         <KPI
           icon={TrendingUp}
           accent="bg-white/10 text-foreground/80"
           label="Activities"
-          value={String(acts.length)}
+          value={acts.length}
           sub={acts.length ? "keep going" : "start your first"}
         />
       </div>
@@ -201,14 +205,21 @@ function KPI({
   accent,
   label,
   value,
+  decimalPlaces = 0,
+  suffix = "",
+  emptyLabel,
   sub,
 }: {
   icon: typeof Target;
   accent: string;
   label: string;
-  value: string;
+  value: number;
+  decimalPlaces?: number;
+  suffix?: string;
+  emptyLabel?: string;
   sub: string;
 }) {
+  const showEmpty = emptyLabel !== undefined && value === 0;
   return (
     <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
       <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-foreground/90">
@@ -219,7 +230,16 @@ function KPI({
         </span>
         {label}
       </div>
-      <div className="mt-3 text-3xl font-semibold">{value}</div>
+      <div className="mt-3 text-3xl font-semibold">
+        {showEmpty ? (
+          emptyLabel
+        ) : (
+          <>
+            <NumberTicker value={value} decimalPlaces={decimalPlaces} />
+            {suffix}
+          </>
+        )}
+      </div>
       <div className="mt-1 text-xs text-muted-foreground">{sub}</div>
     </div>
   );
