@@ -41,6 +41,14 @@ export function ActivitiesList({
       (gradeFilter === "All" || gradesForActivity(a).includes(gradeFilter)),
   );
 
+  const grouped = Object.entries(
+    filtered.reduce<Record<string, Activity[]>>((acc, a) => {
+      if (!acc[a.category]) acc[a.category] = [];
+      acc[a.category].push(a);
+      return acc;
+    }, {}),
+  ).sort(([a], [b]) => a.localeCompare(b));
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -103,70 +111,34 @@ export function ActivitiesList({
           </p>
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((a) => {
-            const hours = hoursByActivity[a.id] ?? 0;
-            const style = categoryStyle(a.category);
+        <div className="space-y-8">
+          {grouped.map(([category, items]) => {
+            const style = categoryStyle(category);
             return (
-              <Link
-                key={a.id}
-                href={`/activities/${a.id}`}
-                className="group relative isolate overflow-hidden rounded-2xl border border-white/15 bg-card p-5 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-white/25 hover:shadow-xl"
-              >
-                <div
-                  aria-hidden
-                  className="absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-30 blur-2xl transition-opacity duration-200 group-hover:opacity-50"
-                  style={{ background: style.glow }}
-                />
-                <div className="relative flex items-start justify-between gap-2">
+              <div key={category}>
+                <div className="mb-3 flex items-center gap-2">
                   <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
-                  >
-                    {a.category}
+                    aria-hidden
+                    className="h-2 w-2 shrink-0 rounded-full"
+                    style={{ background: style.glow }}
+                  />
+                  <h2 className="text-sm font-semibold uppercase tracking-wide">
+                    {category}
+                  </h2>
+                  <span className="text-xs text-muted-foreground">
+                    {items.length}
                   </span>
-                  {a.ai_relevance_score != null && (
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-                      {a.ai_relevance_score}% aligned
-                    </span>
-                  )}
                 </div>
-                <h3 className="relative mt-3 line-clamp-2 text-base font-semibold">
-                  {a.name}
-                </h3>
-                {a.organization && (
-                  <p className="relative mt-0.5 truncate text-xs text-muted-foreground">
-                    {a.organization}
-                  </p>
-                )}
-                <div className="relative mt-4 flex items-end justify-between">
-                  <div className="flex flex-wrap gap-1">
-                    {(a.ai_skills ?? []).slice(0, 3).map((s) => (
-                      <span
-                        key={s}
-                        className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-muted-foreground"
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="text-right">
-                    {a.tracks_hours ? (
-                      <>
-                        <div className="text-lg font-semibold">
-                          {hours.toFixed(1)}h
-                        </div>
-                        <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                          total
-                        </div>
-                      </>
-                    ) : (
-                      <div className="max-w-[9rem] text-xs font-medium text-muted-foreground">
-                        {activityTimeLabel(a)}
-                      </div>
-                    )}
-                  </div>
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {items.map((a) => (
+                    <ActivityCard
+                      key={a.id}
+                      activity={a}
+                      hours={hoursByActivity[a.id] ?? 0}
+                    />
+                  ))}
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
@@ -182,5 +154,73 @@ export function ActivitiesList({
         />
       )}
     </div>
+  );
+}
+
+function ActivityCard({
+  activity: a,
+  hours,
+}: {
+  activity: Activity;
+  hours: number;
+}) {
+  const style = categoryStyle(a.category);
+  return (
+    <Link
+      href={`/activities/${a.id}`}
+      className="group relative isolate overflow-hidden rounded-2xl border border-white/15 bg-card p-5 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-white/25 hover:shadow-xl"
+    >
+      <div
+        aria-hidden
+        className="absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-30 blur-2xl transition-opacity duration-200 group-hover:opacity-50"
+        style={{ background: style.glow }}
+      />
+      <div className="relative flex items-start justify-between gap-2">
+        <span
+          className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
+        >
+          {a.category}
+        </span>
+        {a.ai_relevance_score != null && (
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+            {a.ai_relevance_score}% aligned
+          </span>
+        )}
+      </div>
+      <h3 className="relative mt-3 line-clamp-2 text-base font-semibold">
+        {a.name}
+      </h3>
+      {a.organization && (
+        <p className="relative mt-0.5 truncate text-xs text-muted-foreground">
+          {a.organization}
+        </p>
+      )}
+      <div className="relative mt-4 flex items-end justify-between">
+        <div className="flex flex-wrap gap-1">
+          {(a.ai_skills ?? []).slice(0, 3).map((s) => (
+            <span
+              key={s}
+              className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-muted-foreground"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+        <div className="text-right">
+          {a.tracks_hours ? (
+            <>
+              <div className="text-lg font-semibold">{hours.toFixed(1)}h</div>
+              <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                total
+              </div>
+            </>
+          ) : (
+            <div className="max-w-[9rem] text-xs font-medium text-muted-foreground">
+              {activityTimeLabel(a)}
+            </div>
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }

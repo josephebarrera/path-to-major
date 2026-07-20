@@ -53,19 +53,19 @@ export const MAJORS = [
 ] as const;
 
 export const ACTIVITY_CATEGORIES = [
+  "Arts",
   "Club",
-  "Sport",
-  "Robotics",
-  "Volunteer",
+  "Competition",
   "Internship",
   "Job",
-  "Competition",
   "Leadership",
-  "Research",
-  "Personal Project",
-  "Arts",
   "Music",
   "Other",
+  "Personal Project",
+  "Research",
+  "Robotics",
+  "Sport",
+  "Volunteer",
 ] as const;
 
 export type ActivityCategory = (typeof ACTIVITY_CATEGORIES)[number];
