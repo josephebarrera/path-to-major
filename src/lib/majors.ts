@@ -60,12 +60,12 @@ export const ACTIVITY_CATEGORIES = [
   "Job",
   "Leadership",
   "Music",
-  "Other",
   "Personal Project",
   "Research",
   "Robotics",
   "Sport",
   "Volunteer",
+  "Other",
 ] as const;
 
 export type ActivityCategory = (typeof ACTIVITY_CATEGORIES)[number];
