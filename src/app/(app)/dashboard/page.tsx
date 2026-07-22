@@ -57,11 +57,18 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-semibold">
             Hi {profile?.display_name?.split(" ")[0] ?? "there"}
           </h1>
-          {majorLabel && (
+          {majorLabel ? (
             <p className="mt-1 text-sm text-muted-foreground">
               Building your path to{" "}
               <span className="font-medium text-foreground">{majorLabel}</span>
             </p>
+          ) : (
+            <Link
+              href="/profile"
+              className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add your intended major
+            </Link>
           )}
         </div>
         <Link
