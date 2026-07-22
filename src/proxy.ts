@@ -26,8 +26,10 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // Refresh the auth token
-  await supabase.auth.getUser();
+  // Refresh the auth token. Use getClaims() here, not getSession() or
+  // getUser() — it verifies the JWT locally instead of a network round
+  // trip, and is Supabase's current recommendation for Proxy/Middleware.
+  await supabase.auth.getClaims();
 
   return response;
 }
