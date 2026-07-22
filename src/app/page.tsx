@@ -1,13 +1,8 @@
-import {
-  ClipboardCheck,
-  Clock,
-  Compass,
-  Target,
-  TrendingUp,
-} from "lucide-react";
+import { Clock, Compass, Target } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { AlignmentRing } from "~/components/alignment-ring";
+import { Marquee } from "~/components/ui/marquee";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -45,21 +40,9 @@ const EXAMPLES = [
 ];
 
 const FEATURES = [
-  {
-    icon: Target,
-    title: "Align to your major",
-    body: "Pick your intended major and see how each activity connects to it.",
-  },
-  {
-    icon: ClipboardCheck,
-    title: "AI feedback, instantly",
-    body: "Every activity gets a personalized breakdown of skills, relevance, and next steps.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Track hours over time",
-    body: "Log sessions as you go and watch your total hours grow throughout high school.",
-  },
+  "Personalized to your major",
+  "AI-assisted feedback",
+  "Track hours over time",
 ];
 
 export default function Landing() {
@@ -129,9 +112,23 @@ export default function Landing() {
               I already have an account
             </Link>
           </div>
-          <p className="mt-4 text-xs text-foreground/80 sm:mt-6">
-            50+ majors covered · Grades 9–12 · Free to start
-          </p>
+          <div
+            className={`mt-6 flex flex-col items-center gap-1.5 text-xs font-bold tracking-tight text-foreground/70 sm:mt-8 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-3 sm:gap-y-2 sm:text-sm ${poppins.className}`}
+          >
+            {FEATURES.map((f, i) => (
+              <span key={f} className="flex items-center gap-3">
+                {i > 0 && (
+                  <span
+                    aria-hidden
+                    className="hidden text-foreground/30 sm:inline"
+                  >
+                    ·
+                  </span>
+                )}
+                {f}
+              </span>
+            ))}
+          </div>
         </section>
 
         <section className="mt-10 sm:mt-14">
@@ -147,63 +144,15 @@ export default function Landing() {
               participation trophies.
             </p>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {EXAMPLES.map((ex) => (
-              <div
-                key={ex.activity}
-                className="flex h-full flex-col rounded-2xl border border-white/15 bg-card p-5 text-left shadow-lg"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
-                      {ex.category}
-                    </span>
-                    <h3 className="mt-3 text-sm font-semibold">
-                      {ex.activity}
-                    </h3>
-                  </div>
-                  <AlignmentRing score={ex.score} />
-                </div>
-                <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Target className="h-3.5 w-3.5 shrink-0 text-primary" />
-                  Aligned to{" "}
-                  <span className="font-medium text-foreground">
-                    {ex.major}
-                  </span>
-                </div>
-                <p className="mt-3 text-xs text-muted-foreground">
-                  "{ex.feedback}"
-                </p>
-                <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
-                  {ex.skills.map((s) => (
-                    <span
-                      key={s}
-                      className="rounded-full bg-white/10 px-2 py-0.5 text-[11px]"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className="relative mt-8 overflow-hidden">
+            <Marquee pauseOnHover className="[--duration:32s] [--gap:1rem]">
+              {EXAMPLES.map((ex) => (
+                <ExampleCard key={ex.activity} ex={ex} />
+              ))}
+            </Marquee>
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent sm:w-24" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent sm:w-24" />
           </div>
-        </section>
-
-        <section className="mt-10 grid gap-4 sm:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg"
-            >
-              <span className="grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/10 text-foreground">
-                <f.icon className="h-5 w-5" />
-              </span>
-              <h3 className={`mt-4 text-base font-bold ${poppins.className}`}>
-                {f.title}
-              </h3>
-              <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
-            </div>
-          ))}
         </section>
 
         <section className="mt-4 flex items-center justify-center gap-2 text-xs text-foreground/80">
@@ -223,11 +172,53 @@ export default function Landing() {
             </span>
             PathToMajor
           </Link>
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} PathToMajor. All rights reserved.
-          </p>
+          <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-5">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <Link href="/privacy" className="hover:text-foreground">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-foreground">
+                Terms of Service
+              </Link>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              © {new Date().getFullYear()} PathToMajor. All rights reserved.
+            </p>
+          </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function ExampleCard({ ex }: { ex: (typeof EXAMPLES)[number] }) {
+  return (
+    <div className="flex h-full w-80 shrink-0 flex-col rounded-2xl border border-white/15 bg-card p-5 text-left shadow-lg sm:w-96">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
+            {ex.category}
+          </span>
+          <h3 className="mt-3 text-sm font-semibold">{ex.activity}</h3>
+        </div>
+        <AlignmentRing score={ex.score} />
+      </div>
+      <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+        <Target className="h-3.5 w-3.5 shrink-0 text-primary" />
+        Aligned to{" "}
+        <span className="font-medium text-foreground">{ex.major}</span>
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">"{ex.feedback}"</p>
+      <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
+        {ex.skills.map((s) => (
+          <span
+            key={s}
+            className="rounded-full bg-white/10 px-2 py-0.5 text-[11px]"
+          >
+            {s}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
