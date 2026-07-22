@@ -29,10 +29,22 @@ function AuthPageInner() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.push("/dashboard");
+    // getUser() validates the session against Supabase's Auth server, unlike
+    // getSession() which just reads local storage. A stale/expired local
+    // session would make getSession() report "signed in" here while the
+    // (app) layout's server-side getUser() check disagrees and bounces back
+    // to /auth, causing an infinite redirect loop between the two pages.
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) router.push("/dashboard");
     });
   }, [router, supabase]);
+
+  useEffect(() => {
+    if (searchParams.get("error") === "oauth") {
+      toast.error("Google sign-in didn't go through. Please try again.");
+      router.replace("/auth");
+    }
+  }, [searchParams, router]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +178,20 @@ function AuthPageInner() {
               ? "Already have an account? Sign in"
               : "New to PathToMajor? Create an account"}
           </button>
+
+          {mode === "signup" && (
+            <p className="mt-4 text-center text-xs text-muted-foreground">
+              By creating an account, you agree to our{" "}
+              <Link href="/terms" className="underline underline-offset-2">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          )}
         </div>
       </div>
     </div>
