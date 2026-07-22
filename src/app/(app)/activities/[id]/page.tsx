@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ActivityHeaderActions } from "~/components/activity-header-actions";
 import { AutoAnalyzeActivity } from "~/components/auto-analyze-activity";
 import { HourLogPanel } from "~/components/hour-log-panel";
@@ -28,7 +29,7 @@ export default async function ActivityDetailPage({
   ]);
 
   if (!activity) {
-    return <div className="p-6">Not found</div>;
+    notFound();
   }
 
   const allLogs = logs ?? [];
@@ -69,38 +70,50 @@ export default async function ActivityDetailPage({
               )}
             </div>
             <h1 className="mt-2 text-3xl font-semibold">{activity.name}</h1>
+          </div>
+          <ActivityHeaderActions activity={activity} />
+        </div>
+
+        {(activity.leadership_role ||
+          activity.start_grade ||
+          activity.start_date) && (
+          <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/10 pt-4">
             {activity.leadership_role && (
-              <p className="mt-1 text-sm text-muted-foreground">
-                Role: {activity.leadership_role}
-              </p>
+              <MetaField label="Role" value={activity.leadership_role} />
             )}
             {activity.start_grade && (
-              <p className="mt-1 text-sm text-muted-foreground">
-                {gradeRangeLabel(
+              <MetaField
+                label="Grade"
+                value={gradeRangeLabel(
                   activity.start_grade,
                   activity.end_grade,
                   activity.is_summer,
                   activity.started_before_hs,
                 )}
-              </p>
+              />
             )}
             {activity.start_date && (
-              <p className="mt-1 text-sm text-muted-foreground">
-                {formatLocalDate(activity.start_date)}
-                {" – "}
-                {activity.end_date
-                  ? formatLocalDate(activity.end_date)
-                  : "Present"}
-              </p>
+              <MetaField
+                label="Dates"
+                value={`${formatLocalDate(activity.start_date)} – ${
+                  activity.end_date
+                    ? formatLocalDate(activity.end_date)
+                    : "Present"
+                }`}
+              />
             )}
           </div>
-          <ActivityHeaderActions activity={activity} />
-        </div>
+        )}
 
         {activity.description && (
-          <p className="mt-4 max-w-3xl text-sm text-muted-foreground">
-            {activity.description}
-          </p>
+          <div className="mt-4 max-w-3xl">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Description
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {activity.description}
+            </p>
+          </div>
         )}
 
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -225,6 +238,17 @@ function StatBox({ label, value }: { label: string; value: string }) {
         {label}
       </div>
       <div className="mt-1 text-2xl font-semibold">{value}</div>
+    </div>
+  );
+}
+
+function MetaField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </div>
+      <div className="mt-1 text-sm text-foreground">{value}</div>
     </div>
   );
 }
