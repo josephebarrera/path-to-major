@@ -1,12 +1,14 @@
 "use client";
 
 import { ArrowRight, Compass } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { MajorPicker } from "~/components/major-picker";
 import { completeOnboarding } from "~/lib/actions";
 
 export function OnboardingWizard({ initialName }: { initialName: string }) {
+  const router = useRouter();
   const [grade, setGrade] = useState<number>(10);
   const [majors, setMajors] = useState<string[]>([]);
   const [exploring, setExploring] = useState(false);
@@ -15,8 +17,10 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
   const [loading, setLoading] = useState(false);
 
   const finish = async () => {
-    if (majors.length === 0)
-      return toast.error("Pick at least one intended major");
+    if (majors.length === 0 && !exploring)
+      return toast.error(
+        "Pick at least one intended major, or check that you're still exploring",
+      );
     setLoading(true);
     try {
       await completeOnboarding({
@@ -26,6 +30,8 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
         exploring,
       });
       toast.success("You're all set!");
+      router.push("/dashboard");
+      router.refresh();
     } catch (err) {
       setLoading(false);
       toast.error(err instanceof Error ? err.message : "Something went wrong");
@@ -126,7 +132,8 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 What do you want to study?
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Pick up to 3. You can change these anytime.
+                Pick up to 3, or skip this if you're still exploring. You can
+                change these anytime.
               </p>
               <div className="mt-5">
                 <MajorPicker selected={majors} onChange={setMajors} />
@@ -153,7 +160,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 <button
                   type="button"
                   onClick={finish}
-                  disabled={loading || majors.length === 0}
+                  disabled={loading}
                   className="flex-1 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
                 >
                   {loading ? "…" : "Get started"}

@@ -10,6 +10,11 @@ export async function completeOnboarding(input: {
   intendedMajors: string[];
   exploring: boolean;
 }) {
+  if (input.intendedMajors.length === 0 && !input.exploring)
+    throw new Error(
+      "Pick at least one intended major, or check that you're still exploring",
+    );
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -29,7 +34,6 @@ export async function completeOnboarding(input: {
   if (error) throw new Error(error.message);
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
 }
 
 export async function updateProfile(input: {
@@ -165,6 +169,11 @@ export async function updateActivity(
 
 export async function deleteActivity(activityId: string) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not signed in");
+
   const { error } = await supabase
     .from("activities")
     .delete()
@@ -204,6 +213,11 @@ export async function addHourLog(input: {
 
 export async function deleteHourLog(logId: string, activityId: string) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not signed in");
+
   const { error } = await supabase.from("hour_logs").delete().eq("id", logId);
   if (error) throw new Error(error.message);
 
