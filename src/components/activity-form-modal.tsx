@@ -153,6 +153,7 @@ export function ActivityFormModal({
                 setForm({ ...form, name: e.target.value });
                 if (nameError) setNameError(null);
               }}
+              placeholder="e.g. Varsity Soccer, FIRST Robotics Team, Student Government"
               aria-invalid={nameError ? true : undefined}
               className={`w-full rounded-xl border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
                 nameError ? "border-destructive" : "border-border"
@@ -181,6 +182,7 @@ export function ActivityFormModal({
                 onChange={(e) =>
                   setForm({ ...form, organization: e.target.value })
                 }
+                placeholder="e.g. Lincoln High School, Boys & Girls Club"
                 className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </Field>
@@ -192,6 +194,7 @@ export function ActivityFormModal({
               onChange={(e) =>
                 setForm({ ...form, leadership_role: e.target.value })
               }
+              placeholder="e.g. Captain, Vice President, Team Lead"
               className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
             />
           </Field>
