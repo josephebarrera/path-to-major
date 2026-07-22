@@ -1,12 +1,21 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ActivityFormModal } from "~/components/activity-form-modal";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
 import { activityTimeLabel, gradesForActivity } from "~/lib/dates";
-import { ACTIVITY_CATEGORIES, categoryStyle } from "~/lib/majors";
+import {
+  ACTIVITY_CATEGORIES,
+  categoryStyle,
+  compareCategory,
+} from "~/lib/majors";
 import type { Tables } from "~/lib/supabase/types";
 
 type Activity = Tables<"activities">;
@@ -34,6 +43,19 @@ export function ActivitiesList({
   const [gradeFilter, setGradeFilter] =
     useState<(typeof GRADE_TABS)[number]>("All");
   const [showNew, setShowNew] = useState(openNewDefault);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+
+  function toggleCollapsed(category: string) {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  }
 
   const filtered = activities.filter(
     (a) =>
@@ -47,11 +69,7 @@ export function ActivitiesList({
       acc[a.category].push(a);
       return acc;
     }, {}),
-  ).sort(([a], [b]) => {
-    if (a === "Other") return 1;
-    if (b === "Other") return -1;
-    return a.localeCompare(b);
-  });
+  ).sort(([a], [b]) => compareCategory(a, b));
 
   return (
     <div className="space-y-6">
@@ -118,9 +136,14 @@ export function ActivitiesList({
         <div className="space-y-8">
           {grouped.map(([category, items]) => {
             const style = categoryStyle(category);
+            const isOpen = !collapsed.has(category);
             return (
-              <div key={category}>
-                <div className="mb-3 flex items-center gap-2">
+              <Collapsible
+                key={category}
+                open={isOpen}
+                onOpenChange={() => toggleCollapsed(category)}
+              >
+                <CollapsibleTrigger className="group flex w-full items-center gap-2 rounded-lg text-left transition data-[state=closed]:border data-[state=closed]:border-white/15 data-[state=closed]:bg-card data-[state=closed]:px-3 data-[state=closed]:py-2 data-[state=closed]:hover:border-white/25 data-[state=closed]:hover:bg-white/[0.06]">
                   <span
                     aria-hidden
                     className="h-2 w-2 shrink-0 rounded-full"
@@ -132,17 +155,22 @@ export function ActivitiesList({
                   <span className="text-xs text-muted-foreground">
                     {items.length}
                   </span>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {items.map((a) => (
-                    <ActivityCard
-                      key={a.id}
-                      activity={a}
-                      hours={hoursByActivity[a.id] ?? 0}
-                    />
-                  ))}
-                </div>
-              </div>
+                  <span className="ml-auto rounded-full p-1.5 transition-colors group-hover:bg-white/10">
+                    <ChevronDown className="h-4 w-4 shrink-0 text-foreground transition-transform duration-200 group-data-[state=closed]:-rotate-90" />
+                  </span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                  <div className="grid gap-3 pt-3 sm:grid-cols-2 xl:grid-cols-3">
+                    {items.map((a) => (
+                      <ActivityCard
+                        key={a.id}
+                        activity={a}
+                        hours={hoursByActivity[a.id] ?? 0}
+                      />
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             );
           })}
         </div>

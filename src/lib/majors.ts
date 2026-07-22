@@ -120,6 +120,13 @@ export function categoryStyle(category: string) {
   return CATEGORY_STYLES[category] ?? CATEGORY_STYLES.Other;
 }
 
+/** Alphabetical, but "Other" always sorts last. */
+export function compareCategory(a: string, b: string): number {
+  if (a === "Other") return 1;
+  if (b === "Other") return -1;
+  return a.localeCompare(b);
+}
+
 export function formatMajors(majors: string[]): string {
   if (majors.length === 0) return "";
   if (majors.length === 1) return majors[0];
