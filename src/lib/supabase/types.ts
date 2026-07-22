@@ -138,30 +138,36 @@ export type Database = {
         Row: {
           created_at: string;
           display_name: string | null;
+          email: string | null;
           exploring: boolean;
           grade_level: number | null;
           id: string;
           intended_majors: string[];
+          is_admin: boolean;
           onboarded: boolean;
           updated_at: string;
         };
         Insert: {
           created_at?: string;
           display_name?: string | null;
+          email?: string | null;
           exploring?: boolean;
           grade_level?: number | null;
           id: string;
           intended_majors?: string[];
+          is_admin?: boolean;
           onboarded?: boolean;
           updated_at?: string;
         };
         Update: {
           created_at?: string;
           display_name?: string | null;
+          email?: string | null;
           exploring?: boolean;
           grade_level?: number | null;
           id?: string;
           intended_majors?: string[];
+          is_admin?: boolean;
           onboarded?: boolean;
           updated_at?: string;
         };

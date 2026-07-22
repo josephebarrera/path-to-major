@@ -5,7 +5,9 @@ import {
   LayoutDashboard,
   ListChecks,
   LogOut,
+  Plus,
   Settings as SettingsIcon,
+  ShieldCheck,
   Sparkles,
   TrendingUp,
   User,
@@ -24,7 +26,13 @@ const NAV = [
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 
-export function AppSidebar({ intendedMajors }: { intendedMajors: string[] }) {
+export function AppSidebar({
+  intendedMajors,
+  isAdmin,
+}: {
+  intendedMajors: string[];
+  isAdmin?: boolean;
+}) {
   const pathname = usePathname();
   const majorLabel = formatMajors(intendedMajors);
 
@@ -61,12 +69,39 @@ export function AppSidebar({ intendedMajors }: { intendedMajors: string[] }) {
           );
         })}
       </nav>
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className={`relative z-10 mt-2 flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+            pathname === "/admin" || pathname.startsWith("/admin/")
+              ? "bg-white font-medium text-neutral-900 shadow-md"
+              : "text-white/75 hover:bg-white/15 hover:text-white"
+          }`}
+        >
+          <ShieldCheck
+            className={`h-4 w-4 ${
+              pathname === "/admin" || pathname.startsWith("/admin/")
+                ? "text-blue-600"
+                : "text-white/75"
+            }`}
+          />
+          Admin
+        </Link>
+      )}
       <div className="relative z-10 mt-auto pt-4">
-        {majorLabel && (
+        {majorLabel ? (
           <div className="rounded-xl border border-white/30 bg-white/15 p-3 text-xs backdrop-blur">
             <div className="text-white/70">Pursuing</div>
             <div className="mt-0.5 font-medium text-white">{majorLabel}</div>
           </div>
+        ) : (
+          <Link
+            href="/profile"
+            className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/30 bg-white/10 p-3 text-xs font-medium text-white/80 backdrop-blur transition hover:bg-white/15 hover:text-white"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add your intended major
+          </Link>
         )}
         <form action={signOut}>
           <button

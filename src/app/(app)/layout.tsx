@@ -15,7 +15,7 @@ export default async function AppLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("intended_majors, onboarded")
+    .select("intended_majors, onboarded, is_admin")
     .eq("id", user.id)
     .maybeSingle();
   if (!profile?.onboarded) redirect("/onboarding");
@@ -23,7 +23,10 @@ export default async function AppLayout({
   return (
     <div className="min-h-screen">
       <div className="mx-auto flex max-w-[1400px] gap-6 px-4 py-6 md:px-6">
-        <AppSidebar intendedMajors={profile.intended_majors} />
+        <AppSidebar
+          intendedMajors={profile.intended_majors}
+          isAdmin={profile.is_admin}
+        />
         <MobileNav />
         <main className="min-w-0 flex-1 pb-24 md:pb-6">{children}</main>
       </div>
