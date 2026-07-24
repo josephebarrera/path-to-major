@@ -1,10 +1,11 @@
 # Branches
 
-This repo has three long-lived branches with different visual themes and **different dependencies**:
+This repo has four long-lived branches with different visual themes and **different dependencies**:
 
 - `main` — dark violet aurora theme, forced dark mode via `next-themes`
 - `color-experiments` — personal/custom visual work
 - `claude-suggestion` — navy "Blue Flame" theme with `motion`-based UI (NumberTicker, ShimmerButton)
+- `strict-template` — forked from `claude-suggestion` (same navy "Blue Flame" theme and `motion`-based dependencies); this is where active app/feature development happens (auth, admin dashboard, activities CRUD, security fixes), not just visual/theme work
 
 ## Always reinstall after switching branches
 
