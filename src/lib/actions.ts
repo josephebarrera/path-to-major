@@ -177,7 +177,8 @@ export async function deleteActivity(activityId: string) {
   const { error } = await supabase
     .from("activities")
     .delete()
-    .eq("id", activityId);
+    .eq("id", activityId)
+    .eq("user_id", user.id);
   if (error) throw new Error(error.message);
 
   revalidatePath("/activities");
@@ -218,7 +219,11 @@ export async function deleteHourLog(logId: string, activityId: string) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not signed in");
 
-  const { error } = await supabase.from("hour_logs").delete().eq("id", logId);
+  const { error } = await supabase
+    .from("hour_logs")
+    .delete()
+    .eq("id", logId)
+    .eq("user_id", user.id);
   if (error) throw new Error(error.message);
 
   revalidatePath(`/activities/${activityId}`);

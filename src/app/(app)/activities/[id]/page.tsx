@@ -18,13 +18,23 @@ export default async function ActivityDetailPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) notFound();
 
   const [{ data: activity }, { data: logs }] = await Promise.all([
-    supabase.from("activities").select("*").eq("id", id).maybeSingle(),
+    supabase
+      .from("activities")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .maybeSingle(),
     supabase
       .from("hour_logs")
       .select("*")
       .eq("activity_id", id)
+      .eq("user_id", user.id)
       .order("log_date", { ascending: false }),
   ]);
 

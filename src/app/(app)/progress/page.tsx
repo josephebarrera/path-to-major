@@ -16,8 +16,8 @@ export default async function ProgressPage() {
         .select("intended_majors")
         .eq("id", user.id)
         .maybeSingle(),
-      supabase.from("activities").select("*"),
-      supabase.from("hour_logs").select("*"),
+      supabase.from("activities").select("*").eq("user_id", user.id),
+      supabase.from("hour_logs").select("*").eq("user_id", user.id),
     ]);
 
   return (

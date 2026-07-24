@@ -86,6 +86,7 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
     .from("activities")
     .select("*")
     .eq("id", activityId)
+    .eq("user_id", user.id)
     .maybeSingle();
   if (error || !activity) throw new Error("Activity not found");
 
@@ -148,7 +149,8 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
       ai_related: analysis.related,
       ai_analyzed_at: new Date().toISOString(),
     })
-    .eq("id", activityId);
+    .eq("id", activityId)
+    .eq("user_id", user.id);
   if (updErr) throw updErr;
 
   revalidatePath(`/activities/${activityId}`);

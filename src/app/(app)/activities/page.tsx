@@ -8,13 +8,18 @@ export default async function ActivitiesPage({
 }) {
   const { new: openNewParam } = await searchParams;
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
 
   const [{ data: activities }, { data: logs }] = await Promise.all([
     supabase
       .from("activities")
       .select("*")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
-    supabase.from("hour_logs").select("*"),
+    supabase.from("hour_logs").select("*").eq("user_id", user.id),
   ]);
 
   const hoursByActivity: Record<string, number> = {};
