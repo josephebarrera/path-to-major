@@ -43,13 +43,14 @@ export function ActivityFormModal({
     skills: activity?.skills?.join(", ") ?? "",
     start_date: activity?.start_date ?? "",
     end_date: activity?.end_date ?? "",
-    start_grade: activity?.started_before_hs
-      ? "pre"
-      : activity?.start_grade
-        ? String(activity.start_grade)
-        : defaultStartGrade
-          ? String(defaultStartGrade)
-          : "",
+    start_grade:
+      activity?.started_before_hs && !activity?.is_summer
+        ? "pre"
+        : activity?.start_grade
+          ? String(activity.start_grade)
+          : defaultStartGrade
+            ? String(defaultStartGrade)
+            : "",
     end_grade: activity?.end_grade ? String(activity.end_grade) : "",
     is_summer: activity?.is_summer ?? false,
     tracks_hours: activity?.tracks_hours ?? true,
@@ -222,9 +223,19 @@ export function ActivityFormModal({
             <input
               type="checkbox"
               checked={form.is_summer}
-              onChange={(e) =>
-                setForm({ ...form, is_summer: e.target.checked })
-              }
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setForm({
+                  ...form,
+                  is_summer: checked,
+                  // Summers before 9th grade aren't tracked here — they're
+                  // covered under a different option, not this app's scope.
+                  start_grade:
+                    checked && form.start_grade === "pre"
+                      ? ""
+                      : form.start_grade,
+                });
+              }}
               className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
             />
             <span>
@@ -251,7 +262,6 @@ export function ActivityFormModal({
                 }`}
               >
                 <option value="">Select grade</option>
-                <option value="pre">Before 9th grade</option>
                 <option value="9">9th grade</option>
                 <option value="10">10th grade</option>
                 <option value="11">11th grade</option>
