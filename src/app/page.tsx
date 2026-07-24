@@ -11,7 +11,7 @@ const poppins = Poppins({
 
 const EXAMPLES = [
   {
-    category: "Robotics",
+    category: "Club",
     activity: "Programming Lead, FIRST Robotics",
     major: "Computer Science",
     score: 94,

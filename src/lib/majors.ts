@@ -62,7 +62,6 @@ export const ACTIVITY_CATEGORIES = [
   "Music",
   "Personal Project",
   "Research",
-  "Robotics",
   "Sport",
   "Volunteer",
   "Other",
@@ -101,7 +100,6 @@ const NEUTRAL_STYLE = {
 
 export const CATEGORY_STYLES: Record<string, { badge: string; glow: string }> =
   {
-    Robotics: STEM_STYLE,
     Research: STEM_STYLE,
     "Personal Project": STEM_STYLE,
     Volunteer: SERVICE_STYLE,
