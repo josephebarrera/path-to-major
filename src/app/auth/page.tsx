@@ -20,7 +20,7 @@ function AuthPageInner() {
   const searchParams = useSearchParams();
   const initialMode =
     searchParams.get("mode") === "signup" ? "signup" : "signin";
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
 
   const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [email, setEmail] = useState("");

@@ -35,6 +35,7 @@ export function AppSidebar({
 }) {
   const pathname = usePathname();
   const majorLabel = formatMajors(intendedMajors);
+  const adminActive = pathname === "/admin" || pathname.startsWith("/admin/");
 
   return (
     <aside className="aurora-sidebar sticky top-6 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col p-4 md:flex">
@@ -73,17 +74,13 @@ export function AppSidebar({
         <Link
           href="/admin"
           className={`relative z-10 mt-2 flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
-            pathname === "/admin" || pathname.startsWith("/admin/")
+            adminActive
               ? "bg-white font-medium text-neutral-900 shadow-md"
               : "text-white/75 hover:bg-white/15 hover:text-white"
           }`}
         >
           <ShieldCheck
-            className={`h-4 w-4 ${
-              pathname === "/admin" || pathname.startsWith("/admin/")
-                ? "text-blue-600"
-                : "text-white/75"
-            }`}
+            className={`h-4 w-4 ${adminActive ? "text-blue-600" : "text-white/75"}`}
           />
           Admin
         </Link>
