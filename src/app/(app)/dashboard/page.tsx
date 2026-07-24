@@ -1,5 +1,6 @@
-import { Clock, Plus, Sparkles, Target, TrendingUp } from "lucide-react";
+import { Plus, Sparkles, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { HoursBreakdownCard } from "~/components/hours-breakdown-card";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { activityTimeLabel } from "~/lib/dates";
 import { categoryStyle, formatMajors } from "~/lib/majors";
@@ -18,8 +19,9 @@ export default async function DashboardPage() {
       supabase
         .from("activities")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false }),
-      supabase.from("hour_logs").select("*"),
+      supabase.from("hour_logs").select("*").eq("user_id", user.id),
     ]);
 
   const acts = activities ?? [];
@@ -34,6 +36,16 @@ export default async function DashboardPage() {
       (hoursByActivity.get(l.activity_id) ?? 0) + Number(l.hours),
     );
   }
+
+  const hoursBreakdown = acts
+    .filter((a) => (hoursByActivity.get(a.id) ?? 0) > 0)
+    .map((a) => ({
+      id: a.id,
+      name: a.name,
+      category: a.category,
+      hours: hoursByActivity.get(a.id) ?? 0,
+    }))
+    .sort((a, b) => b.hours - a.hours);
 
   const analyzed = acts.filter((a) => a.ai_relevance_score != null);
   const avgRelevance = analyzed.length
@@ -93,13 +105,10 @@ export default async function DashboardPage() {
               : "add an activity"
           }
         />
-        <KPI
-          icon={Clock}
-          accent="bg-white/10 text-foreground/80"
-          label="Total hours"
-          value={totalHours}
-          decimalPlaces={1}
-          sub={`${allLogs.length} sessions logged`}
+        <HoursBreakdownCard
+          totalHours={totalHours}
+          sessionCount={allLogs.length}
+          breakdown={hoursBreakdown}
         />
         <KPI
           icon={TrendingUp}
