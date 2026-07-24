@@ -51,16 +51,16 @@ export function AdminDashboard({
     });
   }
 
-  const totalUsers = profiles.length;
-  const onboardedCount = profiles.filter((p) => p.onboarded).length;
-  const totalActivities = activities.length;
-  const totalHours = logs.reduce((s, l) => s + Number(l.hours), 0);
-
-  const activityCountByUser = useMemo(() => {
-    const m = new Map<string, number>();
-    for (const a of activities) m.set(a.user_id, (m.get(a.user_id) ?? 0) + 1);
-    return m;
-  }, [activities]);
+  const totalUsers = useMemo(() => profiles.length, [profiles]);
+  const onboardedCount = useMemo(
+    () => profiles.filter((p) => p.onboarded).length,
+    [profiles],
+  );
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const totalHours = useMemo(
+    () => logs.reduce((s, l) => s + Number(l.hours), 0),
+    [logs],
+  );
 
   const hoursByUser = useMemo(() => {
     const m = new Map<string, number>();
@@ -87,7 +87,11 @@ export function AdminDashboard({
 
   const usersWithAiFeedback = useMemo(() => {
     const s = new Set<string>();
-    for (const a of activities) if (a.ai_analyzed_at) s.add(a.user_id);
+    // ai_analyzed_at is set even when GEMINI_API_KEY isn't configured (the
+    // activity just gets placeholder "not configured" text) — a non-null
+    // relevance score is the only signal that real AI feedback came back.
+    for (const a of activities)
+      if (a.ai_relevance_score != null) s.add(a.user_id);
     return s.size;
   }, [activities]);
 
@@ -330,7 +334,7 @@ export function AdminDashboard({
                         {p.onboarded ? "Yes" : "No"}
                       </td>
                       <td className="py-2.5 pr-4 text-muted-foreground">
-                        {activityCountByUser.get(p.id) ?? 0}
+                        {userActivities.length}
                       </td>
                       <td className="py-2.5 pr-4 text-muted-foreground">
                         {(hoursByUser.get(p.id) ?? 0).toFixed(1)}
