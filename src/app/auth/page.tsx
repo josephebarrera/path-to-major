@@ -95,104 +95,102 @@ function AuthPageInner() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--lp-card)] px-4 py-10">
+      <div className="w-full max-w-sm">
         <Link
           href="/"
-          className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold"
+          className="mb-8 flex items-center justify-center gap-2 text-sm font-bold text-white"
         >
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <Compass className="h-4 w-4" />
+          <span className="grid h-7 w-7 place-items-center bg-[#eef1f5] text-[var(--lp-ink)]">
+            <Compass className="h-3.5 w-3.5" />
           </span>
           PathToMajor
         </Link>
 
-        <div className="glass-panel-navy p-8">
-          <h1 className="text-2xl font-semibold">
-            {mode === "signup" ? "Create your account" : "Welcome back"}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "signup"
-              ? "Start building your path to college."
-              : "Sign in to continue."}
-          </p>
+        <h1 className="text-center text-2xl font-bold text-white">
+          {mode === "signup" ? "Create your account" : "Welcome back"}
+        </h1>
+        <p className="mt-1 text-center text-sm text-white/60">
+          {mode === "signup"
+            ? "Start building your path to college."
+            : "Sign in to continue."}
+        </p>
 
-          <button
-            type="button"
-            onClick={google}
-            disabled={loading}
-            className="mt-6 w-full rounded-full border border-border bg-white/10 py-2.5 text-sm font-medium text-foreground backdrop-blur transition hover:bg-white/20 disabled:opacity-50"
-          >
-            Continue with Google
-          </button>
+        <button
+          type="button"
+          onClick={google}
+          disabled={loading}
+          className="mt-8 w-full border border-white/40 py-2.5 text-sm font-medium text-white transition hover:border-white hover:bg-white/10 disabled:opacity-50"
+        >
+          Continue with Google
+        </button>
 
-          <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-            <div className="h-px flex-1 bg-border" />
-            or
-            <div className="h-px flex-1 bg-border" />
-          </div>
-
-          <form onSubmit={submit} className="space-y-3">
-            {mode === "signup" && (
-              <input
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                maxLength={80}
-                className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
-              />
-            )}
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
-            />
-            <input
-              required
-              type="password"
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
-            >
-              {loading ? "…" : mode === "signup" ? "Create account" : "Sign in"}
-            </button>
-          </form>
-
-          <button
-            type="button"
-            onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-            className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
-          >
-            {mode === "signup"
-              ? "Already have an account? Sign in"
-              : "New to PathToMajor? Create an account"}
-          </button>
-
-          {mode === "signup" && (
-            <p className="mt-4 text-center text-xs text-muted-foreground">
-              By creating an account, you agree to our{" "}
-              <Link href="/terms" className="underline underline-offset-2">
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link href="/privacy" className="underline underline-offset-2">
-                Privacy Policy
-              </Link>
-              .
-            </p>
-          )}
+        <div className="my-5 flex items-center gap-3 text-xs text-white/40">
+          <div className="h-px flex-1 bg-white/20" />
+          or
+          <div className="h-px flex-1 bg-white/20" />
         </div>
+
+        <form onSubmit={submit} className="space-y-3">
+          {mode === "signup" && (
+            <input
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              maxLength={80}
+              className="w-full border border-white/30 bg-transparent px-4 py-2.5 text-sm text-white placeholder:text-white/40 outline-none focus:border-white"
+            />
+          )}
+          <input
+            required
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full border border-white/30 bg-transparent px-4 py-2.5 text-sm text-white placeholder:text-white/40 outline-none focus:border-white"
+          />
+          <input
+            required
+            type="password"
+            minLength={6}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full border border-white/30 bg-transparent px-4 py-2.5 text-sm text-white placeholder:text-white/40 outline-none focus:border-white"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)] transition hover:bg-white/90 disabled:opacity-50"
+          >
+            {loading ? "…" : mode === "signup" ? "Create account" : "Sign in"}
+          </button>
+        </form>
+
+        <button
+          type="button"
+          onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
+          className="mt-4 w-full text-center text-sm text-white/60 hover:text-white"
+        >
+          {mode === "signup"
+            ? "Already have an account? Sign in"
+            : "New to PathToMajor? Create an account"}
+        </button>
+
+        {mode === "signup" && (
+          <p className="mt-4 text-center text-xs text-white/60">
+            By creating an account, you agree to our{" "}
+            <Link href="/terms" className="underline underline-offset-2">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="underline underline-offset-2">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+        )}
       </div>
     </div>
   );

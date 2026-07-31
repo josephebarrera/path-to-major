@@ -21,28 +21,28 @@ export default function PrivacyPolicy() {
 
       <LegalSection title="2. Information we collect">
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-white">
             Account information.
           </strong>{" "}
           When you sign up, we collect your email address and name, either
           directly (email/password) or from Google if you sign in with Google.
         </p>
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-white">
             Profile information.
           </strong>{" "}
           Grade level, intended major(s), and whether you're still exploring
           majors — all optional, entered by you.
         </p>
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-white">
             Activity information.
           </strong>{" "}
           Everything you log about your extracurriculars: name, category,
           organization, description, dates, leadership role, skills, and hours.
         </p>
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-white">
             AI feedback data.
           </strong>{" "}
           When you request AI feedback on an activity, we send relevant details
@@ -75,11 +75,11 @@ export default function PrivacyPolicy() {
         </p>
         <ul className="list-disc space-y-1.5 pl-5">
           <li>
-            <strong className="font-semibold text-foreground">Supabase</strong>{" "}
-            — hosts our database and handles authentication.
+            <strong className="font-semibold text-white">Supabase</strong> —
+            hosts our database and handles authentication.
           </li>
           <li>
-            <strong className="font-semibold text-foreground">Google</strong> —
+            <strong className="font-semibold text-white">Google</strong> —
             processes the activity and profile details described above via the
             Gemini API to generate AI feedback, and acts as an OAuth provider if
             you choose to sign in with Google.
@@ -94,7 +94,7 @@ export default function PrivacyPolicy() {
           delete your account and all associated data, email us at{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             {CONTACT_EMAIL}
           </a>
@@ -108,7 +108,7 @@ export default function PrivacyPolicy() {
           requests you can't complete yourself in the app, contact us at{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             {CONTACT_EMAIL}
           </a>
@@ -146,14 +146,14 @@ export default function PrivacyPolicy() {
           Questions about this policy or your data? Email{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             {CONTACT_EMAIL}
           </a>
           . See also our{" "}
           <Link
             href="/terms"
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             Terms of Service
           </Link>

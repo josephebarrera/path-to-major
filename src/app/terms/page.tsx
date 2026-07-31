@@ -68,7 +68,7 @@ export default function TermsOfUse() {
           you. See our{" "}
           <Link
             href="/privacy"
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             Privacy Policy
           </Link>{" "}
@@ -93,7 +93,7 @@ export default function TermsOfUse() {
           time by emailing{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             {CONTACT_EMAIL}
           </a>
@@ -130,7 +130,7 @@ export default function TermsOfUse() {
           Questions about these terms? Email{" "}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-accent underline underline-offset-2"
+            className="text-white underline underline-offset-2 hover:text-white/80"
           >
             {CONTACT_EMAIL}
           </a>
