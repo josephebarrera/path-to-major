@@ -23,9 +23,9 @@ type HourLog = Tables<"hour_logs">;
 const CHART_GRID = "oklch(1 0 0 / 0.12)";
 const CHART_TICK = { fontSize: 11, fill: "oklch(0.85 0.015 250)" };
 const CHART_TOOLTIP = {
-  background: "oklch(0.22 0.045 252)",
+  background: "var(--lp-ink)",
   border: "1px solid oklch(1 0 0 / 0.15)",
-  borderRadius: 12,
+  borderRadius: 0,
   fontSize: 12,
   color: "oklch(0.95 0.01 250)",
 };
@@ -143,7 +143,7 @@ export function AdminDashboard({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2.5">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/15 text-primary">
+        <span className="grid h-9 w-9 place-items-center bg-primary/15 text-primary">
           <ShieldCheck className="h-4.5 w-4.5" />
         </span>
         <div>
@@ -170,7 +170,7 @@ export function AdminDashboard({
         />
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+      <div className="border border-white/12 bg-[var(--lp-ink)] p-6">
         <h2 className="text-lg font-semibold">Signups over time</h2>
         <div className="mt-4 h-56">
           {signupSeries.length === 0 ? (
@@ -182,12 +182,12 @@ export function AdminDashboard({
                   <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
                     <stop
                       offset="0%"
-                      stopColor="oklch(0.72 0.17 220)"
-                      stopOpacity={0.7}
+                      stopColor="oklch(0.95 0 0)"
+                      stopOpacity={0.6}
                     />
                     <stop
                       offset="100%"
-                      stopColor="oklch(0.72 0.17 220)"
+                      stopColor="oklch(0.95 0 0)"
                       stopOpacity={0.05}
                     />
                   </linearGradient>
@@ -202,7 +202,7 @@ export function AdminDashboard({
                 <Area
                   type="monotone"
                   dataKey="users"
-                  stroke="oklch(0.78 0.16 210)"
+                  stroke="oklch(0.95 0 0)"
                   strokeWidth={2.5}
                   fill="url(#ag)"
                 />
@@ -213,7 +213,7 @@ export function AdminDashboard({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="border border-white/12 bg-[var(--lp-ink)] p-6">
           <h2 className="text-lg font-semibold">Activities by category</h2>
           <div className="mt-4 h-56">
             {categoryData.length === 0 ? (
@@ -229,18 +229,14 @@ export function AdminDashboard({
                     contentStyle={CHART_TOOLTIP}
                     labelStyle={{ color: "oklch(0.85 0.015 250)" }}
                   />
-                  <Bar
-                    dataKey="count"
-                    fill="oklch(0.72 0.17 220)"
-                    radius={[8, 8, 0, 0]}
-                  />
+                  <Bar dataKey="count" fill="oklch(0.95 0 0)" />
                 </BarChart>
               </ResponsiveContainer>
             )}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="border border-white/12 bg-[var(--lp-ink)] p-6">
           <h2 className="text-lg font-semibold">Top intended majors</h2>
           {majorData.length === 0 ? (
             <p className="mt-4 text-sm text-muted-foreground">No data yet.</p>
@@ -260,7 +256,7 @@ export function AdminDashboard({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+      <div className="border border-white/12 bg-[var(--lp-ink)] p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">Users</h2>
           <div className="relative">
@@ -269,7 +265,7 @@ export function AdminDashboard({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name or email"
-              className="w-64 rounded-full border border-border bg-white/10 py-1.5 pl-8 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="w-64 border border-border bg-white/10 py-1.5 pl-8 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
         </div>
@@ -316,7 +312,7 @@ export function AdminDashboard({
                       <td className="py-2.5 pr-4 font-medium">
                         {p.display_name || "—"}
                         {p.is_admin && (
-                          <span className="ml-1.5 rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                          <span className="ml-1.5 bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
                             Admin
                           </span>
                         )}
@@ -359,7 +355,7 @@ export function AdminDashboard({
                                   className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
                                 >
                                   <span
-                                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
+                                    className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
                                   >
                                     {a.category}
                                   </span>
@@ -412,7 +408,7 @@ function Stat({
   sub?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
+    <div className="border border-white/12 bg-[var(--lp-ink)] p-5">
       <div className="text-xs uppercase tracking-wide text-muted-foreground">
         {label}
       </div>
