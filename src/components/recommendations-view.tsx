@@ -48,7 +48,7 @@ export function RecommendationsView({
           type="button"
           onClick={refresh}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-card px-4 py-2 text-sm hover:bg-secondary disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 border border-white/12 bg-[var(--lp-ink)] px-4 py-2 text-sm hover:bg-white/10 disabled:opacity-50"
         >
           <RefreshCw
             className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
@@ -58,7 +58,7 @@ export function RecommendationsView({
       </div>
 
       {recommendations.length === 0 ? (
-        <div className="rounded-2xl border border-white/15 bg-card p-8 text-sm text-muted-foreground shadow-lg">
+        <div className="border border-white/12 bg-[var(--lp-ink)] p-8 text-sm text-muted-foreground">
           No recommendations yet.
         </div>
       ) : (
@@ -66,26 +66,18 @@ export function RecommendationsView({
           {recommendations.map((r) => (
             <div
               key={`${r.category}-${r.title}`}
-              className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg"
+              className="border border-white/12 bg-[var(--lp-ink)] p-6"
             >
               <div className="flex items-center justify-between">
-                <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-secondary-foreground">
+                <span className="bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-foreground">
                   {r.category}
                 </span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${
-                    r.effort === "low"
-                      ? "bg-emerald-500/10 text-emerald-700"
-                      : r.effort === "high"
-                        ? "bg-orange-500/10 text-orange-700"
-                        : "bg-sky-500/10 text-sky-700"
-                  }`}
-                >
+                <span className="bg-white/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-foreground">
                   {r.effort} effort
                 </span>
               </div>
               <h3 className="mt-3 flex items-start gap-2 text-base font-semibold">
-                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-white/70" />
                 {r.title}
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">{r.why}</p>

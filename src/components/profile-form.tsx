@@ -48,12 +48,12 @@ export function ProfileForm({
         </p>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card space-y-4 p-6 shadow-lg">
+      <div className="space-y-4 border border-white/12 bg-[var(--lp-ink)] p-6">
         <Row label="Name">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
           />
         </Row>
         <Row label="Grade">
@@ -63,9 +63,9 @@ export function ProfileForm({
                 type="button"
                 key={g}
                 onClick={() => setGrade(g)}
-                className={`rounded-xl border py-2 text-sm font-medium transition ${
+                className={`border py-2 text-sm font-medium transition ${
                   grade === g
-                    ? "border-primary bg-primary text-primary-foreground"
+                    ? "border-white bg-white text-[var(--lp-ink)]"
                     : "border-white/10 bg-white/5 text-foreground"
                 }`}
               >
@@ -93,7 +93,7 @@ export function ProfileForm({
           type="button"
           onClick={save}
           disabled={saving}
-          className="w-full rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="w-full bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)] disabled:opacity-50"
         >
           {saving ? "…" : "Save changes"}
         </button>

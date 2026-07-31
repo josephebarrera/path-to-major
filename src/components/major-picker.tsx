@@ -34,7 +34,7 @@ export function MajorPicker({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search majors…"
-        className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+        className="w-full border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
       />
       <p className="mt-2 text-xs text-muted-foreground">
         {selected.length}/{max} selected
@@ -54,9 +54,9 @@ export function MajorPicker({
               key={major}
               onClick={() => toggle(major)}
               disabled={disabled}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
+              className={`px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
                 isSelected
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-white text-[var(--lp-ink)]"
                   : "bg-white/10 text-foreground hover:bg-white/20"
               }`}
             >
