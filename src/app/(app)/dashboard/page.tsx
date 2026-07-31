@@ -63,21 +63,21 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-white/15 bg-card p-6 shadow-lg sm:p-8">
+      <div className="flex flex-wrap items-end justify-between gap-4 p-6 sm:p-8">
         <div>
-          <p className="text-sm text-muted-foreground">Welcome back</p>
-          <h1 className="text-3xl font-semibold">
+          <p className="text-sm text-white/75">Welcome back</p>
+          <h1 className="text-3xl font-semibold text-white">
             Hi {profile?.display_name?.split(" ")[0] ?? "there"}
           </h1>
           {majorLabel ? (
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-white/80">
               Building your path to{" "}
-              <span className="font-medium text-foreground">{majorLabel}</span>
+              <span className="font-medium text-white">{majorLabel}</span>
             </p>
           ) : (
             <Link
               href="/profile"
-              className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+              className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-white hover:underline"
             >
               <Plus className="h-3.5 w-3.5" /> Add your intended major
             </Link>
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/activities?new=true"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-2 bg-white px-5 py-2.5 text-sm font-medium text-[var(--lp-ink)] transition hover:bg-white/90"
         >
           <Plus className="h-4 w-4" /> Add activity
         </Link>
@@ -94,11 +94,12 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <KPI
           icon={Target}
-          accent="bg-white/10 text-foreground/80"
+          accent="bg-white/10 text-white"
           label="Major alignment"
           value={avgRelevance}
           suffix="%"
           emptyLabel="—"
+          progress={avgRelevance}
           sub={
             analyzed.length
               ? `across ${analyzed.length} analyzed`
@@ -112,7 +113,7 @@ export default async function DashboardPage() {
         />
         <KPI
           icon={TrendingUp}
-          accent="bg-white/10 text-foreground/80"
+          accent="bg-white/10 text-white"
           label="Activities"
           value={acts.length}
           sub={acts.length ? "keep going" : "start your first"}
@@ -120,12 +121,12 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg lg:col-span-2">
+        <div className="hierarchy-card p-6 lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Recent activities</h2>
             <Link
               href="/activities"
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="text-sm text-white hover:text-white/80"
             >
               View all →
             </Link>
@@ -140,17 +141,17 @@ export default async function DashboardPage() {
                   <Link
                     key={a.id}
                     href={`/activities/${a.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                    className="flex items-center justify-between border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
+                          className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
                         >
                           {a.category}
                         </span>
                         {a.ai_relevance_score != null && (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-white">
                             {a.ai_relevance_score}% aligned
                           </span>
                         )}
@@ -163,12 +164,10 @@ export default async function DashboardPage() {
                           <div className="font-medium">
                             {(hoursByActivity.get(a.id) ?? 0).toFixed(1)}h
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            total
-                          </div>
+                          <div className="text-xs text-white">total</div>
                         </>
                       ) : (
-                        <div className="max-w-[8rem] text-xs text-muted-foreground">
+                        <div className="max-w-[8rem] text-xs text-white">
                           {activityTimeLabel(a)}
                         </div>
                       )}
@@ -180,13 +179,13 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="hierarchy-card p-6">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-accent" />
+            <Sparkles className="h-4 w-4 text-[var(--lp-blue-floor)]" />
             <h2 className="text-lg font-semibold">What's next?</h2>
           </div>
           {suggestions.length === 0 ? (
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-3 text-sm text-white">
               Add an activity to unlock personalized AI suggestions.
             </p>
           ) : (
@@ -194,9 +193,9 @@ export default async function DashboardPage() {
               {suggestions.map((s) => (
                 <li
                   key={`${s.a}-${s.s}`}
-                  className="rounded-xl border border-white/10 bg-white/5 p-3"
+                  className="border border-white/10 bg-white/5 p-3"
                 >
-                  <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <div className="text-[11px] uppercase tracking-wide text-white">
                     from {s.a}
                   </div>
                   <div className="mt-0.5">{s.s}</div>
@@ -204,12 +203,14 @@ export default async function DashboardPage() {
               ))}
             </ul>
           )}
-          <Link
-            href="/recommendations"
-            className="mt-4 block text-center text-sm text-muted-foreground hover:text-foreground"
-          >
-            See all recommendations →
-          </Link>
+          <div className="mt-4 text-center">
+            <Link
+              href="/recommendations"
+              className="inline-flex items-center gap-1 bg-white px-4 py-2 text-sm font-medium text-[var(--lp-ink)] transition hover:bg-white/90"
+            >
+              See all recommendations →
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -224,6 +225,7 @@ function KPI({
   decimalPlaces = 0,
   suffix = "",
   emptyLabel,
+  progress,
   sub,
 }: {
   icon: typeof Target;
@@ -233,20 +235,19 @@ function KPI({
   decimalPlaces?: number;
   suffix?: string;
   emptyLabel?: string;
+  progress?: number;
   sub: string;
 }) {
   const showEmpty = emptyLabel !== undefined && value === 0;
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
-      <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-foreground/90">
-        <span
-          className={`grid h-8 w-8 place-items-center rounded-lg ${accent}`}
-        >
+    <div className="hierarchy-stat-card p-5">
+      <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-white">
+        <span className={`grid h-8 w-8 place-items-center ${accent}`}>
           <Icon className="h-4 w-4" />
         </span>
         {label}
       </div>
-      <div className="mt-3 text-3xl font-semibold">
+      <div className="mt-3 text-3xl font-semibold text-[var(--lp-blue-floor)]">
         {showEmpty ? (
           emptyLabel
         ) : (
@@ -256,24 +257,33 @@ function KPI({
           </>
         )}
       </div>
-      <div className="mt-1 text-xs text-muted-foreground">{sub}</div>
+      {progress !== undefined ? (
+        <div className="mt-3 h-[5px] w-full bg-white/10">
+          <div
+            className="h-full bg-[var(--lp-blue-floor)]"
+            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+          />
+        </div>
+      ) : (
+        <div className="mt-1 text-xs text-white">{sub}</div>
+      )}
     </div>
   );
 }
 
 function EmptyActivities() {
   return (
-    <div className="mt-4 rounded-2xl border border-dashed border-border p-8 text-center">
-      <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+    <div className="mt-4 border border-dashed border-border p-8 text-center">
+      <div className="mx-auto grid h-10 w-10 place-items-center bg-white/10 text-white">
         <Plus className="h-5 w-5" />
       </div>
       <p className="mt-3 text-sm font-medium">No activities yet</p>
-      <p className="mt-1 text-xs text-muted-foreground">
+      <p className="mt-1 text-xs text-white">
         Add your first extracurricular to get instant AI feedback.
       </p>
       <Link
         href="/activities?new=true"
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        className="mt-4 inline-flex items-center gap-2 bg-white px-4 py-2 text-sm font-medium text-[var(--lp-ink)]"
       >
         <Plus className="h-4 w-4" /> Add activity
       </Link>

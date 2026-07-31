@@ -19,31 +19,31 @@ export function HoursBreakdownCard({
   const hasBreakdown = breakdown.length > 0;
 
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
+    <div className="hierarchy-stat-card p-5">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         disabled={!hasBreakdown}
         className="flex w-full items-center justify-between gap-2 text-left disabled:cursor-default"
       >
-        <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-foreground/90">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-white/10 text-foreground/80">
+        <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-white">
+          <span className="grid h-8 w-8 place-items-center bg-white/10 text-white">
             <Clock className="h-4 w-4" />
           </span>
           Total hours
         </div>
         {hasBreakdown && (
           <ChevronDown
-            className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
+            className={`h-4 w-4 shrink-0 text-[var(--lp-text-muted)] transition-transform ${
               open ? "rotate-180" : ""
             }`}
           />
         )}
       </button>
-      <div className="mt-3 text-3xl font-semibold">
+      <div className="mt-3 text-3xl font-semibold text-[var(--lp-blue-floor)]">
         <NumberTicker value={totalHours} decimalPlaces={1} />
       </div>
-      <div className="mt-1 text-xs text-muted-foreground">
+      <div className="mt-1 text-xs text-white">
         {sessionCount} sessions logged
       </div>
 
@@ -55,7 +55,7 @@ export function HoursBreakdownCard({
               <Link
                 key={a.id}
                 href={`/activities/${a.id}`}
-                className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 transition hover:border-white/20 hover:bg-white/10"
+                className="flex items-center gap-2.5 border border-white/10 bg-white/5 px-3 py-2 transition hover:border-white/20 hover:bg-white/10"
               >
                 <span
                   aria-hidden
