@@ -131,7 +131,7 @@ export function ActivityFormModal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 p-4 backdrop-blur-sm">
-      <div className="glass-panel-navy max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6">
+      <div className="glass-panel-navy max-h-[90vh] w-full max-w-lg overflow-y-auto p-6">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">
             {editing ? "Edit activity" : "New activity"}
@@ -139,7 +139,7 @@ export function ActivityFormModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-1 hover:bg-white/10"
+            className="p-1 hover:bg-white/10"
           >
             <X className="h-4 w-4" />
           </button>
@@ -156,7 +156,7 @@ export function ActivityFormModal({
               }}
               placeholder="e.g. Varsity Soccer, FIRST Robotics Team, Student Government"
               aria-invalid={nameError ? true : undefined}
-              className={`w-full rounded-xl border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
+              className={`w-full border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
                 nameError ? "border-destructive" : "border-border"
               }`}
             />
@@ -169,7 +169,7 @@ export function ActivityFormModal({
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
               >
                 {ACTIVITY_CATEGORIES.map((c) => (
                   <option key={c}>{c}</option>
@@ -184,7 +184,7 @@ export function ActivityFormModal({
                   setForm({ ...form, organization: e.target.value })
                 }
                 placeholder="e.g. Lincoln High School, Boys & Girls Club"
-                className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </Field>
           </div>
@@ -196,7 +196,7 @@ export function ActivityFormModal({
                 setForm({ ...form, leadership_role: e.target.value })
               }
               placeholder="e.g. Captain, Vice President, Team Lead"
-              className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+              className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
             />
           </Field>
           <Field label="Description">
@@ -208,7 +208,7 @@ export function ActivityFormModal({
                 setForm({ ...form, description: e.target.value })
               }
               placeholder="What do you do in this activity?"
-              className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+              className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
             />
           </Field>
           <Field label="Skills learned (comma separated)">
@@ -216,10 +216,10 @@ export function ActivityFormModal({
               value={form.skills}
               onChange={(e) => setForm({ ...form, skills: e.target.value })}
               placeholder="e.g. programming, teamwork, public speaking"
-              className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+              className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
             />
           </Field>
-          <label className="flex items-start gap-2.5 rounded-xl border border-border bg-white/10 px-3 py-2.5 text-sm">
+          <label className="flex items-start gap-2.5 border border-border bg-white/10 px-3 py-2.5 text-sm">
             <input
               type="checkbox"
               checked={form.is_summer}
@@ -257,7 +257,7 @@ export function ActivityFormModal({
                   setForm({ ...form, start_grade: e.target.value });
                   if (gradeError) setGradeError(null);
                 }}
-                className={`w-full rounded-xl border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
+                className={`w-full border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
                   gradeError ? "border-destructive" : "border-border"
                 }`}
               >
@@ -278,7 +278,7 @@ export function ActivityFormModal({
                     setForm({ ...form, start_grade: e.target.value });
                     if (gradeError) setGradeError(null);
                   }}
-                  className={`w-full rounded-xl border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
+                  className={`w-full border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring ${
                     gradeError ? "border-destructive" : "border-border"
                   }`}
                 >
@@ -296,7 +296,7 @@ export function ActivityFormModal({
                   onChange={(e) =>
                     setForm({ ...form, end_grade: e.target.value })
                   }
-                  className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
                 >
                   <option value="">Still doing this</option>
                   <option value="9">9th grade</option>
@@ -319,7 +319,7 @@ export function ActivityFormModal({
                   onChange={(e) =>
                     setForm({ ...form, start_date: e.target.value })
                   }
-                  className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
                 />
               </Field>
               <Field label="End date (optional)">
@@ -329,7 +329,7 @@ export function ActivityFormModal({
                   onChange={(e) =>
                     setForm({ ...form, end_date: e.target.value })
                   }
-                  className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
                 />
               </Field>
             </div>
@@ -342,7 +342,7 @@ export function ActivityFormModal({
               + Add exact start/end dates
             </button>
           )}
-          <label className="flex items-start gap-2.5 rounded-xl border border-border bg-white/10 px-3 py-2.5 text-sm">
+          <label className="flex items-start gap-2.5 border border-border bg-white/10 px-3 py-2.5 text-sm">
             <input
               type="checkbox"
               checked={!form.tracks_hours}
@@ -370,14 +370,14 @@ export function ActivityFormModal({
                   setForm({ ...form, time_commitment: e.target.value })
                 }
                 placeholder="e.g. 6-week summer program"
-                className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
               />
             </Field>
           )}
           <button
             type="submit"
             disabled={saving}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+            className="mt-2 flex w-full items-center justify-center gap-2 bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)] disabled:opacity-50"
           >
             <Sparkles className="h-4 w-4" />
             {saving

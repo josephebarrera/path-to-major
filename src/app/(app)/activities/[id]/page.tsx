@@ -59,17 +59,12 @@ export default async function ActivityDetailPage({
         ← Back to activities
       </Link>
 
-      <div className="glass-panel-navy relative isolate overflow-hidden p-8">
-        <div
-          aria-hidden
-          className="absolute -right-16 -top-16 h-56 w-56 rounded-full opacity-25 blur-3xl"
-          style={{ background: style.glow }}
-        />
-        <div className="relative flex flex-wrap items-start justify-between gap-4">
+      <div className="glass-panel-navy p-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${style.badge}`}
+                className={`px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide ${style.badge}`}
               >
                 {activity.category}
               </span>
@@ -175,10 +170,7 @@ export default async function ActivityDetailPage({
                   </h3>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {activity.ai_skills.map((s) => (
-                      <span
-                        key={s}
-                        className="rounded-full bg-white/10 px-2.5 py-1 text-xs"
-                      >
+                      <span key={s} className="bg-white/10 px-2.5 py-1 text-xs">
                         {s}
                       </span>
                     ))}
@@ -214,7 +206,7 @@ export default async function ActivityDetailPage({
                     {activity.ai_related.map((s) => (
                       <span
                         key={s}
-                        className="rounded-full border border-border bg-white/10 px-2.5 py-1 text-xs"
+                        className="border border-border bg-white/10 px-2.5 py-1 text-xs"
                       >
                         {s}
                       </span>
@@ -243,7 +235,7 @@ export default async function ActivityDetailPage({
 
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <div className="border border-white/10 bg-white/5 p-4">
       <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
         {label}
       </div>

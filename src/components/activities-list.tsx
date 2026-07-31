@@ -83,21 +83,21 @@ export function ActivitiesList({
         <button
           type="button"
           onClick={() => setShowNew(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-2 bg-white px-5 py-2.5 text-sm font-medium text-[var(--lp-ink)] transition hover:bg-white/90"
         >
           <Plus className="h-4 w-4" /> Add activity
         </button>
       </div>
 
-      <div className="flex gap-1 rounded-full border border-white/15 bg-card p-1">
+      <div className="flex gap-1 border border-white/12 bg-[var(--lp-ink)] p-1">
         {GRADE_TABS.map((g) => (
           <button
             type="button"
             key={g}
             onClick={() => setGradeFilter(g)}
-            className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            className={`flex-1 px-3 py-1.5 text-xs font-semibold transition ${
               gradeFilter === g
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-white text-[var(--lp-ink)]"
                 : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
             }`}
           >
@@ -112,10 +112,10 @@ export function ActivitiesList({
             type="button"
             key={c}
             onClick={() => setFilter(c)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+            className={`px-3 py-1 text-xs font-medium transition ${
               filter === c
-                ? "bg-primary text-primary-foreground"
-                : "border border-white/15 bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
+                ? "bg-white text-[var(--lp-ink)]"
+                : "border border-white/12 bg-[var(--lp-ink)] text-muted-foreground hover:bg-white/10 hover:text-foreground"
             }`}
           >
             {c}
@@ -143,7 +143,7 @@ export function ActivitiesList({
                 open={isOpen}
                 onOpenChange={() => toggleCollapsed(category)}
               >
-                <CollapsibleTrigger className="group flex w-full items-center gap-2 rounded-lg text-left transition data-[state=closed]:border data-[state=closed]:border-white/15 data-[state=closed]:bg-card data-[state=closed]:px-3 data-[state=closed]:py-2 data-[state=closed]:hover:border-white/25 data-[state=closed]:hover:bg-white/[0.06]">
+                <CollapsibleTrigger className="group flex w-full items-center gap-2 text-left transition data-[state=closed]:border data-[state=closed]:border-white/12 data-[state=closed]:bg-[var(--lp-ink)] data-[state=closed]:px-3 data-[state=closed]:py-2 data-[state=closed]:hover:border-white/25 data-[state=closed]:hover:bg-white/[0.06]">
                   <span
                     aria-hidden
                     className="h-2 w-2 shrink-0 rounded-full"
@@ -155,7 +155,7 @@ export function ActivitiesList({
                   <span className="text-xs text-muted-foreground">
                     {items.length}
                   </span>
-                  <span className="ml-auto rounded-full p-1.5 transition-colors group-hover:bg-white/10">
+                  <span className="ml-auto p-1.5 transition-colors group-hover:bg-white/10">
                     <ChevronDown className="h-4 w-4 shrink-0 text-foreground transition-transform duration-200 group-data-[state=closed]:-rotate-90" />
                   </span>
                 </CollapsibleTrigger>
@@ -200,39 +200,32 @@ function ActivityCard({
   return (
     <Link
       href={`/activities/${a.id}`}
-      className="group relative isolate overflow-hidden rounded-2xl border border-white/15 bg-card p-5 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-white/25 hover:shadow-xl"
+      className="group relative border border-white/12 bg-[var(--lp-ink)] p-5 transition duration-200 hover:border-white/25"
     >
-      <div
-        aria-hidden
-        className="absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-30 blur-2xl transition-opacity duration-200 group-hover:opacity-50"
-        style={{ background: style.glow }}
-      />
-      <div className="relative flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2">
         <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
+          className={`px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badge}`}
         >
           {a.category}
         </span>
         {a.ai_relevance_score != null && (
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+          <span className="bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
             {a.ai_relevance_score}% aligned
           </span>
         )}
       </div>
-      <h3 className="relative mt-3 line-clamp-2 text-base font-semibold">
-        {a.name}
-      </h3>
+      <h3 className="mt-3 line-clamp-2 text-base font-semibold">{a.name}</h3>
       {a.organization && (
-        <p className="relative mt-0.5 truncate text-xs text-muted-foreground">
+        <p className="mt-0.5 truncate text-xs text-muted-foreground">
           {a.organization}
         </p>
       )}
-      <div className="relative mt-4 flex items-end justify-between">
+      <div className="mt-4 flex items-end justify-between">
         <div className="flex flex-wrap gap-1">
           {(a.ai_skills ?? []).slice(0, 3).map((s) => (
             <span
               key={s}
-              className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-muted-foreground"
+              className="bg-white/10 px-2 py-0.5 text-[10px] text-muted-foreground"
             >
               {s}
             </span>

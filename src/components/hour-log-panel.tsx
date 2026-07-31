@@ -71,7 +71,7 @@ export function HourLogPanel({
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+            className="border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
           />
           <input
             type="number"
@@ -80,7 +80,7 @@ export function HourLogPanel({
             placeholder="Hours"
             value={hours}
             onChange={(e) => setHours(e.target.value)}
-            className="rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+            className="border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
         <input
@@ -88,12 +88,12 @@ export function HourLogPanel({
           onChange={(e) => setNote(e.target.value)}
           placeholder="Note (optional)"
           maxLength={200}
-          className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+          className="w-full border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
         />
         <button
           type="submit"
           disabled={saving || !hours}
-          className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-1.5 bg-white py-2 text-sm font-medium text-[var(--lp-ink)] disabled:opacity-50"
         >
           <Plus className="h-4 w-4" /> Log session
         </button>
@@ -108,7 +108,7 @@ export function HourLogPanel({
           logs.map((l) => (
             <div
               key={l.id}
-              className="group flex items-start justify-between rounded-xl border border-white/10 bg-white/5 p-3 text-sm"
+              className="group flex items-start justify-between border border-white/10 bg-white/5 p-3 text-sm"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
