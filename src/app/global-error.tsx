@@ -26,7 +26,7 @@ export default function RootError({
             <button
               type="button"
               onClick={reset}
-              className="mt-6 w-full rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+              className="mt-6 w-full bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)] transition hover:bg-white/90"
             >
               Try again
             </button>

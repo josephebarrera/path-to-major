@@ -42,7 +42,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-lg">
         <div className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
+          <span className="grid h-8 w-8 place-items-center bg-[#eef1f5] text-[var(--lp-ink)]">
             <Compass className="h-4 w-4" />
           </span>
           PathToMajor
@@ -53,8 +53,8 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className={`h-1 flex-1 rounded-full transition ${
-                  i <= step ? "bg-primary" : "bg-border"
+                className={`h-1 flex-1 transition ${
+                  i <= step ? "bg-white" : "bg-border"
                 }`}
               />
             ))}
@@ -72,13 +72,13 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your name"
-                className="mt-5 w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+                className="mt-5 w-full border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
               />
               <button
                 type="button"
                 onClick={() => setStep(1)}
                 disabled={!name.trim()}
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                className="mt-5 flex w-full items-center justify-center gap-2 bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)] disabled:opacity-50"
               >
                 Continue <ArrowRight className="h-4 w-4" />
               </button>
@@ -97,9 +97,9 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                     type="button"
                     key={g}
                     onClick={() => setGrade(g)}
-                    className={`rounded-xl border py-4 text-sm font-medium transition ${
+                    className={`border py-4 text-sm font-medium transition ${
                       grade === g
-                        ? "border-primary bg-primary text-primary-foreground"
+                        ? "border-white bg-white text-[var(--lp-ink)]"
                         : "border-border bg-white/10 text-foreground hover:bg-white/20"
                     }`}
                   >
@@ -111,14 +111,14 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 <button
                   type="button"
                   onClick={() => setStep(0)}
-                  className="flex-1 rounded-full border border-border bg-white/10 py-2.5 text-sm text-foreground"
+                  className="flex-1 border border-border bg-white/10 py-2.5 text-sm text-foreground"
                 >
                   Back
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="flex-1 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground"
+                  className="flex-1 bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)]"
                 >
                   Continue
                 </button>
@@ -153,7 +153,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 rounded-full border border-border bg-white/10 py-2.5 text-sm text-foreground"
+                  className="flex-1 border border-border bg-white/10 py-2.5 text-sm text-foreground"
                 >
                   Back
                 </button>
@@ -161,7 +161,7 @@ export function OnboardingWizard({ initialName }: { initialName: string }) {
                   type="button"
                   onClick={finish}
                   disabled={loading}
-                  className="flex-1 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  className="flex-1 bg-white py-2.5 text-sm font-medium text-[var(--lp-ink)] disabled:opacity-50"
                 >
                   {loading ? "…" : "Get started"}
                 </button>
