@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local AI tool config/plugins — not part of the app, don't version these
+/.agents/skills/impeccable/
+/.claude/skills/impeccable/
+/.claude/settings.local.json
+/.codex/
