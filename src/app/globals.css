@@ -115,7 +115,7 @@
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250' viewBox='0 0 250 250'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.5' intercept='0'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --grain-size: 250px 250px;
 
-  --background: oklch(0.16 0.025 252);
+  --background: var(--lp-ink);
   --foreground: oklch(0.97 0.004 250);
   --card: oklch(0.22 0.045 252);
   --card-foreground: oklch(0.97 0.004 250);
@@ -199,12 +199,16 @@
   body {
     min-height: 100%;
   }
+  html {
+    overflow-x: hidden;
+  }
   body {
     background-color: var(--background);
-    /* Grain layer (overlay-blended) on top of the Blue Flame sweep */
-    background-image: var(--grain), var(--aurora);
-    background-size: var(--grain-size), auto;
-    background-blend-mode: overlay, normal;
+    /* Flat --lp-ink base with just a grain texture overlay — no color
+       gradient, so a solid black field doesn't read as flat/sterile. */
+    background-image: var(--grain);
+    background-size: var(--grain-size);
+    background-blend-mode: overlay;
     background-attachment: fixed;
     color: var(--color-foreground);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
@@ -232,38 +236,21 @@
   }
 }
 
+/* Flat --lp-ink panel + hairline border — replaces the former navy
+   glassmorphism (blur/gradient/inset-highlight) across the app shell. */
 @utility glass {
-  background-color: var(--glass);
-  backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-inset);
+  background-color: var(--lp-ink);
+  border: 1px solid oklch(1 0 0 / 0.12);
 }
 
 @utility glass-panel {
-  background: linear-gradient(
-    180deg,
-    var(--glass-panel-from),
-    var(--glass-panel-to)
-  );
-  backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--glass-shadow), var(--glass-inset);
+  background-color: var(--lp-ink);
+  border: 1px solid oklch(1 0 0 / 0.12);
 }
 
-/* Same glass treatment as glass-panel, but a near-opaque navy fill so the
-   blue-to-orange aurora backdrop doesn't bleed through and wash out content
-   that needs to read cleanly (e.g. the activity detail cards). */
 @utility glass-panel-navy {
-  background: linear-gradient(
-    165deg,
-    oklch(0.24 0.05 258 / 0.97),
-    oklch(0.16 0.045 258 / 0.97)
-  );
-  backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--glass-shadow), var(--glass-inset);
+  background-color: var(--lp-ink);
+  border: 1px solid oklch(1 0 0 / 0.12);
 }
 
 @utility bg-gradient-primary {
@@ -280,48 +267,35 @@
   }
 }
 
-/* Vibrant aurora sidebar — a deep, saturated multi-stop gradient (blue core,
-   orange edges, "Blue Flame") with film grain. Dark enough for white text. */
+/* Full Spectrum Hierarchy: depth via three distinct dark values (page <
+   sidebar < card) instead of one flat --lp-ink, dashboard-scoped only —
+   --lp-ink itself stays untouched for the rest of the site. Corners stay
+   square, matching the rest of the app (not the "soft rounding" some
+   reference mockups show). */
+@utility hierarchy-card {
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+}
+
+/* Same as hierarchy-card — the top-edge gradient strip was removed. */
+@utility hierarchy-stat-card {
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+}
+
+/* Sidebar sits one shade lighter than the page (--lp-side vs --lp-ink),
+   the first step of the Full Spectrum Hierarchy depth stack. */
 @utility aurora-sidebar {
   position: relative;
   isolation: isolate;
-  border: 1px solid oklch(1 0 0 / 0.22);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--glass-shadow), var(--glass-inset);
-  background:
-    radial-gradient(
-      80% 55% at 15% 0%,
-      oklch(0.5 0.2 254 / 0.95),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 45% at 100% 8%,
-      oklch(0.65 0.2 45 / 0.85),
-      transparent 55%
-    ),
-    radial-gradient(
-      90% 55% at 50% 52%,
-      oklch(0.4 0.16 248 / 0.9),
-      transparent 65%
-    ),
-    radial-gradient(
-      80% 50% at 0% 100%,
-      oklch(0.52 0.19 258 / 0.85),
-      transparent 55%
-    ),
-    radial-gradient(
-      70% 45% at 92% 96%,
-      oklch(0.6 0.18 35 / 0.8),
-      transparent 55%
-    ),
-    linear-gradient(170deg, oklch(0.36 0.1 255), oklch(0.32 0.08 250));
+  border: 1px solid var(--lp-line);
+  background-color: var(--lp-side);
 
   &::after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 1;
-    border-radius: inherit;
     background-image: var(--grain);
     background-size: var(--grain-size);
     opacity: 0.35;
@@ -399,5 +373,636 @@
     opacity: 0.35;
     mix-blend-mode: overlay;
     pointer-events: none;
+  }
+}
+
+/* ============================================================
+   Landing hero — bright "Blue Flame" gradient, deliberately
+   punchier and lighter than the app's internal dark-navy aurora
+   theme above. This is the top-of-funnel marketing page only;
+   the product UI it leads into (auth, dashboard) keeps its own
+   dark theme untouched. All rules below are scoped with an
+   `lp-` prefix so nothing here can collide with app components.
+   ============================================================ */
+:root {
+  --lp-blue-1: #1338c4;
+  --lp-blue-2: #0c7bf7;
+  --lp-blue-3: #48afff;
+  --lp-blue-floor: #78bffa;
+  --lp-ink: #0a0d18;
+
+  --lp-side: #0b1024;
+  /* Shade A from the swatch comparison — same value as --lp-ink itself. */
+  --lp-card: var(--lp-ink);
+  --lp-line: #1e2750;
+  --lp-text-primary: #f1f4ff;
+  --lp-text-muted: #8590c0;
+  --lp-nav-active-bg: #161d3e;
+}
+
+.lp-hero-region {
+  position: relative;
+  /* dvh fallback: 100vh first for browsers that don't understand dvh,
+     then overridden by 100dvh (correct on mobile browser chrome) */
+  min-height: 100vh;
+  /* biome-ignore lint/suspicious/noDuplicateProperties: intentional fallback, see comment above */
+  min-height: 100dvh;
+}
+.lp-bg-gradient {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--lp-blue-1) 0%,
+    var(--lp-blue-2) 30%,
+    var(--lp-blue-3) 55%,
+    var(--lp-blue-floor) 75%,
+    var(--lp-blue-floor) 100%
+  );
+  z-index: 0;
+}
+.lp-bg-gradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  background-size: var(--grain-size);
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.lp-nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--lp-card);
+  padding: 20px clamp(24px, 5vw, 96px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms ease;
+}
+.lp-nav-wrap.lp-nav-scrolled {
+  border-bottom-color: var(--lp-blue-2);
+}
+.lp-nav-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+.lp-nav-spacer {
+  min-width: 0;
+}
+.lp-nav-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 31px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.lp-nav-mark {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: #eef1f5;
+  color: var(--lp-ink);
+  border-radius: 0;
+}
+.lp-nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+.lp-nav-signin {
+  font-weight: 700;
+  font-size: 24px;
+  color: #fff;
+  padding: 9px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 0;
+  white-space: nowrap;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+.lp-nav-signin:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.lp-nav-divider {
+  flex: none;
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.25);
+}
+.lp-nav-cta {
+  background: #fff;
+  color: var(--lp-ink);
+  font-weight: 700;
+  font-size: 24px;
+  padding: 9px 29px;
+  border-radius: 0;
+  white-space: nowrap;
+  box-shadow: 4px 4px 0 var(--lp-blue-2);
+  transition:
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+.lp-nav-cta:hover {
+  box-shadow: 2px 2px 0 var(--lp-blue-2);
+  transform: translate(2px, 2px);
+}
+.lp-nav-cta:active {
+  box-shadow: 0 0 0 var(--lp-blue-2);
+  transform: translate(4px, 4px);
+}
+
+.lp-hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* dvh fallback: plain vh first for browsers that don't understand dvh.
+     Plain vh is based on the LARGEST mobile viewport (address bar
+     collapsed), which is bigger than what's actually visible on first
+     load (address bar still showing) — that mismatch is what was
+     making content near the fold look clipped until the address bar
+     collapsed on scroll and vh/dvh reconciled. dvh tracks the real,
+     currently-visible viewport instead. */
+  padding: clamp(80px, 10vh, 170px) 24px clamp(40px, 6vh, 100px);
+  /* biome-ignore lint/suspicious/noDuplicateProperties: intentional fallback, see comment above */
+  padding: clamp(80px, 10dvh, 170px) 24px clamp(40px, 6dvh, 100px);
+}
+.lp-hero-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+  margin-bottom: clamp(12px, 3vh, 28px);
+}
+.lp-hero-eyebrow-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: #eef1f5;
+  color: var(--lp-ink);
+  border-radius: 0;
+}
+.lp-hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  max-width: 92vw;
+}
+.lp-hero-title-bold {
+  font-weight: 800;
+  /* min(vw, vh) so a wide-but-short window can't size this off width alone
+     — without the vh term, a short viewport gets a full-width-sized title
+     that eats all the vertical room before body copy/CTA even get a turn. */
+  font-size: clamp(2.8rem, min(9.6vw, 16vh), 9.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+.lp-hero-title-script {
+  font-weight: 400;
+  /* Same min(vw, vh) reasoning as .lp-hero-title-bold above. */
+  font-size: clamp(2.3rem, min(8vw, 13vh), 8rem);
+  /* This font's real ascender+descender (per its corrected metrics) is
+     ~2.15x its font-size. line-height:1 was smaller than what the font
+     itself claims it needs — a mismatch some renderers resolve by
+     clipping rather than expanding. Match the box to the font's real
+     requirement instead, and pull it back up via margin-top so the
+     visual position relative to the bold headline is unchanged. */
+  line-height: 2.15;
+  margin-top: calc(clamp(-8px, -0.5vw, 4px) - 0.575em);
+  margin-bottom: -0.575em;
+  /* Generous horizontal buffer: the first/last glyph in this run has no
+     neighboring glyph to absorb its swash overshoot into (unlike mid-word
+     letters), so pad the box and pull it back with equal negative margins
+     to keep the same visual centering. */
+  padding-left: 0.2em;
+  padding-right: 0.2em;
+  margin-left: -0.2em;
+  margin-right: -0.2em;
+  /* Reset the inherited Inter-specific stylistic-set tags (cv02/cv03/etc.
+     from body) back to this font's own defaults, so Brittany's contextual
+     alternates/ligatures — which its connected swash tails depend on —
+     aren't silently disabled by feature tags meant for a different font. */
+  font-feature-settings: normal;
+}
+.lp-hero-body {
+  font-weight: 400;
+  font-size: clamp(1rem, 1.45vw, 1.5625rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 950px;
+  /* Floor raised from 40px: the script line above pulls itself up via a
+     large negative margin-bottom (proportional to its own font-size) to
+     cancel its line-height buffer, so on short viewports this gap needs
+     more than 40px of its own headroom to keep clear air between the two
+     lines instead of visually crowding them together. */
+  margin-top: clamp(64px, 6vh, 90px);
+}
+.lp-hero-cta {
+  margin-top: clamp(20px, 4vh, 38px);
+  background: var(--lp-card);
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(1rem, 1.5vw, 1.75rem);
+  padding: clamp(14px, 1.8vw, 19px) clamp(48px, 10.5vw, 176px);
+  border-radius: 0;
+}
+
+/* load-in reveal: blur + fade + rise, staggered per element/character.
+   Ends on filter: none (not blur(0)) — a non-"none" filter value forces
+   the browser to paint the element into a buffer clipped to its own
+   layout box even at blur radius 0, which silently clips anything that
+   naturally paints outside that box (e.g. deep descenders). filter:none
+   removes that clipping context once the reveal settles. */
+@keyframes lp-reveal-up {
+  from {
+    opacity: 0;
+    filter: blur(24px);
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: translateY(0);
+  }
+}
+.lp-reveal {
+  opacity: 0;
+  animation: lp-reveal-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.lp-reveal-char {
+  display: inline-block;
+  opacity: 0;
+  animation: lp-reveal-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+/* Left-to-right wipe + blur for the connected-script text. This font's
+   letters are drawn to flow into each other — splitting the string into
+   per-character boxes to get a sequential reveal (like lp-reveal-char)
+   broke that connected rendering and reintroduced clipping on mobile,
+   since mid-word letters' overflow into their neighbor was no longer
+   just cosmetic bleed but an actual box edge. clip-path animates the
+   reveal instead, so the text stays one unbroken run the entire time —
+   only what's painted changes, never how the glyphs are boxed.
+   Generous vertical/left insets (-100%) are permanent and never
+   animated, so this never re-clips the ascender/descender/left-overshoot
+   room the other fixes already secured; only the right edge sweeps. */
+@keyframes lp-reveal-wipe {
+  from {
+    filter: blur(24px);
+    clip-path: inset(-100% 100% -100% -100%);
+  }
+  to {
+    filter: none;
+    clip-path: inset(-100% 0% -100% -100%);
+  }
+}
+.lp-reveal-wipe {
+  /* Explicit base state matching the "from" keyframe — animation-delay
+     doesn't retroactively apply keyframe styles before it elapses, so
+     without this the text would flash fully visible and sharp for the
+     whole delay, then suddenly snap to blurred+hidden when the
+     animation starts. This keeps it hidden from first paint onward. */
+  filter: blur(24px);
+  clip-path: inset(-100% 100% -100% -100%);
+  animation: lp-reveal-wipe 0.45s ease-in-out forwards;
+}
+/* The CTA is the one element whose reveal should feel like an arrival,
+   not just a fade — a touch of overshoot instead of the smooth ease-out
+   every other element uses. */
+.lp-reveal-cta {
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-reveal,
+  .lp-reveal-char {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lp-how-it-works {
+  background: var(--lp-blue-floor);
+  padding: clamp(64px, 10vw, 140px) clamp(24px, 6vw, 96px)
+    clamp(56px, 7vw, 100px);
+}
+.lp-hiw-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.lp-hiw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(48px, 7vw, 120px);
+  align-items: start;
+}
+.lp-hiw-eyebrow {
+  font-weight: 700;
+  font-size: clamp(13px, 0.9vw, 16px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 20px;
+}
+.lp-hiw-headline {
+  font-weight: 800;
+  font-size: clamp(2.4rem, 4.6vw, 4.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+  max-width: 18ch;
+}
+.lp-hiw-steps {
+  display: flex;
+  flex-direction: column;
+}
+.lp-hiw-step {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 24px;
+  padding: clamp(24px, 2.4vw, 32px) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+.lp-hiw-step:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.lp-hiw-step-num {
+  font-weight: 800;
+  font-size: clamp(28px, 2.4vw, 38px);
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.4);
+  font-variant-numeric: tabular-nums;
+}
+.lp-hiw-step-title {
+  font-weight: 700;
+  font-size: clamp(19px, 1.4vw, 24px);
+  color: #fff;
+  margin: 0 0 8px;
+}
+.lp-hiw-step-desc {
+  font-weight: 400;
+  font-size: clamp(15px, 1.05vw, 18px);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+}
+
+.lp-cta-band {
+  background: var(--lp-card);
+  padding: clamp(72px, 11vw, 150px) 24px;
+  text-align: center;
+}
+.lp-cta-headline {
+  font-weight: 800;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+}
+.lp-cta-sub {
+  font-weight: 400;
+  font-size: clamp(0.95rem, 1.2vw, 1.125rem);
+  color: rgba(255, 255, 255, 0.6);
+  margin: 18px 0 0;
+}
+.lp-cta-form {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+.lp-cta-button {
+  font-weight: 700;
+  font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+  color: var(--lp-ink);
+  background: #fff;
+  border: 1px solid #fff;
+  border-radius: 0;
+  padding: clamp(18px, 2vw, 24px) clamp(56px, 8vw, 96px);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.lp-cta-meta {
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 28px;
+}
+
+.lp-footer {
+  background: var(--lp-card);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 28px clamp(24px, 5vw, 96px);
+}
+.lp-footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.lp-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+.lp-footer-mark {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  background: #eef1f5;
+  color: var(--lp-ink);
+  border-radius: 0;
+}
+.lp-footer-copyright {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  margin: 0;
+  order: 3;
+  width: 100%;
+  text-align: center;
+}
+.lp-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.lp-footer-links a {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 150ms ease;
+}
+.lp-footer-links a:hover {
+  color: #fff;
+}
+@media (min-width: 640px) {
+  .lp-footer-copyright {
+    order: 0;
+    width: auto;
+    text-align: left;
+  }
+}
+
+/* Shared keyboard-focus treatment for every CTA-style control on the
+   landing page. White reads clearly against every backdrop these buttons
+   sit on (black nav/CTA band, the blue hero gradient, and the buttons'
+   own white or black fills), so one rule covers all of them. */
+.lp-nav-signin:focus-visible,
+.lp-nav-cta:focus-visible,
+.lp-hero-cta:focus-visible,
+.lp-cta-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 780px) {
+  .lp-hiw-grid {
+    grid-template-columns: 1fr;
+  }
+  .lp-hiw-headline {
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-nav-inner {
+    gap: 10px;
+  }
+  .lp-nav-brand {
+    font-size: 17px;
+    gap: 6px;
+  }
+  .lp-nav-mark {
+    width: 20px;
+    height: 20px;
+  }
+  .lp-nav-mark svg {
+    width: 12px;
+    height: 12px;
+  }
+  .lp-nav-right {
+    gap: 10px;
+  }
+  .lp-nav-signin {
+    font-size: 15px;
+    padding: 6px 12px;
+  }
+  .lp-nav-divider {
+    height: 18px;
+  }
+  .lp-nav-cta {
+    font-size: 15px;
+    padding: 8px 16px;
+    box-shadow: 3px 3px 0 var(--lp-blue-2);
+  }
+  .lp-nav-cta:hover {
+    box-shadow: 1px 1px 0 var(--lp-blue-2);
+    transform: translate(2px, 2px);
+  }
+  .lp-nav-wrap {
+    padding: 12px 14px;
+  }
+  .lp-hero {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .lp-hero-title {
+    max-width: 100%;
+  }
+  .lp-hero-eyebrow {
+    font-size: 20px;
+    gap: 8px;
+  }
+  .lp-hero-eyebrow-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .lp-hero-body {
+    font-size: 1rem;
+  }
+  .lp-hero-cta {
+    padding: 15px clamp(32px, 16vw, 60px);
+  }
+  .lp-how-it-works {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .lp-hiw-step {
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+  }
+  .lp-hiw-step-num {
+    font-size: 22px;
+  }
+  .lp-cta-band {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .lp-nav-brand {
+    font-size: 15px;
+  }
+  .lp-nav-mark {
+    width: 18px;
+    height: 18px;
+  }
+  .lp-nav-mark svg {
+    width: 10px;
+    height: 10px;
+  }
+  .lp-nav-signin {
+    font-size: 13px;
+    padding: 5px 9px;
+  }
+  .lp-nav-divider {
+    display: none;
+  }
+  .lp-nav-cta {
+    font-size: 14px;
+    padding: 7px 13px;
+    box-shadow: 2px 2px 0 var(--lp-blue-2);
+  }
+  .lp-nav-cta:hover {
+    box-shadow: 1px 1px 0 var(--lp-blue-2);
+    transform: translate(1px, 1px);
+  }
+  .lp-nav-right {
+    gap: 6px;
   }
 }
