@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Compass,
   LayoutDashboard,
   ListChecks,
   LogOut,
@@ -41,11 +40,8 @@ export function AppSidebar({
     <aside className="aurora-sidebar sticky top-6 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col p-4 md:flex">
       <Link
         href="/dashboard"
-        className="relative z-10 flex items-center gap-2 px-2 py-2 text-base font-semibold text-white"
+        className="relative z-10 flex items-center px-2 py-2 text-base font-semibold text-white"
       >
-        <span className="grid h-8 w-8 place-items-center rounded-xl border border-white/30 bg-white/20 text-white backdrop-blur">
-          <Compass className="h-4 w-4" />
-        </span>
         PathToMajor
       </Link>
       <nav className="relative z-10 mt-6 flex flex-col gap-1">
@@ -56,14 +52,14 @@ export function AppSidebar({
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+              className={`flex items-center gap-3 px-3 py-2 text-sm transition ${
                 active
-                  ? "bg-white font-medium text-neutral-900 shadow-md"
+                  ? "bg-[var(--lp-nav-active-bg)] font-medium text-white"
                   : "text-white/75 hover:bg-white/15 hover:text-white"
               }`}
             >
               <item.icon
-                className={`h-4 w-4 ${active ? "text-blue-600" : "text-white/75"}`}
+                className={`h-4 w-4 ${active ? "text-white" : "text-white/75"}`}
               />
               {item.label}
             </Link>
@@ -73,28 +69,28 @@ export function AppSidebar({
       {isAdmin && (
         <Link
           href="/admin"
-          className={`relative z-10 mt-2 flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+          className={`relative z-10 mt-2 flex items-center gap-3 px-3 py-2 text-sm transition ${
             adminActive
-              ? "bg-white font-medium text-neutral-900 shadow-md"
+              ? "bg-[var(--lp-nav-active-bg)] font-medium text-white"
               : "text-white/75 hover:bg-white/15 hover:text-white"
           }`}
         >
           <ShieldCheck
-            className={`h-4 w-4 ${adminActive ? "text-blue-600" : "text-white/75"}`}
+            className={`h-4 w-4 ${adminActive ? "text-white" : "text-white/75"}`}
           />
           Admin
         </Link>
       )}
       <div className="relative z-10 mt-auto pt-4">
         {majorLabel ? (
-          <div className="rounded-xl border border-white/30 bg-white/15 p-3 text-xs backdrop-blur">
+          <div className="border border-white/12 bg-white/5 p-3 text-xs">
             <div className="text-white/70">Pursuing</div>
             <div className="mt-0.5 font-medium text-white">{majorLabel}</div>
           </div>
         ) : (
           <Link
             href="/profile"
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/30 bg-white/10 p-3 text-xs font-medium text-white/80 backdrop-blur transition hover:bg-white/15 hover:text-white"
+            className="flex items-center justify-center gap-1.5 border border-dashed border-white/30 bg-white/5 p-3 text-xs font-medium text-white/80 transition hover:bg-white/15 hover:text-white"
           >
             <Plus className="h-3.5 w-3.5" />
             Add your intended major
@@ -103,7 +99,7 @@ export function AppSidebar({
         <form action={signOut}>
           <button
             type="submit"
-            className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/15 hover:text-white"
+            className="mt-3 flex w-full items-center gap-2 px-3 py-2 text-sm text-white/70 hover:bg-white/15 hover:text-white"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
