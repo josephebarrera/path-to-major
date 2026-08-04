@@ -1,224 +1,171 @@
-import { Clock, Compass, Target } from "lucide-react";
-import { Poppins } from "next/font/google";
+import { IBM_Plex_Mono, Poppins } from "next/font/google";
 import Link from "next/link";
-import { AlignmentRing } from "~/components/alignment-ring";
-import { Marquee } from "~/components/ui/marquee";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
+  variable: "--font-p2m-display",
 });
 
-const EXAMPLES = [
-  {
-    category: "Club",
-    activity: "Programming Lead, FIRST Robotics",
-    major: "Computer Science",
-    score: 94,
-    feedback:
-      "Strongly supports Computer Science through programming, leadership, and engineering design.",
-    skills: ["Programming", "Leadership"],
-  },
-  {
-    category: "Club",
-    activity: "VP of Marketing, DECA Chapter",
-    major: "Business Administration",
-    score: 64,
-    feedback:
-      "Shows leadership and communication skills that support Business or Marketing. Look for a role with more direct sales or financial strategy experience to strengthen this further.",
-    skills: ["Leadership", "Communication"],
-  },
-  {
-    category: "Job",
-    activity: "Weekend Cashier, Grocery Store",
-    major: "Nursing",
-    score: 32,
-    feedback:
-      "Builds reliability and customer service, which matter in patient care, but has little direct connection to Nursing coursework or clinical experience. Look into hospital volunteering or shadowing a healthcare provider to strengthen this.",
-    skills: ["Responsibility", "Customer Service"],
-  },
-];
-
-const FEATURES = [
-  "Personalized to your major",
-  "AI-assisted feedback",
-  "Track hours over time",
-];
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-p2m-mono",
+});
 
 export default function Landing() {
   return (
     <div className="min-h-screen">
-      <header className="sticky top-4 z-50 mx-auto max-w-6xl px-4 sm:top-5 sm:px-6">
-        <div className="flex items-center justify-between rounded-full border border-white/15 bg-card px-4 py-3 shadow-xl sm:px-7 sm:py-4">
-          <Link
-            href="/"
-            className={`flex items-center gap-2 whitespace-nowrap text-base font-bold tracking-tight sm:text-lg ${poppins.className}`}
-          >
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
-              <Compass className="h-4 w-4" />
-            </span>
-            PathToMajor
-          </Link>
-          <nav className="flex items-center gap-3 whitespace-nowrap text-sm sm:gap-5">
-            <Link
-              href="/auth"
-              className="hidden font-medium text-muted-foreground transition hover:text-foreground sm:inline-block"
+      <div className={`p2m-hero ${poppins.variable} ${ibmPlexMono.variable}`}>
+        <nav className="nav">
+          <div className="brand-lockup mono-line">
+            <svg
+              viewBox="0 0 32 32"
+              width="18"
+              height="18"
+              fill="none"
+              aria-hidden="true"
             >
-              Sign in
-            </Link>
-            <Link
-              href="/auth?mode=signup"
-              className="rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground shadow-sm transition hover:opacity-90 sm:px-5"
-            >
-              Get started
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-12">
-        <section className="rounded-2xl border border-white/15 bg-card px-6 py-12 text-center shadow-lg sm:px-14 sm:py-16">
-          <div className="mx-auto flex flex-col items-center gap-3">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-primary text-primary-foreground sm:h-16 sm:w-16">
-              <Compass className="h-7 w-7 sm:h-8 sm:w-8" />
-            </span>
-            <span className="text-sm font-semibold tracking-[0.2em] text-muted-foreground uppercase">
-              PathToMajor
-            </span>
+              <path
+                d="M4 26 L12 18 L20 20 L28 6"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="4" cy="26" r="2.3" fill="currentColor" />
+              <circle cx="12" cy="18" r="2.3" fill="currentColor" />
+              <circle cx="20" cy="20" r="2.3" fill="currentColor" />
+              <circle cx="28" cy="6" r="3" fill="currentColor" />
+            </svg>
+            PATHTOMAJOR
           </div>
-          <h1
-            className={`mx-auto mt-4 max-w-3xl text-3xl font-bold leading-[1.1] sm:mt-6 sm:text-5xl sm:leading-[1.05] lg:text-6xl [@media(max-height:820px)]:lg:text-5xl ${poppins.className}`}
-          >
-            Know exactly what to do outside of class for your{" "}
-            <span className="text-accent">future major</span>.
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-foreground/90 sm:mt-6 sm:text-lg">
-            Colleges want more than good grades, but it's hard to know if what
-            you're doing actually counts. PathToMajor shows how your activities,
-            projects, and leadership connect to the major you're aiming for, and
-            exactly what to add next.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3 sm:mt-8">
-            <Link
-              href="/auth?mode=signup"
-              className="rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
-            >
+          <Link href="/auth?mode=signup" className="btn btn-solid">
+            Start free
+          </Link>
+        </nav>
+        <div className="wrap">
+          <div className="head">
+            <p className="mono-line eyebrow">For college bound high schoolers</p>
+            <h1 className="disp">
+              Here&apos;s what a real <em>score</em> looks like.
+            </h1>
+            <p>
+              Log an extracurricular and PathToMajor scores how well it
+              supports your intended major, with a category, a number, and the
+              reasoning behind it.
+            </p>
+          </div>
+          <div className="instrument-wrap">
+            <div className="instrument">
+              <div className="chrome">
+                <span className="dot" />
+                <span className="dot" />
+                <span className="dot" />
+                <span className="url">pathtomajor.app/activities/57</span>
+              </div>
+              <div className="body">
+                <div className="top">
+                  <div>
+                    <span className="num-badge">1</span>
+                    <span className="chip">BUSINESS</span>
+                    <div className="name">Part Time Retail Associate</div>
+                    <div className="hrs tabular">20.0 HRS LOGGED</div>
+                    <div className="major-field">
+                      <span className="num-badge">3</span>
+                      Intended major: <b>Computer Science</b>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="num-badge">2</span>
+                    <span
+                      className="sc tabular"
+                      style={{ color: "var(--p2m-signal)" }}
+                    >
+                      58<span className="sc-unit">/100</span>
+                    </span>
+                  </div>
+                </div>
+                <p className="note">
+                  <span className="num-badge">4</span>
+                  Not technical, but builds real world problem solving and
+                  customer communication, a moderate, honest fit for Computer
+                  Science.
+                </p>
+              </div>
+            </div>
+            <div className="legend">
+              <div className="legend-item">
+                <span className="num-badge">1</span>
+                The category, from the app&apos;s own taxonomy
+              </div>
+              <div className="legend-item">
+                <span className="num-badge">2</span>
+                AI generated relevance score, out of 100
+              </div>
+              <div className="legend-item">
+                <span className="num-badge">3</span>
+                What the score is measured against
+              </div>
+              <div className="legend-item">
+                <span className="num-badge">4</span>
+                The reason, in plain language, not just a number
+              </div>
+            </div>
+          </div>
+          <div className="cta-row">
+            <Link href="/auth?mode=signup" className="btn btn-solid">
               Start free
             </Link>
-            <Link
-              href="/auth"
-              className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
-            >
+            <Link href="/auth" className="btn btn-ghost">
               I already have an account
             </Link>
           </div>
-          <div
-            className={`mt-6 flex flex-col items-center gap-1.5 text-xs font-bold tracking-tight text-foreground/70 sm:mt-8 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-x-3 sm:gap-y-2 sm:text-sm ${poppins.className}`}
-          >
-            {FEATURES.map((f, i) => (
-              <span key={f} className="flex items-center gap-3">
-                {i > 0 && (
-                  <span
-                    aria-hidden
-                    className="hidden text-foreground/30 sm:inline"
-                  >
-                    ·
-                  </span>
-                )}
-                {f}
-              </span>
-            ))}
-          </div>
-        </section>
+        </div>
+      </div>
 
-        <section className="mt-10 sm:mt-14">
-          <div className="text-center">
-            <h2
-              className={`text-2xl font-bold sm:text-3xl ${poppins.className}`}
-            >
-              Real feedback, any major
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-foreground/80 sm:text-base">
-              Three real examples: a strong fit, a decent one, and one that
-              needs work. You get honest scores you can act on, not
-              participation trophies.
-            </p>
-          </div>
-          <div className="relative mt-8 overflow-hidden">
-            <Marquee pauseOnHover className="[--duration:32s] [--gap:1rem]">
-              {EXAMPLES.map((ex) => (
-                <ExampleCard key={ex.activity} ex={ex} />
-              ))}
-            </Marquee>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent sm:w-24" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent sm:w-24" />
-          </div>
-        </section>
-
-        <section className="mt-4 flex items-center justify-center gap-2 text-xs text-foreground/80">
-          <Clock className="h-3.5 w-3.5" />
-          Takes less than 5 minutes to see your first AI feedback.
-        </section>
-      </main>
-
-      <footer className="border-t border-white/10">
+      <footer className="border-t border-[#14161A]/10 bg-[#FAFAF7]">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm font-semibold tracking-tight"
+            className={`flex items-center gap-2 text-sm font-bold tracking-tight text-[#14161A] ${poppins.className}`}
           >
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <Compass className="h-3.5 w-3.5" />
-            </span>
+            <svg
+              viewBox="0 0 32 32"
+              width="18"
+              height="18"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 26 L12 18 L20 20 L28 6"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="4" cy="26" r="2.3" fill="currentColor" />
+              <circle cx="12" cy="18" r="2.3" fill="currentColor" />
+              <circle cx="20" cy="20" r="2.3" fill="currentColor" />
+              <circle cx="28" cy="6" r="3" fill="currentColor" />
+            </svg>
             PathToMajor
           </Link>
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-5">
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <Link href="/privacy" className="hover:text-foreground">
+            <div className="flex items-center gap-4 text-xs font-semibold text-[#14161A]/75">
+              <Link href="/privacy" className="hover:text-[#14161A]">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="hover:text-foreground">
+              <Link href="/terms" className="hover:text-[#14161A]">
                 Terms of Service
               </Link>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs font-semibold text-[#14161A]/75">
               © {new Date().getFullYear()} PathToMajor. All rights reserved.
             </p>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function ExampleCard({ ex }: { ex: (typeof EXAMPLES)[number] }) {
-  return (
-    <div className="flex h-full w-80 shrink-0 flex-col rounded-2xl border border-white/15 bg-card p-5 text-left shadow-lg sm:w-96">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium">
-            {ex.category}
-          </span>
-          <h3 className="mt-3 text-sm font-semibold">{ex.activity}</h3>
-        </div>
-        <AlignmentRing score={ex.score} />
-      </div>
-      <div className="mt-2.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Target className="h-3.5 w-3.5 shrink-0 text-primary" />
-        Aligned to{" "}
-        <span className="font-medium text-foreground">{ex.major}</span>
-      </div>
-      <p className="mt-3 text-xs text-muted-foreground">"{ex.feedback}"</p>
-      <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
-        {ex.skills.map((s) => (
-          <span
-            key={s}
-            className="rounded-full bg-white/10 px-2 py-0.5 text-[11px]"
-          >
-            {s}
-          </span>
-        ))}
-      </div>
     </div>
   );
 }
