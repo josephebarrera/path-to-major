@@ -1,11 +1,51 @@
 "use client";
 
-import { Compass } from "lucide-react";
+import { Check, Eye, EyeOff, X } from "lucide-react";
+import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { signInRateLimited } from "~/lib/auth-actions";
 import { createClient } from "~/lib/supabase/client";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+});
+
+const PASSWORD_RULES = [
+  { key: "length", label: "At least 8 characters", test: (p: string) => p.length >= 8 },
+  { key: "upper", label: "One uppercase letter", test: (p: string) => /[A-Z]/.test(p) },
+  { key: "lower", label: "One lowercase letter", test: (p: string) => /[a-z]/.test(p) },
+  { key: "digit", label: "One number", test: (p: string) => /[0-9]/.test(p) },
+  { key: "symbol", label: "One symbol", test: (p: string) => /[^A-Za-z0-9]/.test(p) },
+] as const;
+
+// Checks the password against the Have I Been Pwned breach corpus using
+// k-anonymity: only the first 5 chars of the SHA-1 hash ever leave the
+// browser, so the real password (and even the full hash) is never sent
+// anywhere. Fails open (treats as "not breached") if the API is unreachable
+// so a third-party outage can never block signup.
+async function isPasswordBreached(password: string): Promise<boolean> {
+  const digest = await crypto.subtle.digest(
+    "SHA-1",
+    new TextEncoder().encode(password),
+  );
+  const hashHex = Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
+  const prefix = hashHex.slice(0, 5);
+  const suffix = hashHex.slice(5);
+
+  const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+  if (!res.ok) return false;
+  const text = await res.text();
+  return text
+    .split("\n")
+    .some((line) => line.split(":")[0].trim() === suffix);
+}
 
 export default function AuthPage() {
   return (
@@ -22,11 +62,21 @@ function AuthPageInner() {
     searchParams.get("mode") === "signup" ? "signup" : "signin";
   const [supabase] = useState(() => createClient());
 
-  const [mode, setMode] = useState<"signin" | "signup">(initialMode);
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">(
+    initialMode,
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const passwordChecks = useMemo(
+    () =>
+      PASSWORD_RULES.map((rule) => ({ ...rule, met: rule.test(password) })),
+    [password],
+  );
+  const passwordValid = passwordChecks.every((c) => c.met);
 
   useEffect(() => {
     // getUser() validates the session against Supabase's Auth server, unlike
@@ -51,6 +101,19 @@ function AuthPageInner() {
     setLoading(true);
     try {
       if (mode === "signup") {
+        if (!passwordValid) {
+          toast.error("Password doesn't meet the requirements below.");
+          return;
+        }
+        const breached = await isPasswordBreached(password).catch(
+          () => false,
+        );
+        if (breached) {
+          toast.error(
+            "That password has appeared in a known data breach. Please choose a different one.",
+          );
+          return;
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -65,14 +128,30 @@ function AuthPageInner() {
         if (error) throw error;
         toast.success("Welcome to PathToMajor!");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
+        const result = await signInRateLimited(email, password);
+        if (!result.ok) {
+          toast.error(result.error);
+          return;
+        }
       }
       router.push("/dashboard");
       router.refresh();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendResetLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      });
+      if (error) throw error;
+      toast.success("Check your email for a reset link.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -95,101 +174,174 @@ function AuthPageInner() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md">
-        <Link
-          href="/"
-          className="mb-6 flex items-center justify-center gap-2 text-sm font-semibold"
-        >
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <Compass className="h-4 w-4" />
-          </span>
+    <div className={`p2m-auth ${poppins.className}`}>
+      <div className="p2m-auth-wrap">
+        <Link href="/" className="p2m-auth-brand">
+          <svg viewBox="0 0 32 32" width="20" height="20" fill="none" aria-hidden="true">
+            <path
+              d="M4 26 L12 18 L20 20 L28 6"
+              stroke="currentColor"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="4" cy="26" r="2.3" fill="currentColor" />
+            <circle cx="12" cy="18" r="2.3" fill="currentColor" />
+            <circle cx="20" cy="20" r="2.3" fill="currentColor" />
+            <circle cx="28" cy="6" r="3" fill="currentColor" />
+          </svg>
           PathToMajor
         </Link>
 
-        <div className="glass-panel-navy p-8">
-          <h1 className="text-2xl font-semibold">
-            {mode === "signup" ? "Create your account" : "Welcome back"}
+        <div className="p2m-auth-card">
+          <h1 className="p2m-auth-title">
+            {mode === "signup"
+              ? "Create your account"
+              : mode === "forgot"
+                ? "Reset your password"
+                : "Welcome back"}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="p2m-auth-sub">
             {mode === "signup"
               ? "Start building your path to college."
-              : "Sign in to continue."}
+              : mode === "forgot"
+                ? "Enter your email and we'll send you a reset link."
+                : "Sign in to continue."}
           </p>
 
-          <button
-            type="button"
-            onClick={google}
-            disabled={loading}
-            className="mt-6 w-full rounded-full border border-border bg-white/10 py-2.5 text-sm font-medium text-foreground backdrop-blur transition hover:bg-white/20 disabled:opacity-50"
-          >
-            Continue with Google
-          </button>
+          {mode !== "forgot" && (
+            <>
+              <button
+                type="button"
+                onClick={google}
+                disabled={loading}
+                className="p2m-auth-btn p2m-auth-btn-ghost"
+              >
+                Continue with Google
+              </button>
 
-          <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-            <div className="h-px flex-1 bg-border" />
-            or
-            <div className="h-px flex-1 bg-border" />
-          </div>
+              <div className="p2m-auth-divider">
+                <span />
+                or
+                <span />
+              </div>
+            </>
+          )}
 
-          <form onSubmit={submit} className="space-y-3">
-            {mode === "signup" && (
+          {mode === "forgot" ? (
+            <form onSubmit={sendResetLink} className="p2m-auth-form">
               <input
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                maxLength={80}
-                className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="p2m-auth-input"
               />
-            )}
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
-            />
-            <input
-              required
-              type="password"
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none backdrop-blur focus:ring-2 focus:ring-ring"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
-            >
-              {loading ? "…" : mode === "signup" ? "Create account" : "Sign in"}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={loading}
+                className="p2m-auth-btn p2m-auth-btn-solid"
+              >
+                {loading ? "…" : "Send reset link"}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={submit} className="p2m-auth-form">
+              {mode === "signup" && (
+                <input
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  maxLength={80}
+                  className="p2m-auth-input"
+                />
+              )}
+              <input
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="p2m-auth-input"
+              />
+              <div className="p2m-auth-password-wrap">
+                <input
+                  required
+                  type={showPassword ? "text" : "password"}
+                  minLength={8}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  className="p2m-auth-input"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="p2m-auth-password-toggle"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+              {mode === "signin" && (
+                <button
+                  type="button"
+                  onClick={() => setMode("forgot")}
+                  className="p2m-auth-toggle"
+                  style={{ marginTop: 0, textAlign: "right" }}
+                >
+                  Forgot password?
+                </button>
+              )}
+              {mode === "signup" && password.length > 0 && (
+                <ul className="p2m-auth-password-checklist">
+                  {passwordChecks.map((c) => (
+                    <li key={c.key} className={c.met ? "is-met" : ""}>
+                      {c.met ? (
+                        <Check className="h-3 w-3" />
+                      ) : (
+                        <X className="h-3 w-3" />
+                      )}
+                      {c.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="p2m-auth-btn p2m-auth-btn-solid"
+              >
+                {loading ? "…" : mode === "signup" ? "Create account" : "Sign in"}
+              </button>
+            </form>
+          )}
 
           <button
             type="button"
-            onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-            className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
+            onClick={() =>
+              setMode(mode === "signup" ? "signin" : mode === "forgot" ? "signin" : "signup")
+            }
+            className="p2m-auth-toggle"
           >
             {mode === "signup"
               ? "Already have an account? Sign in"
-              : "New to PathToMajor? Create an account"}
+              : mode === "forgot"
+                ? "Back to sign in"
+                : "New to PathToMajor? Create an account"}
           </button>
 
           {mode === "signup" && (
-            <p className="mt-4 text-center text-xs text-muted-foreground">
+            <p className="p2m-auth-terms">
               By creating an account, you agree to our{" "}
-              <Link href="/terms" className="underline underline-offset-2">
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link href="/privacy" className="underline underline-offset-2">
-                Privacy Policy
-              </Link>
-              .
+              <Link href="/terms">Terms of Service</Link> and{" "}
+              <Link href="/privacy">Privacy Policy</Link>.
             </p>
           )}
         </div>
