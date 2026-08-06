@@ -45,3 +45,8 @@ next-env.d.ts
 /.claude/skills/impeccable/
 /.claude/settings.local.json
 /.codex/
+/.impeccable/
+/.scratch/
+
+# Supabase CLI local state (e.g. cached CLI version) — machine-local, not app config
+/supabase/.temp/
