@@ -1,7 +1,9 @@
 import { Plus, Sparkles, Target, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { DashboardTour } from "~/components/dashboard-tour";
 import { HoursBreakdownCard } from "~/components/hours-breakdown-card";
 import { NumberTicker } from "~/components/ui/number-ticker";
+import { getRecommendations } from "~/lib/ai";
 import { activityTimeLabel } from "~/lib/dates";
 import { categoryStyle, formatMajors } from "~/lib/majors";
 import { createClient } from "~/lib/supabase/server";
@@ -13,7 +15,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const [{ data: profile }, { data: activities }, { data: logs }] =
+  const [{ data: profile }, { data: activities }, { data: logs }, recommendations] =
     await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
       supabase
@@ -22,6 +24,7 @@ export default async function DashboardPage() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false }),
       supabase.from("hour_logs").select("*").eq("user_id", user.id),
+      getRecommendations(),
     ]);
 
   const acts = activities ?? [];
@@ -56,14 +59,13 @@ export default async function DashboardPage() {
     : 0;
 
   const recent = acts.slice(0, 4);
-  const suggestions = acts
-    .flatMap((a) => (a.ai_suggestions ?? []).map((s) => ({ s, a: a.name })))
-    .slice(0, 4);
+  const topRecommendations = recommendations.slice(0, 3);
   const majorLabel = formatMajors(profile?.intended_majors ?? []);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-white/15 bg-card p-6 shadow-lg sm:p-8">
+      <DashboardTour hasSeenTour={profile?.has_seen_tour ?? false} />
+      <div className="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-border bg-card p-6 sm:p-8">
         <div>
           <p className="text-sm text-muted-foreground">Welcome back</p>
           <h1 className="text-3xl font-semibold">
@@ -77,24 +79,24 @@ export default async function DashboardPage() {
           ) : (
             <Link
               href="/profile"
-              className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+              className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
             >
               <Plus className="h-3.5 w-3.5" /> Add your intended major
             </Link>
           )}
         </div>
         <Link
+          data-tour="add-activity"
           href="/activities?new=true"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+          className="inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-medium text-background transition hover:opacity-90"
         >
           <Plus className="h-4 w-4" /> Add activity
         </Link>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div data-tour="kpi-cards" className="grid gap-4 sm:grid-cols-3">
         <KPI
           icon={Target}
-          accent="bg-white/10 text-foreground/80"
           label="Major alignment"
           value={avgRelevance}
           suffix="%"
@@ -112,7 +114,6 @@ export default async function DashboardPage() {
         />
         <KPI
           icon={TrendingUp}
-          accent="bg-white/10 text-foreground/80"
           label="Activities"
           value={acts.length}
           sub={acts.length ? "keep going" : "start your first"}
@@ -120,7 +121,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-6 lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Recent activities</h2>
             <Link
@@ -140,7 +141,7 @@ export default async function DashboardPage() {
                   <Link
                     key={a.id}
                     href={`/activities/${a.id}`}
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/10"
+                    className="flex items-center justify-between rounded-xl border border-border p-4 transition hover:bg-foreground/5"
                   >
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
@@ -180,26 +181,26 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-accent" />
+            <Sparkles className="h-4 w-4 text-foreground" />
             <h2 className="text-lg font-semibold">What's next?</h2>
           </div>
-          {suggestions.length === 0 ? (
+          {topRecommendations.length === 0 ? (
             <p className="mt-3 text-sm text-muted-foreground">
               Add an activity to unlock personalized AI suggestions.
             </p>
           ) : (
             <ul className="mt-3 space-y-3 text-sm">
-              {suggestions.map((s) => (
-                <li
-                  key={`${s.a}-${s.s}`}
-                  className="rounded-xl border border-white/10 bg-white/5 p-3"
-                >
+              {topRecommendations.map((r) => (
+                <li key={r.title} className="rounded-xl border border-border p-3">
                   <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                    from {s.a}
+                    {r.category}
                   </div>
-                  <div className="mt-0.5">{s.s}</div>
+                  <div className="mt-0.5 font-medium">{r.title}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground">
+                    {r.why}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -218,7 +219,6 @@ export default async function DashboardPage() {
 
 function KPI({
   icon: Icon,
-  accent,
   label,
   value,
   decimalPlaces = 0,
@@ -227,7 +227,6 @@ function KPI({
   sub,
 }: {
   icon: typeof Target;
-  accent: string;
   label: string;
   value: number;
   decimalPlaces?: number;
@@ -237,13 +236,9 @@ function KPI({
 }) {
   const showEmpty = emptyLabel !== undefined && value === 0;
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
-      <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-foreground/90">
-        <span
-          className={`grid h-8 w-8 place-items-center rounded-lg ${accent}`}
-        >
-          <Icon className="h-4 w-4" />
-        </span>
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-foreground/90">
+        <Icon className="h-4 w-4 text-foreground" />
         {label}
       </div>
       <div className="mt-3 text-3xl font-semibold">
@@ -264,7 +259,7 @@ function KPI({
 function EmptyActivities() {
   return (
     <div className="mt-4 rounded-2xl border border-dashed border-border p-8 text-center">
-      <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+      <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-foreground/10 text-foreground">
         <Plus className="h-5 w-5" />
       </div>
       <p className="mt-3 text-sm font-medium">No activities yet</p>
@@ -273,7 +268,7 @@ function EmptyActivities() {
       </p>
       <Link
         href="/activities?new=true"
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        className="mt-4 inline-flex items-center gap-2 bg-foreground px-4 py-2 text-sm font-medium text-background"
       >
         <Plus className="h-4 w-4" /> Add activity
       </Link>

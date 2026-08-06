@@ -282,6 +282,20 @@ export async function deleteHourLog(logId: string, activityId: string) {
   revalidatePath("/progress");
 }
 
+export async function markTourSeen() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not signed in");
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ has_seen_tour: true })
+    .eq("id", user.id);
+  if (error) throw new Error(error.message);
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
