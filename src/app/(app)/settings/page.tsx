@@ -17,7 +17,7 @@ export default async function SettingsPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card space-y-4 p-6 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card space-y-4 p-6">
         <div>
           <div className="text-xs font-medium text-muted-foreground">Email</div>
           <div className="mt-1 text-sm">{user?.email}</div>
@@ -25,7 +25,7 @@ export default async function SettingsPage() {
         <form action={signOut}>
           <button
             type="submit"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm hover:bg-primary/5"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>

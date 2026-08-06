@@ -60,7 +60,7 @@ export function HourLogPanel({
   };
 
   return (
-    <div className="glass-panel-navy p-6">
+    <div className="border border-border p-6">
       <div className="flex items-center gap-2">
         <Clock className="h-4 w-4" />
         <h2 className="text-lg font-semibold">Hour log</h2>
@@ -71,7 +71,7 @@ export function HourLogPanel({
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+            className="border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
           />
           <input
             type="number"
@@ -80,7 +80,7 @@ export function HourLogPanel({
             placeholder="Hours"
             value={hours}
             onChange={(e) => setHours(e.target.value)}
-            className="rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+            className="border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
           />
         </div>
         <input
@@ -88,7 +88,7 @@ export function HourLogPanel({
           onChange={(e) => setNote(e.target.value)}
           placeholder="Note (optional)"
           maxLength={200}
-          className="w-full rounded-xl border border-border bg-white/10 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+          className="w-full border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
         />
         <button
           type="submit"
@@ -108,7 +108,7 @@ export function HourLogPanel({
           logs.map((l) => (
             <div
               key={l.id}
-              className="group flex items-start justify-between rounded-xl border border-white/10 bg-white/5 p-3 text-sm"
+              className="group flex items-start justify-between border border-border p-3 text-sm"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2">

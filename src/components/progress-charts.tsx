@@ -94,7 +94,7 @@ export function ProgressCharts({
             Your growth toward {intendedMajor ?? "your goals"}.
           </p>
         </div>
-        <div className="flex gap-1 rounded-full border border-white/15 bg-card p-1">
+        <div className="flex gap-1 rounded-full border border-border bg-card p-1">
           {(["all", "90", "30"] as const).map((r) => (
             <button
               type="button"
@@ -102,8 +102,8 @@ export function ProgressCharts({
               onClick={() => setRange(r)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition ${
                 range === r
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
               }`}
             >
               {r === "all" ? "All time" : `Last ${r} days`}
@@ -121,7 +121,7 @@ export function ProgressCharts({
         <Stat label="Activities" value={String(activities.length)} />
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6">
         <h2 className="text-lg font-semibold">Cumulative hours</h2>
         <div className="mt-4 h-64">
           {cumulativeSeries.length === 0 ? (
@@ -135,39 +135,39 @@ export function ProgressCharts({
                   <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
                     <stop
                       offset="0%"
-                      stopColor="oklch(0.72 0.17 220)"
+                      stopColor="#14161a"
                       stopOpacity={0.7}
                     />
                     <stop
                       offset="100%"
-                      stopColor="oklch(0.72 0.17 220)"
+                      stopColor="#14161a"
                       stopOpacity={0.05}
                     />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="oklch(1 0 0 / 0.12)"
+                  stroke="rgba(20, 22, 26, 0.12)"
                 />
                 <XAxis
                   dataKey="date"
-                  tick={{ fontSize: 11, fill: "oklch(0.85 0.015 250)" }}
+                  tick={{ fontSize: 11, fill: "rgba(20, 22, 26, 0.6)" }}
                 />
-                <YAxis tick={{ fontSize: 11, fill: "oklch(0.85 0.015 250)" }} />
+                <YAxis tick={{ fontSize: 11, fill: "rgba(20, 22, 26, 0.6)" }} />
                 <Tooltip
                   contentStyle={{
-                    background: "oklch(0.22 0.045 252)",
-                    border: "1px solid oklch(1 0 0 / 0.15)",
-                    borderRadius: 12,
+                    background: "#fafaf7",
+                    border: "1px solid rgba(20, 22, 26, 0.4)",
+                    borderRadius: 0,
                     fontSize: 12,
-                    color: "oklch(0.95 0.01 250)",
+                    color: "#14161a",
                   }}
-                  labelStyle={{ color: "oklch(0.85 0.015 250)" }}
+                  labelStyle={{ color: "rgba(20, 22, 26, 0.6)" }}
                 />
                 <Area
                   type="monotone"
                   dataKey="hours"
-                  stroke="oklch(0.78 0.16 210)"
+                  stroke="#14161a"
                   strokeWidth={2.5}
                   fill="url(#hg)"
                 />
@@ -178,7 +178,7 @@ export function ProgressCharts({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <h2 className="text-lg font-semibold">Hours by category</h2>
           <div className="mt-4 h-64">
             {byCategory.length === 0 ? (
@@ -190,29 +190,29 @@ export function ProgressCharts({
                 <BarChart data={byCategory}>
                   <CartesianGrid
                     strokeDasharray="3 3"
-                    stroke="oklch(1 0 0 / 0.12)"
+                    stroke="rgba(20, 22, 26, 0.12)"
                   />
                   <XAxis
                     dataKey="category"
-                    tick={{ fontSize: 11, fill: "oklch(0.85 0.015 250)" }}
+                    tick={{ fontSize: 11, fill: "rgba(20, 22, 26, 0.6)" }}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: "oklch(0.85 0.015 250)" }}
+                    tick={{ fontSize: 11, fill: "rgba(20, 22, 26, 0.6)" }}
                   />
                   <Tooltip
-                    cursor={{ fill: "oklch(1 0 0 / 0.06)" }}
+                    cursor={{ fill: "rgba(20, 22, 26, 0.05)" }}
                     contentStyle={{
-                      background: "oklch(0.22 0.045 252)",
-                      border: "1px solid oklch(1 0 0 / 0.15)",
-                      borderRadius: 12,
+                      background: "#fafaf7",
+                      border: "1px solid rgba(20, 22, 26, 0.4)",
+                      borderRadius: 0,
                       fontSize: 12,
-                      color: "oklch(0.95 0.01 250)",
+                      color: "#14161a",
                     }}
-                    labelStyle={{ color: "oklch(0.85 0.015 250)" }}
+                    labelStyle={{ color: "rgba(20, 22, 26, 0.6)" }}
                   />
                   <Bar
                     dataKey="hours"
-                    fill="oklch(0.72 0.17 220)"
+                    fill="#14161a"
                     radius={[8, 8, 0, 0]}
                   />
                 </BarChart>
@@ -221,7 +221,7 @@ export function ProgressCharts({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <h2 className="text-lg font-semibold">Skills you're developing</h2>
           {skillCounts.length === 0 ? (
             <p className="mt-3 text-sm text-muted-foreground">
@@ -232,7 +232,7 @@ export function ProgressCharts({
               {skillCounts.map(([s, n]) => (
                 <span
                   key={s}
-                  className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs"
+                  className="rounded-full border border-border bg-transparent px-3 py-1 text-xs"
                   style={{ fontSize: `${Math.min(14, 11 + n)}px` }}
                 >
                   {s} <span className="text-muted-foreground">× {n}</span>
@@ -248,7 +248,7 @@ export function ProgressCharts({
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="text-xs uppercase tracking-wide text-muted-foreground">
         {label}
       </div>

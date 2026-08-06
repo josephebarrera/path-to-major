@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Compass,
   LayoutDashboard,
   ListChecks,
   LogOut,
@@ -38,17 +37,26 @@ export function AppSidebar({
   const adminActive = pathname === "/admin" || pathname.startsWith("/admin/");
 
   return (
-    <aside className="aurora-sidebar sticky top-6 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col p-4 md:flex">
-      <Link
-        href="/dashboard"
-        className="relative z-10 flex items-center gap-2 px-2 py-2 text-base font-semibold text-white"
-      >
-        <span className="grid h-8 w-8 place-items-center rounded-xl border border-white/30 bg-white/20 text-white backdrop-blur">
-          <Compass className="h-4 w-4" />
+    <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col border border-sidebar-border bg-sidebar p-4 md:flex">
+      <Link href="/dashboard" className="p2m-app-brand flex items-center gap-2 px-2 py-2">
+        <span className="p2m-app-logo h-8 w-8">
+          <svg viewBox="0 0 32 32" width="18" height="18" fill="none" aria-hidden="true">
+            <path
+              d="M4 26 L12 18 L20 20 L28 6"
+              stroke="currentColor"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="4" cy="26" r="2.3" fill="currentColor" />
+            <circle cx="12" cy="18" r="2.3" fill="currentColor" />
+            <circle cx="20" cy="20" r="2.3" fill="currentColor" />
+            <circle cx="28" cy="6" r="3" fill="currentColor" />
+          </svg>
         </span>
         PathToMajor
       </Link>
-      <nav className="relative z-10 mt-6 flex flex-col gap-1">
+      <nav data-tour="sidebar-nav" className="mt-6 flex flex-col gap-1">
         {NAV.map((item) => {
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -56,15 +64,11 @@ export function AppSidebar({
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
-                active
-                  ? "bg-white font-medium text-neutral-900 shadow-md"
-                  : "text-white/75 hover:bg-white/15 hover:text-white"
+              className={`p2m-app-nav-link flex items-center gap-3 px-3 py-2 text-sm ${
+                active ? "is-active" : ""
               }`}
             >
-              <item.icon
-                className={`h-4 w-4 ${active ? "text-blue-600" : "text-white/75"}`}
-              />
+              <item.icon className="h-4 w-4" />
               {item.label}
             </Link>
           );
@@ -73,28 +77,24 @@ export function AppSidebar({
       {isAdmin && (
         <Link
           href="/admin"
-          className={`relative z-10 mt-2 flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
-            adminActive
-              ? "bg-white font-medium text-neutral-900 shadow-md"
-              : "text-white/75 hover:bg-white/15 hover:text-white"
+          className={`p2m-app-nav-link mt-2 flex items-center gap-3 px-3 py-2 text-sm ${
+            adminActive ? "is-active" : ""
           }`}
         >
-          <ShieldCheck
-            className={`h-4 w-4 ${adminActive ? "text-blue-600" : "text-white/75"}`}
-          />
+          <ShieldCheck className="h-4 w-4" />
           Admin
         </Link>
       )}
-      <div className="relative z-10 mt-auto pt-4">
+      <div className="mt-auto pt-4">
         {majorLabel ? (
-          <div className="rounded-xl border border-white/30 bg-white/15 p-3 text-xs backdrop-blur">
-            <div className="text-white/70">Pursuing</div>
-            <div className="mt-0.5 font-medium text-white">{majorLabel}</div>
+          <div className="p2m-app-chip bg-foreground p-3 text-xs text-background">
+            <div className="text-background/70">Pursuing</div>
+            <div className="mt-0.5 font-medium text-background">{majorLabel}</div>
           </div>
         ) : (
           <Link
             href="/profile"
-            className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/30 bg-white/10 p-3 text-xs font-medium text-white/80 backdrop-blur transition hover:bg-white/15 hover:text-white"
+            className="flex items-center justify-center gap-1.5 border border-dashed border-sidebar-border p-3 text-xs font-medium text-muted-foreground transition hover:border-primary hover:text-foreground"
           >
             <Plus className="h-3.5 w-3.5" />
             Add your intended major
@@ -103,7 +103,7 @@ export function AppSidebar({
         <form action={signOut}>
           <button
             type="submit"
-            className="mt-3 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-white/70 hover:bg-white/15 hover:text-white"
+            className="mt-3 flex w-full items-center gap-2 px-3 py-2 text-sm text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground"
           >
             <LogOut className="h-4 w-4" /> Sign out
           </button>
@@ -118,7 +118,7 @@ export function MobileNav() {
   const items = NAV.slice(0, 5);
 
   return (
-    <div className="glass fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-white/10 py-2 md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-sidebar-border bg-sidebar py-2 md:hidden">
       {items.map((item) => {
         const active =
           pathname === item.href || pathname.startsWith(`${item.href}/`);

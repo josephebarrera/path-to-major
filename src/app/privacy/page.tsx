@@ -21,28 +21,28 @@ export default function PrivacyPolicy() {
 
       <LegalSection title="2. Information we collect">
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-[#14161A]">
             Account information.
           </strong>{" "}
           When you sign up, we collect your email address and name, either
           directly (email/password) or from Google if you sign in with Google.
         </p>
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-[#14161A]">
             Profile information.
           </strong>{" "}
           Grade level, intended major(s), and whether you're still exploring
           majors — all optional, entered by you.
         </p>
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-[#14161A]">
             Activity information.
           </strong>{" "}
           Everything you log about your extracurriculars: name, category,
           organization, description, dates, leadership role, skills, and hours.
         </p>
         <p>
-          <strong className="font-semibold text-foreground">
+          <strong className="font-semibold text-[#14161A]">
             AI feedback data.
           </strong>{" "}
           When you request AI feedback on an activity, we send relevant details
@@ -75,11 +75,11 @@ export default function PrivacyPolicy() {
         </p>
         <ul className="list-disc space-y-1.5 pl-5">
           <li>
-            <strong className="font-semibold text-foreground">Supabase</strong>{" "}
+            <strong className="font-semibold text-[#14161A]">Supabase</strong>{" "}
             — hosts our database and handles authentication.
           </li>
           <li>
-            <strong className="font-semibold text-foreground">Google</strong> —
+            <strong className="font-semibold text-[#14161A]">Google</strong> —
             processes the activity and profile details described above via the
             Gemini API to generate AI feedback, and acts as an OAuth provider if
             you choose to sign in with Google.

@@ -21,7 +21,7 @@ export default async function AppLayout({
   if (!profile?.onboarded) redirect("/onboarding");
 
   return (
-    <div className="min-h-screen">
+    <div className="p2m-app">
       <div className="mx-auto flex max-w-[1400px] gap-6 px-4 py-6 md:px-6">
         <AppSidebar
           intendedMajors={profile.intended_majors}

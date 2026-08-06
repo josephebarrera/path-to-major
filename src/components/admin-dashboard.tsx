@@ -20,14 +20,14 @@ type Profile = Tables<"profiles">;
 type Activity = Tables<"activities">;
 type HourLog = Tables<"hour_logs">;
 
-const CHART_GRID = "oklch(1 0 0 / 0.12)";
-const CHART_TICK = { fontSize: 11, fill: "oklch(0.85 0.015 250)" };
+const CHART_GRID = "rgba(20, 22, 26, 0.12)";
+const CHART_TICK = { fontSize: 11, fill: "rgba(20, 22, 26, 0.6)" };
 const CHART_TOOLTIP = {
-  background: "oklch(0.22 0.045 252)",
-  border: "1px solid oklch(1 0 0 / 0.15)",
-  borderRadius: 12,
+  background: "#fafaf7",
+  border: "1px solid rgba(20, 22, 26, 0.4)",
+  borderRadius: 0,
   fontSize: 12,
-  color: "oklch(0.95 0.01 250)",
+  color: "#14161a",
 };
 
 export function AdminDashboard({
@@ -170,7 +170,7 @@ export function AdminDashboard({
         />
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6">
         <h2 className="text-lg font-semibold">Signups over time</h2>
         <div className="mt-4 h-56">
           {signupSeries.length === 0 ? (
@@ -182,12 +182,12 @@ export function AdminDashboard({
                   <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
                     <stop
                       offset="0%"
-                      stopColor="oklch(0.72 0.17 220)"
+                      stopColor="#3d72f5"
                       stopOpacity={0.7}
                     />
                     <stop
                       offset="100%"
-                      stopColor="oklch(0.72 0.17 220)"
+                      stopColor="#3d72f5"
                       stopOpacity={0.05}
                     />
                   </linearGradient>
@@ -197,12 +197,12 @@ export function AdminDashboard({
                 <YAxis tick={CHART_TICK} allowDecimals={false} />
                 <Tooltip
                   contentStyle={CHART_TOOLTIP}
-                  labelStyle={{ color: "oklch(0.85 0.015 250)" }}
+                  labelStyle={{ color: "#14161a" }}
                 />
                 <Area
                   type="monotone"
                   dataKey="users"
-                  stroke="oklch(0.78 0.16 210)"
+                  stroke="#3d72f5"
                   strokeWidth={2.5}
                   fill="url(#ag)"
                 />
@@ -213,7 +213,7 @@ export function AdminDashboard({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <h2 className="text-lg font-semibold">Activities by category</h2>
           <div className="mt-4 h-56">
             {categoryData.length === 0 ? (
@@ -225,13 +225,13 @@ export function AdminDashboard({
                   <XAxis dataKey="category" tick={CHART_TICK} />
                   <YAxis tick={CHART_TICK} allowDecimals={false} />
                   <Tooltip
-                    cursor={{ fill: "oklch(1 0 0 / 0.06)" }}
+                    cursor={{ fill: "rgba(20, 22, 26, 0.05)" }}
                     contentStyle={CHART_TOOLTIP}
-                    labelStyle={{ color: "oklch(0.85 0.015 250)" }}
+                    labelStyle={{ color: "#14161a" }}
                   />
                   <Bar
                     dataKey="count"
-                    fill="oklch(0.72 0.17 220)"
+                    fill="#3d72f5"
                     radius={[8, 8, 0, 0]}
                   />
                 </BarChart>
@@ -240,7 +240,7 @@ export function AdminDashboard({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+        <div className="rounded-2xl border border-border bg-card p-6">
           <h2 className="text-lg font-semibold">Top intended majors</h2>
           {majorData.length === 0 ? (
             <p className="mt-4 text-sm text-muted-foreground">No data yet.</p>
@@ -260,7 +260,7 @@ export function AdminDashboard({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card p-6 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">Users</h2>
           <div className="relative">
@@ -269,14 +269,14 @@ export function AdminDashboard({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name or email"
-              className="w-64 rounded-full border border-border bg-white/10 py-1.5 pl-8 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="w-64 rounded-full border border-border bg-transparent py-1.5 pl-8 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
                 <th className="pb-2 pr-4 font-medium" />
                 <th className="pb-2 pr-4 font-medium">Name</th>
                 <th className="pb-2 pr-4 font-medium">Email</th>
@@ -298,9 +298,9 @@ export function AdminDashboard({
                       onClick={() =>
                         userActivities.length && toggleExpanded(p.id)
                       }
-                      className={`border-b border-white/5 ${
+                      className={`border-b border-border ${
                         userActivities.length
-                          ? "cursor-pointer hover:bg-white/5"
+                          ? "cursor-pointer hover:"
                           : ""
                       }`}
                     >
@@ -348,8 +348,8 @@ export function AdminDashboard({
                       </td>
                     </tr>
                     {isOpen && userActivities.length > 0 && (
-                      <tr className="border-b border-white/5">
-                        <td colSpan={9} className="bg-white/[0.03] px-4 py-3">
+                      <tr className="border-b border-border">
+                        <td colSpan={9} className="bg-primary/5 px-4 py-3">
                           <div className="flex flex-col gap-2">
                             {userActivities.map((a) => {
                               const style = categoryStyle(a.category);
@@ -412,7 +412,7 @@ function Stat({
   sub?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="text-xs uppercase tracking-wide text-muted-foreground">
         {label}
       </div>

@@ -50,7 +50,7 @@ export function ActivityHeaderActions({
       <button
         type="button"
         onClick={() => setEditing(true)}
-        className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-card px-4 py-2 text-sm hover:bg-secondary"
+        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary"
       >
         <Pencil className="h-3.5 w-3.5" /> Edit
       </button>
@@ -58,7 +58,7 @@ export function ActivityHeaderActions({
         type="button"
         onClick={reanalyze}
         disabled={analyzing}
-        className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-card px-4 py-2 text-sm hover:bg-secondary disabled:opacity-50"
+        className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm hover:bg-secondary disabled:opacity-50"
       >
         <RefreshCw
           className={`h-3.5 w-3.5 ${analyzing ? "animate-spin" : ""}`}

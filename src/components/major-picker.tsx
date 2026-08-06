@@ -34,16 +34,14 @@ export function MajorPicker({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search majors…"
-        className="w-full rounded-xl border border-border bg-white/10 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+        className="p2m-auth-input"
       />
-      <p className="mt-2 text-xs text-muted-foreground">
+      <p className="p2m-major-count">
         {selected.length}/{max} selected
       </p>
-      <div className="mt-2 flex max-h-56 flex-wrap gap-2 overflow-y-auto">
+      <div className="p2m-major-list">
         {filtered.length === 0 && (
-          <p className="text-xs text-muted-foreground">
-            No majors match "{query}"
-          </p>
+          <p className="p2m-major-empty">No majors match "{query}"</p>
         )}
         {filtered.map((major) => {
           const isSelected = selected.includes(major);
@@ -54,11 +52,7 @@ export function MajorPicker({
               key={major}
               onClick={() => toggle(major)}
               disabled={disabled}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                isSelected
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-white/10 text-foreground hover:bg-white/20"
-              }`}
+              className={`p2m-major-chip ${isSelected ? "is-selected" : ""}`}
             >
               {major}
             </button>

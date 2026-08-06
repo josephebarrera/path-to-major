@@ -22,7 +22,7 @@ export default async function AdminLayout({
   if (!profile?.is_admin) redirect("/dashboard");
 
   return (
-    <div className="min-h-screen">
+    <div className="p2m-app">
       <div className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
         <Link
           href="/dashboard"

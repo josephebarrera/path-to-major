@@ -48,12 +48,12 @@ export function ProfileForm({
         </p>
       </div>
 
-      <div className="rounded-2xl border border-white/15 bg-card space-y-4 p-6 shadow-lg">
+      <div className="rounded-2xl border border-border bg-card space-y-4 p-6">
         <Row label="Name">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-xl border border-border px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-foreground"
           />
         </Row>
         <Row label="Grade">
@@ -65,8 +65,8 @@ export function ProfileForm({
                 onClick={() => setGrade(g)}
                 className={`rounded-xl border py-2 text-sm font-medium transition ${
                   grade === g
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-white/10 bg-white/5 text-foreground"
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-foreground"
                 }`}
               >
                 {g}th
@@ -85,7 +85,7 @@ export function ProfileForm({
             type="checkbox"
             checked={exploring}
             onChange={(e) => setExploring(e.target.checked)}
-            className="h-4 w-4 rounded"
+            className="h-4 w-4 rounded accent-foreground"
           />
           I'm still exploring multiple majors
         </label>
@@ -93,7 +93,7 @@ export function ProfileForm({
           type="button"
           onClick={save}
           disabled={saving}
-          className="w-full rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="w-full rounded-full bg-foreground py-2.5 text-sm font-medium text-background disabled:opacity-50"
         >
           {saving ? "…" : "Save changes"}
         </button>

@@ -19,17 +19,15 @@ export function HoursBreakdownCard({
   const hasBreakdown = breakdown.length > 0;
 
   return (
-    <div className="rounded-2xl border border-white/15 bg-card p-5 shadow-lg">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         disabled={!hasBreakdown}
         className="flex w-full items-center justify-between gap-2 text-left disabled:cursor-default"
       >
-        <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-foreground/90">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-white/10 text-foreground/80">
-            <Clock className="h-4 w-4" />
-          </span>
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-foreground/90">
+          <Clock className="h-4 w-4 text-foreground" />
           Total hours
         </div>
         {hasBreakdown && (
@@ -48,14 +46,14 @@ export function HoursBreakdownCard({
       </div>
 
       {open && (
-        <div className="mt-3 space-y-1.5 border-t border-white/10 pt-3">
+        <div className="mt-3 space-y-1.5 border-t border-border pt-3">
           {breakdown.map((a) => {
             const style = categoryStyle(a.category);
             return (
               <Link
                 key={a.id}
                 href={`/activities/${a.id}`}
-                className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 transition hover:border-white/20 hover:bg-white/10"
+                className="flex items-center gap-2.5 rounded-xl border border-border px-3 py-2 transition hover:border-foreground hover:bg-foreground/5"
               >
                 <span
                   aria-hidden

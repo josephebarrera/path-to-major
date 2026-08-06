@@ -74,27 +74,27 @@ export type ActivityCategory = (typeof ACTIVITY_CATEGORIES)[number];
    13-hue rainbow: STEM=blue, service=rose, business/leadership=amber,
    arts=cyan, athletics=emerald. */
 const STEM_STYLE = {
-  badge: "bg-blue-400/15 text-blue-300",
+  badge: "bg-blue-400/15 text-blue-700",
   glow: "oklch(0.6 0.18 250)",
 };
 const SERVICE_STYLE = {
-  badge: "bg-rose-400/15 text-rose-300",
+  badge: "bg-rose-400/15 text-rose-700",
   glow: "oklch(0.62 0.2 15)",
 };
 const BUSINESS_STYLE = {
-  badge: "bg-amber-400/15 text-amber-300",
+  badge: "bg-amber-400/15 text-amber-700",
   glow: "oklch(0.75 0.15 80)",
 };
 const ARTS_STYLE = {
-  badge: "bg-cyan-400/15 text-cyan-300",
+  badge: "bg-cyan-400/15 text-cyan-700",
   glow: "oklch(0.7 0.13 210)",
 };
 const ATHLETICS_STYLE = {
-  badge: "bg-emerald-400/15 text-emerald-300",
+  badge: "bg-emerald-400/15 text-emerald-700",
   glow: "oklch(0.65 0.18 155)",
 };
 const NEUTRAL_STYLE = {
-  badge: "bg-slate-400/15 text-slate-300",
+  badge: "bg-slate-400/15 text-slate-700",
   glow: "oklch(0.6 0.02 260)",
 };
 
