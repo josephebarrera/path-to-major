@@ -4,6 +4,53 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "~/lib/supabase/server";
 
+// Mirrors the form's client-side maxLength attributes — those are only a UX
+// hint since a server action can be called directly, bypassing the UI
+// entirely. Without this, an arbitrarily large description would still get
+// sent to Gemini on every re-analysis, which the daily request cap doesn't
+// protect against (it limits request count, not per-request size).
+const MAX_NAME = 120;
+const MAX_ORGANIZATION = 120;
+const MAX_LEADERSHIP_ROLE = 80;
+const MAX_DESCRIPTION = 1000;
+const MAX_TIME_COMMITMENT = 80;
+const MAX_SKILL_LENGTH = 60;
+const MAX_SKILLS_COUNT = 20;
+
+function validateActivityInput(input: {
+  name: string;
+  organization: string | null;
+  description: string | null;
+  leadershipRole: string | null;
+  skills: string[];
+  timeCommitment: string | null;
+}) {
+  if (input.name.length > MAX_NAME)
+    throw new Error(`Activity name must be ${MAX_NAME} characters or fewer.`);
+  if (input.organization && input.organization.length > MAX_ORGANIZATION)
+    throw new Error(
+      `Organization must be ${MAX_ORGANIZATION} characters or fewer.`,
+    );
+  if (input.leadershipRole && input.leadershipRole.length > MAX_LEADERSHIP_ROLE)
+    throw new Error(
+      `Leadership role must be ${MAX_LEADERSHIP_ROLE} characters or fewer.`,
+    );
+  if (input.description && input.description.length > MAX_DESCRIPTION)
+    throw new Error(
+      `Description must be ${MAX_DESCRIPTION} characters or fewer.`,
+    );
+  if (input.timeCommitment && input.timeCommitment.length > MAX_TIME_COMMITMENT)
+    throw new Error(
+      `Time commitment must be ${MAX_TIME_COMMITMENT} characters or fewer.`,
+    );
+  if (input.skills.length > MAX_SKILLS_COUNT)
+    throw new Error(`List at most ${MAX_SKILLS_COUNT} skills.`);
+  if (input.skills.some((s) => s.length > MAX_SKILL_LENGTH))
+    throw new Error(
+      `Each skill must be ${MAX_SKILL_LENGTH} characters or fewer.`,
+    );
+}
+
 export async function completeOnboarding(input: {
   displayName: string;
   gradeLevel: number;
@@ -78,6 +125,8 @@ export async function createActivity(input: {
   tracksHours: boolean;
   timeCommitment: string | null;
 }) {
+  validateActivityInput(input);
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -131,6 +180,8 @@ export async function updateActivity(
     timeCommitment: string | null;
   },
 ) {
+  validateActivityInput(input);
+
   const supabase = await createClient();
   const {
     data: { user },
