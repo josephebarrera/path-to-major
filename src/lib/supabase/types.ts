@@ -7,14 +7,42 @@ export type Json =
   | Json[];
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5";
+  };
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
   public: {
     Tables: {
       activities: {
         Row: {
           ai_analyzed_at: string | null;
+          ai_needs_more_detail: boolean;
           ai_related: string[];
           ai_relevance: string | null;
           ai_relevance_score: number | null;
@@ -42,6 +70,7 @@ export type Database = {
         };
         Insert: {
           ai_analyzed_at?: string | null;
+          ai_needs_more_detail?: boolean;
           ai_related?: string[];
           ai_relevance?: string | null;
           ai_relevance_score?: number | null;
@@ -69,6 +98,7 @@ export type Database = {
         };
         Update: {
           ai_analyzed_at?: string | null;
+          ai_needs_more_detail?: boolean;
           ai_related?: string[];
           ai_relevance?: string | null;
           ai_relevance_score?: number | null;
@@ -92,6 +122,24 @@ export type Database = {
           time_commitment?: string | null;
           tracks_hours?: boolean;
           updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      ai_usage_daily: {
+        Row: {
+          request_count: number;
+          usage_date: string;
+          user_id: string;
+        };
+        Insert: {
+          request_count?: number;
+          usage_date?: string;
+          user_id: string;
+        };
+        Update: {
+          request_count?: number;
+          usage_date?: string;
           user_id?: string;
         };
         Relationships: [];
@@ -134,13 +182,37 @@ export type Database = {
           },
         ];
       };
+      login_attempts: {
+        Row: {
+          email: string;
+          failed_count: number;
+          locked_until: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          email: string;
+          failed_count?: number;
+          locked_until?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          email?: string;
+          failed_count?: number;
+          locked_until?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
+          ai_recommendations: Json | null;
+          ai_recommendations_at: string | null;
           created_at: string;
           display_name: string | null;
           email: string | null;
           exploring: boolean;
           grade_level: number | null;
+          has_seen_tour: boolean;
           id: string;
           intended_majors: string[];
           is_admin: boolean;
@@ -148,11 +220,14 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          ai_recommendations?: Json | null;
+          ai_recommendations_at?: string | null;
           created_at?: string;
           display_name?: string | null;
           email?: string | null;
           exploring?: boolean;
           grade_level?: number | null;
+          has_seen_tour?: boolean;
           id: string;
           intended_majors?: string[];
           is_admin?: boolean;
@@ -160,11 +235,14 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          ai_recommendations?: Json | null;
+          ai_recommendations_at?: string | null;
           created_at?: string;
           display_name?: string | null;
           email?: string | null;
           exploring?: boolean;
           grade_level?: number | null;
+          has_seen_tour?: boolean;
           id?: string;
           intended_majors?: string[];
           is_admin?: boolean;
@@ -178,7 +256,13 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      check_login_lock: { Args: { p_email: string }; Returns: string };
+      increment_ai_usage: { Args: never; Returns: number };
+      is_admin: { Args: never; Returns: boolean };
+      record_login_attempt: {
+        Args: { p_email: string; p_success: boolean };
+        Returns: undefined;
+      };
     };
     Enums: {
       [_ in never]: never;
@@ -275,7 +359,44 @@ export type TablesUpdate<
       : never
     : never;
 
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

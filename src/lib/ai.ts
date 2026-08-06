@@ -12,6 +12,7 @@ type Analysis = {
   relevance_score: number | null;
   suggestions: string[];
   related: string[];
+  needs_more_detail: boolean;
 };
 
 type Recommendation = {
@@ -24,7 +25,28 @@ type Recommendation = {
 const NOT_CONFIGURED_SUMMARY =
   "AI feedback isn't turned on yet for this app. Add an LLM API key and wire it into callAI() in src/lib/ai.ts to enable personalized analysis.";
 
-const GEMINI_MODEL = "gemini-2.5-flash";
+// Tracks Google's current recommended Flash model instead of a pinned
+// version, since pinned Gemini model IDs get deprecated and start
+// 404ing for new API keys within months.
+const GEMINI_MODEL = "gemini-flash-latest";
+
+// Per-user cap on Gemini calls per day, enforced server-side via the
+// increment_ai_usage() function so it can't be bypassed by hammering the
+// "Re-analyze" or "Refresh" buttons.
+const DAILY_AI_LIMIT = 30;
+
+async function enforceDailyLimit(): Promise<void> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("increment_ai_usage");
+  if (error) {
+    throw new Error("Couldn't verify your AI usage limit. Please try again.");
+  }
+  if (typeof data === "number" && data > DAILY_AI_LIMIT) {
+    throw new Error(
+      `You've reached today's AI limit (${DAILY_AI_LIMIT} requests). Try again tomorrow.`,
+    );
+  }
+}
 
 /**
  * Calls the Google Gemini API with JSON output mode. Returns {} when no API
@@ -36,6 +58,8 @@ async function callAI(
   user: string,
 ): Promise<Record<string, unknown>> {
   if (!env.GEMINI_API_KEY) return {};
+
+  await enforceDailyLimit();
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
@@ -103,7 +127,10 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
     : "high school";
 
   const system =
-    "You are a supportive college counselor for high school students. You give warm, specific, and actionable feedback about how a student's extracurricular activity connects to their intended college major. Respond in strict JSON with keys: summary (2-3 sentence conversational overview), skills (array of 3-6 concise skill labels demonstrated), relevance (a 2-3 sentence explanation of how this supports the intended major), relevance_score (integer 1-100 for how well this aligns with the major), suggestions (array of 3-5 concrete ways to strengthen this experience), related (array of 3-5 short names of related opportunities to explore). Be encouraging, avoid clichés, never predict admissions.";
+    "You are a supportive but rigorous college counselor for high school students. You give warm, specific, and actionable feedback about how a student's extracurricular activity connects to their intended college major, but you never invent depth, skills, or accomplishments the student didn't actually describe.\n\n" +
+    "Base every judgment strictly on the concrete details in the activity's description, leadership role, and student-listed skills — not on the activity's category or name alone, and not on any assumption about how much time the student has put into it (you aren't told that, so don't guess).\n\n" +
+    "First decide if there's enough concrete detail to assess this honestly. Treat it as insufficient when the description is missing, just restates the activity name (e.g. \"write music\" for an activity called \"Artist\"), or gives no specifics on what the student actually did, how often, or what they produced or learned. When it's insufficient: set needs_more_detail to true, leave relevance_score as null and skills/suggestions/related as empty arrays, and make summary a short, kind, specific ask for the detail that would let you score it fairly (e.g. what they actually create or work on, how often, any concrete projects or outcomes) — never fabricate any of those fields to paper over the gap.\n\n" +
+    "When there IS enough detail, set needs_more_detail to false and respond fully. Respond in strict JSON with keys: needs_more_detail (boolean), summary (2-3 sentence conversational overview, or the detail-request described above), skills (array of 3-6 concise skill labels demonstrated), relevance (a 2-3 sentence explanation of how this supports the intended major), relevance_score (integer 1-100 for how well this aligns with the major, or null when needs_more_detail is true), suggestions (array of 3-5 concrete ways to strengthen this experience), related (array of 3-5 short names of related opportunities to explore). Avoid clichés, never predict admissions.";
 
   const user_ =
     `Student: ${grade}, intended major: ${major}.\n` +
@@ -115,8 +142,9 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
     `Student-listed skills: ${(activity.skills ?? []).join(", ") || "—"}`;
 
   const parsed = await callAI(system, user_);
+  const needsMoreDetail = parsed.needs_more_detail === true;
   const relevanceScore =
-    typeof parsed.relevance_score === "number"
+    !needsMoreDetail && typeof parsed.relevance_score === "number"
       ? Math.max(1, Math.min(100, Math.round(parsed.relevance_score)))
       : null;
 
@@ -125,17 +153,24 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
       typeof parsed.summary === "string"
         ? parsed.summary
         : NOT_CONFIGURED_SUMMARY,
-    skills: Array.isArray(parsed.skills)
-      ? parsed.skills.slice(0, 8).map(String)
-      : [],
-    relevance: typeof parsed.relevance === "string" ? parsed.relevance : "",
+    skills:
+      !needsMoreDetail && Array.isArray(parsed.skills)
+        ? parsed.skills.slice(0, 8).map(String)
+        : [],
+    relevance:
+      !needsMoreDetail && typeof parsed.relevance === "string"
+        ? parsed.relevance
+        : "",
     relevance_score: relevanceScore,
-    suggestions: Array.isArray(parsed.suggestions)
-      ? parsed.suggestions.slice(0, 6).map(String)
-      : [],
-    related: Array.isArray(parsed.related)
-      ? parsed.related.slice(0, 6).map(String)
-      : [],
+    suggestions:
+      !needsMoreDetail && Array.isArray(parsed.suggestions)
+        ? parsed.suggestions.slice(0, 6).map(String)
+        : [],
+    related:
+      !needsMoreDetail && Array.isArray(parsed.related)
+        ? parsed.related.slice(0, 6).map(String)
+        : [],
+    needs_more_detail: needsMoreDetail,
   };
 
   const { error: updErr } = await supabase
@@ -147,6 +182,7 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
       ai_relevance_score: analysis.relevance_score,
       ai_suggestions: analysis.suggestions,
       ai_related: analysis.related,
+      ai_needs_more_detail: analysis.needs_more_detail,
       ai_analyzed_at: new Date().toISOString(),
     })
     .eq("id", activityId)
@@ -160,7 +196,14 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
   return analysis;
 }
 
-export async function getRecommendations(): Promise<Recommendation[]> {
+// How long a generated recommendation set stays valid before a plain page
+// load will regenerate it. The "Refresh" button passes force=true to bypass
+// this — both paths still go through the daily rate limit in callAI().
+const RECOMMENDATIONS_TTL_MS = 24 * 60 * 60 * 1000;
+
+export async function getRecommendations(
+  force = false,
+): Promise<Recommendation[]> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -169,9 +212,25 @@ export async function getRecommendations(): Promise<Recommendation[]> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("intended_majors, grade_level, exploring")
+    .select(
+      "intended_majors, grade_level, exploring, ai_recommendations, ai_recommendations_at",
+    )
     .eq("id", user.id)
     .maybeSingle();
+
+  const cachedAt = profile?.ai_recommendations_at
+    ? new Date(profile.ai_recommendations_at).getTime()
+    : 0;
+  const isFresh = Date.now() - cachedAt < RECOMMENDATIONS_TTL_MS;
+  if (
+    !force &&
+    isFresh &&
+    Array.isArray(profile?.ai_recommendations) &&
+    profile.ai_recommendations.length > 0
+  ) {
+    return profile.ai_recommendations as unknown as Recommendation[];
+  }
+
   const { data: activities } = await supabase
     .from("activities")
     .select("name, category, leadership_role, skills, ai_skills")
@@ -209,7 +268,7 @@ export async function getRecommendations(): Promise<Recommendation[]> {
     ];
   }
 
-  return raw.slice(0, 8).map((r: Record<string, unknown>) => ({
+  const result = raw.slice(0, 8).map((r: Record<string, unknown>) => ({
     title: String(r.title ?? ""),
     why: String(r.why ?? ""),
     category: String(r.category ?? "General"),
@@ -219,4 +278,14 @@ export async function getRecommendations(): Promise<Recommendation[]> {
       ? (r.effort as "low" | "medium" | "high")
       : "medium",
   }));
+
+  await supabase
+    .from("profiles")
+    .update({
+      ai_recommendations: result,
+      ai_recommendations_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  return result;
 }
