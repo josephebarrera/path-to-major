@@ -40,9 +40,14 @@ export default function Landing() {
             </svg>
             PATHTOMAJOR
           </div>
-          <Link href="/auth?mode=signup" className="btn btn-solid">
-            Start free
-          </Link>
+          <div className="nav-links">
+            <Link href="/auth" className="nav-signin">
+              Sign in
+            </Link>
+            <Link href="/auth?mode=signup" className="btn btn-solid">
+              Start free
+            </Link>
+          </div>
         </nav>
         <div className="wrap">
           <div className="head">
@@ -66,17 +71,13 @@ export default function Landing() {
               </div>
               <div className="body">
                 <div className="top">
-                  <div>
+                  <div className="top-chip">
                     <span className="num-badge">1</span>
                     <span className="chip">BUSINESS</span>
                     <div className="name">Part Time Retail Associate</div>
                     <div className="hrs tabular">20.0 HRS LOGGED</div>
-                    <div className="major-field">
-                      <span className="num-badge">3</span>
-                      Intended major: <b>Computer Science</b>
-                    </div>
                   </div>
-                  <div>
+                  <div className="top-score">
                     <span className="num-badge">2</span>
                     <span
                       className="sc tabular"
@@ -84,6 +85,10 @@ export default function Landing() {
                     >
                       58<span className="sc-unit">/100</span>
                     </span>
+                  </div>
+                  <div className="major-field">
+                    <span className="num-badge">3</span>
+                    Intended major: <b>Computer Science</b>
                   </div>
                 </div>
                 <p className="note">
