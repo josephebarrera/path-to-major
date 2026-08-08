@@ -2,3 +2,12 @@ allowBuilds:
   sharp: false
   supabase: true
   unrs-resolver: false
+
+# Transitive vulnerable versions pulled in via @tailwindcss/postcss (which
+# allows a compatible range but the lockfile hadn't deduped to it): postcss
+# path traversal / arbitrary .map file read (GHSA-fxqj-rqcc-2cmp, fixed
+# >=8.5.23) and nanoid infinite loop on size 0 (GHSA-2v37-7h3g-55p8, fixed
+# >=3.3.17).
+overrides:
+  postcss: ">=8.5.23"
+  nanoid: ">=3.3.17"
