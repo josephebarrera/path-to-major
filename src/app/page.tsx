@@ -129,12 +129,11 @@ export default function Landing() {
         </div>
       </div>
 
-      <footer className="border-t border-[#14161A]/10 bg-[#FAFAF7]">
+      <footer
+        className={`border-t border-[#14161A]/10 bg-[#FAFAF7] ${ibmPlexMono.variable}`}
+      >
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-8 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
-          <Link
-            href="/"
-            className={`flex items-center gap-2 text-sm font-bold tracking-tight text-[#14161A] ${poppins.className}`}
-          >
+          <Link href="/" className="footer-brand">
             <svg
               viewBox="0 0 32 32"
               width="18"
@@ -154,7 +153,7 @@ export default function Landing() {
               <circle cx="20" cy="20" r="2.3" fill="currentColor" />
               <circle cx="28" cy="6" r="3" fill="currentColor" />
             </svg>
-            PathToMajor
+            PATHTOMAJOR
           </Link>
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-5">
             <div className="flex items-center gap-4 text-xs font-semibold text-[#14161A]/75">

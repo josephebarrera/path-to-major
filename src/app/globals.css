@@ -415,11 +415,15 @@
   color: rgba(255, 255, 255, 0.65);
 }
 .p2m-hero .nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 5vw;
   border-bottom: 1px solid var(--p2m-line);
+  background: var(--p2m-base);
 }
 .p2m-hero .brand-lockup {
   display: flex;
@@ -520,6 +524,21 @@
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
+}
+
+/* Same brand-lockup.mono-line treatment for the footer, which sits outside
+   .p2m-hero (so its min-height: 100vh / flex layout doesn't pull the footer
+   into the first viewport on short/mobile screens). */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-p2m-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--foreground);
 }
 .p2m-hero .tabular {
   font-variant-numeric: tabular-nums;
