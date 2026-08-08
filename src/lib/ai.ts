@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { env } from "~/env";
 import { formatMajors } from "~/lib/majors";
 import { createClient } from "~/lib/supabase/server";
+import { createServiceClient } from "~/lib/supabase/service";
 
 type Analysis = {
   summary: string;
@@ -189,7 +190,13 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
       no_major_selected: true,
     };
 
-    const { error: updErr } = await supabase
+    // ai_relevance_score and friends are no longer writable by the
+    // authenticated (session-scoped) client — see the
+    // restrict_ai_column_writes migration. This write uses the service role
+    // instead, scoped by the ownership already verified above via the
+    // session-scoped SELECT, and re-checked again here in the query itself
+    // since service role bypasses RLS entirely.
+    const { error: updErr } = await createServiceClient()
       .from("activities")
       .update({
         ai_summary: analysis.summary,
@@ -229,7 +236,7 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
     "- Below 30: little to no discernible connection at all, or bare-minimum participation.\n" +
     "Crediting real depth the student described — even introductory depth — in the correct tier isn't the same as fabricating depth they didn't describe.\n\n" +
     "The student may have listed more than one intended major (e.g. \"Computer Science, Culinary Arts & Journalism\"). When they have, don't blend or average across them — that produces a meaningless number when the majors are unrelated. Instead, pick whichever single listed major this specific activity most strongly supports, score relevance_score against that one major only, and say explicitly which one you picked at the start of the relevance field (e.g. \"For Computer Science, ...\"). If the activity is a weak fit for all of the listed majors, still pick the least-bad one, name it, and score it honestly low rather than inventing a stronger connection to make a different major fit.\n\n" +
-    "When there IS enough detail, set needs_more_detail to false and respond fully. Respond in strict JSON with keys: needs_more_detail (boolean), summary (2-3 sentence conversational overview, or the detail-request described above), skills (array of 3-6 concise skill labels demonstrated), relevance (a 2-3 sentence explanation of how this supports the intended major — naming that major explicitly if more than one was listed), relevance_score (integer 1-100 for how well this aligns with the major, or null when needs_more_detail is true), suggestions (array of 3-5 concrete ways to strengthen this experience), related (array of 3-5 short names of related opportunities to explore). Avoid clichés, never predict admissions.";
+    "When there IS enough detail, set needs_more_detail to false and respond fully. Respond in strict JSON with keys: needs_more_detail (boolean), summary (2-3 sentence conversational overview, or the detail-request described above), skills (array of 3-6 concise skill labels demonstrated), relevance (a 2-3 sentence explanation of how this supports the intended major — naming that major explicitly if more than one was listed), relevance_score (integer 1-100 for how well this aligns with the major, or null when needs_more_detail is true), suggestions (array of 3-5 concrete ways to strengthen this experience), related (array of 3-5 short names of related opportunities to explore). Avoid clichés, never predict admissions. Never use an em dash or hyphen as punctuation anywhere in any field; write plain sentences with commas and periods instead.";
 
   const user_ =
     `Student: ${grade}, intended major: ${major}.\n` +
@@ -273,7 +280,10 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
     no_major_selected: false,
   };
 
-  const { error: updErr } = await supabase
+  // See the comment on the no-major-selected write above: this column set
+  // is service-role-only now, scoped by the ownership already verified via
+  // the session-scoped SELECT at the top of this function.
+  const { error: updErr } = await createServiceClient()
     .from("activities")
     .update({
       ai_summary: analysis.summary,
@@ -357,7 +367,7 @@ export async function getRecommendations(
   const system =
     "You are an encouraging college counselor for high school students. Suggest 6 concrete next steps that would strengthen THIS student's college profile for their specific intended major — not generic well-rounded-student advice that could apply to anyone.\n\n" +
     'Ground every suggestion in the actual field. For a cybersecurity major, that looks like CTF competitions, CyberPatriot, a home-lab or bug-bounty project, or a Security+ certification — not "join Speech & Debate" or a certification example list that doesn\'t include cybersecurity. If the student is undecided or exploring multiple majors, lean toward broader exploratory activities instead, but still tie each one to a specific field they actually listed. Take their current activities into account so you don\'t repeat something they already do.\n\n' +
-    'Return strict JSON: { "recommendations": [ { "title": string, "why": string (1-2 sentences, and should make the connection to their major explicit), "category": string, "effort": "low"|"medium"|"high" } ] }. Vary categories: clubs, competitions, projects, volunteering, internships, certifications, research.';
+    'Return strict JSON: { "recommendations": [ { "title": string, "why": string (1-2 sentences, and should make the connection to their major explicit), "category": string, "effort": "low"|"medium"|"high" } ] }. Vary categories: clubs, competitions, projects, volunteering, internships, certifications, research. Never use an em dash or hyphen as punctuation anywhere in any field; write plain sentences with commas and periods instead.';
 
   const user_ =
     `Student grade: ${grade}. Intended major: ${major}. ${profile?.exploring ? "They are exploring multiple majors." : ""}\n` +
@@ -403,7 +413,9 @@ export async function getRecommendations(
       : "medium",
   }));
 
-  await supabase
+  // ai_recommendations is service-role-only now too (restrict_ai_column_writes
+  // migration), scoped by the ownership already verified via getUser() above.
+  await createServiceClient()
     .from("profiles")
     .update({
       ai_recommendations: result,

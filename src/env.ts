@@ -8,6 +8,12 @@ export const env = createEnv({
       .default("development"),
     // Optional — AI features fall back to "not configured" copy without it
     GEMINI_API_KEY: z.string().min(1).optional(),
+    // Optional — server-only, bypasses RLS. Used solely to write the
+    // AI-scored columns that ordinary users are no longer granted UPDATE on
+    // (see the restrict_ai_column_writes migration). Never expose this to
+    // the client. Without it, AI writes fail with a clear error instead of
+    // the whole app crashing at boot.
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
@@ -16,6 +22,7 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
