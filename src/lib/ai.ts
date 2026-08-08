@@ -25,10 +25,23 @@ type Recommendation = {
 const NOT_CONFIGURED_SUMMARY =
   "AI feedback isn't turned on yet for this app. Add an LLM API key and wire it into callAI() in src/lib/ai.ts to enable personalized analysis.";
 
-// Tracks Google's current recommended Flash model instead of a pinned
-// version, since pinned Gemini model IDs get deprecated and start
-// 404ing for new API keys within months.
-const GEMINI_MODEL = "gemini-flash-latest";
+// Pinned (not the "gemini-flash-latest"/"gemini-flash-lite-latest" aliases):
+// the "latest" alias for the full Flash model silently rolled onto
+// gemini-3.6-flash mid-project, which turned out to have a much stricter
+// free-tier quota (20 requests/day, project-wide) than whatever it resolved
+// to before — an unannounced regression, not a deliberate choice.
+//
+// Flash-Lite instead of full Flash: it's a separate free-tier quota pool
+// from the (now exhausted) full Flash model, with a substantially higher
+// daily request ceiling — worth the small capability trade for this app's
+// job (structured JSON + short counselor-style reasoning), especially
+// combined with the tightened prompts and lower temperature already in use.
+//
+// A pinned ID will eventually 404 as Google deprecates it (this has already
+// happened once this project, to gemini-2.5-flash), which needs a manual
+// bump — but that's a predictable, occasional maintenance task, unlike a
+// quota cliff with no warning. Bump this if it starts 404ing.
+const GEMINI_MODEL = "gemini-3.5-flash-lite";
 
 // Per-user cap on Gemini calls per day, enforced server-side via the
 // increment_ai_usage() function so it can't be bypassed by hammering the
@@ -56,6 +69,14 @@ async function enforceDailyLimit(): Promise<void> {
 async function callAI(
   system: string,
   user: string,
+  // Lower than the API default (~1.0) so the model reliably follows the
+  // instructions in the prompt (grounding recommendations in the actual
+  // major, judging description sufficiency consistently) instead of
+  // occasionally sampling a different answer to the same input. 0.4 is the
+  // shared default; callers with a more classification-like judgment (e.g.
+  // analyzeActivity's insufficient-detail check, which was flip-flopping on
+  // identical input at 0.4) pass something lower.
+  temperature = 0.4,
 ): Promise<Record<string, unknown>> {
   if (!env.GEMINI_API_KEY) return {};
 
@@ -74,15 +95,34 @@ async function callAI(
         contents: [{ role: "user", parts: [{ text: user }] }],
         generationConfig: {
           response_mime_type: "application/json",
+          temperature,
+          // Gemini 3.x models run an internal "thinking" reasoning pass by
+          // default before answering — measured at ~238s for this model on
+          // a trivial prompt, which is why re-analyze felt like it hung.
+          // LOW brings that down to ~2s with no loss of output quality in
+          // testing (structured JSON scoring doesn't need deep reasoning).
+          // Note: thinkingLevel (not the older thinkingBudget) is the right
+          // knob for Gemini 3+ models specifically.
+          thinkingConfig: { thinkingLevel: "LOW" },
         },
       }),
     },
   );
 
   if (!res.ok) {
+    // Log the real provider error server-side for debugging, but never pass
+    // it up to the client — it's raw JSON/HTTP detail from Gemini (status
+    // codes, quota/billing URLs, etc.) that isn't meaningful to a student
+    // and shouldn't be exposed as app-facing text.
     const detail = await res.text().catch(() => "");
+    console.error(`Gemini API error (${res.status}): ${detail.slice(0, 500)}`);
+    if (res.status === 429) {
+      throw new Error(
+        "AI is handling a lot of requests right now. Please try again in a minute.",
+      );
+    }
     throw new Error(
-      `AI request failed (${res.status}). ${detail.slice(0, 200)}`,
+      "AI feedback is temporarily unavailable. Please try again later.",
     );
   }
 
@@ -90,12 +130,20 @@ async function callAI(
     candidates?: { content?: { parts?: { text?: string }[] } }[];
   };
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("AI returned an empty response");
+  if (!text) {
+    console.error("Gemini API returned an empty response body");
+    throw new Error(
+      "AI feedback is temporarily unavailable. Please try again later.",
+    );
+  }
 
   try {
     return JSON.parse(text) as Record<string, unknown>;
   } catch {
-    throw new Error("AI returned a response that couldn't be parsed");
+    console.error(`Gemini API returned unparseable JSON: ${text.slice(0, 500)}`);
+    throw new Error(
+      "AI feedback is temporarily unavailable. Please try again later.",
+    );
   }
 }
 
