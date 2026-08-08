@@ -1018,11 +1018,12 @@
   opacity: 0.85;
 }
 
-/* ── Auth (sign in / create account): same White/Blue system as the hero ──── */
+/* ── Auth (sign in / create account): same White/Blue system as the hero,
+   but black instead of blue for the accent signal, matching .p2m-app ──── */
 .p2m-auth {
   --p2m-base: #fafaf7;
   --p2m-text: #14161a;
-  --p2m-signal: #3d72f5;
+  --p2m-signal: #14161a;
   --p2m-line: rgba(20, 22, 26, 0.14);
   --p2m-line-strong: rgba(20, 22, 26, 0.4);
   min-height: 100vh;
