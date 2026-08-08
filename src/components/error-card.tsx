@@ -16,7 +16,7 @@ export function ErrorCard({
 }) {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-10">
-      <div className="glass-panel-navy w-full max-w-md p-8 text-center">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center">
         <div
           className={`mx-auto grid h-12 w-12 place-items-center rounded-full ${iconClassName}`}
         >

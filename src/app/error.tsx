@@ -26,13 +26,13 @@ export default function RouteError({
         <button
           type="button"
           onClick={reset}
-          className="flex items-center justify-center gap-2 rounded-full bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          className="flex items-center justify-center gap-2 rounded-full bg-foreground py-2.5 text-sm font-medium text-background transition hover:opacity-90"
         >
           <RotateCw className="h-4 w-4" /> Try again
         </button>
         <Link
           href="/"
-          className="rounded-full border border-border bg-white/10 py-2.5 text-sm text-foreground transition hover:bg-white/20"
+          className="rounded-full border border-border py-2.5 text-sm text-foreground transition hover:bg-foreground/5"
         >
           Back home
         </Link>
