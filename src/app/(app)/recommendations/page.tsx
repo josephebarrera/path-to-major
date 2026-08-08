@@ -10,19 +10,25 @@ export default async function RecommendationsPage() {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const [{ data: profile }, recommendations] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("intended_majors")
-      .eq("id", user.id)
-      .maybeSingle(),
-    getRecommendations(),
-  ]);
+  const [{ data: profile }, { count: activityCount }, recommendations] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("intended_majors")
+        .eq("id", user.id)
+        .maybeSingle(),
+      supabase
+        .from("activities")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id),
+      getRecommendations(),
+    ]);
 
   return (
     <RecommendationsView
       intendedMajor={formatMajors(profile?.intended_majors ?? []) || null}
       initialRecommendations={recommendations}
+      hasActivities={(activityCount ?? 0) > 0}
     />
   );
 }

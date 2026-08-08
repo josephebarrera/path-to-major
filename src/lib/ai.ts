@@ -291,6 +291,14 @@ export async function getRecommendations(
     .select("name, category, leadership_role, skills, ai_skills")
     .eq("user_id", user.id);
 
+  // With zero logged activities, the model has nothing concrete to ground
+  // suggestions in beyond the major name alone — which is exactly when it's
+  // most prone to falling back to generic "still exploring" advice regardless
+  // of what major was actually picked. Skip the call entirely (saving quota
+  // too) rather than risk showing that as someone's first impression of the
+  // feature.
+  if (!activities || activities.length === 0) return [];
+
   const major = formatMajors(profile?.intended_majors ?? []) || "undecided";
   const grade = profile?.grade_level ?? "unknown";
   const acts = (activities ?? [])
@@ -301,13 +309,28 @@ export async function getRecommendations(
     .join("\n");
 
   const system =
-    'You are an encouraging college counselor for high school students. Suggest 6 personalized next-step opportunities that would strengthen the student\'s college profile for their intended major. Return strict JSON: { "recommendations": [ { "title": string, "why": string (1-2 sentences), "category": string, "effort": "low"|"medium"|"high" } ] }. Vary categories: clubs, competitions, projects, volunteering, internships, certifications, research.';
+    "You are an encouraging college counselor for high school students. Suggest 6 concrete next steps that would strengthen THIS student's college profile for their specific intended major — not generic well-rounded-student advice that could apply to anyone.\n\n" +
+    'Ground every suggestion in the actual field. For a cybersecurity major, that looks like CTF competitions, CyberPatriot, a home-lab or bug-bounty project, or a Security+ certification — not "join Speech & Debate" or a certification example list that doesn\'t include cybersecurity. If the student is undecided or exploring multiple majors, lean toward broader exploratory activities instead, but still tie each one to a specific field they actually listed. Take their current activities into account so you don\'t repeat something they already do.\n\n' +
+    'Return strict JSON: { "recommendations": [ { "title": string, "why": string (1-2 sentences, and should make the connection to their major explicit), "category": string, "effort": "low"|"medium"|"high" } ] }. Vary categories: clubs, competitions, projects, volunteering, internships, certifications, research.';
 
   const user_ =
     `Student grade: ${grade}. Intended major: ${major}. ${profile?.exploring ? "They are exploring multiple majors." : ""}\n` +
     `Current activities:\n${acts || "(none yet)"}`;
 
-  const parsed = await callAI(system, user_);
+  let parsed: Record<string, unknown>;
+  try {
+    parsed = await callAI(system, user_);
+  } catch (err) {
+    // A plain page load (force=false) triggers this as one of several
+    // parallel queries in a Server Component — letting an AI outage/quota
+    // error propagate would crash the entire dashboard for the user, not
+    // just this one widget. An explicit Refresh click (force=true) is a
+    // deliberate user action, so it's fine — and more useful — to let that
+    // one surface the real (masked) error via the client's own try/catch.
+    if (force) throw err;
+    console.error("getRecommendations() failed on a passive load:", err);
+    return [];
+  }
   const raw = Array.isArray(parsed.recommendations)
     ? parsed.recommendations
     : [];
