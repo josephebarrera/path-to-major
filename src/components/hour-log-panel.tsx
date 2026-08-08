@@ -93,7 +93,7 @@ export function HourLogPanel({
         <button
           type="submit"
           disabled={saving || !hours}
-          className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-1.5 bg-foreground py-2 text-sm font-medium text-background disabled:opacity-50"
         >
           <Plus className="h-4 w-4" /> Log session
         </button>

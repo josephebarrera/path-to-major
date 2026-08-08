@@ -316,7 +316,7 @@ export function AdminDashboard({
                       <td className="py-2.5 pr-4 font-medium">
                         {p.display_name || "—"}
                         {p.is_admin && (
-                          <span className="ml-1.5 rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                          <span className="ml-1.5 rounded-full bg-foreground/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-foreground">
                             Admin
                           </span>
                         )}
