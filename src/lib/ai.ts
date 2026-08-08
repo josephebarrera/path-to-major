@@ -13,7 +13,11 @@ type Analysis = {
   suggestions: string[];
   related: string[];
   needs_more_detail: boolean;
+  no_major_selected: boolean;
 };
+
+const NO_MAJOR_SUMMARY =
+  "Add an intended major in your profile to get a personalized alignment score for this activity.";
 
 type Recommendation = {
   title: string;
@@ -168,8 +172,48 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
     .eq("id", user.id)
     .maybeSingle();
 
-  const major =
-    formatMajors(profile?.intended_majors ?? []) || "an undecided major";
+  // With no intended major picked (still exploring, or hasn't onboarded
+  // yet), there's nothing concrete to score relevance against — asking the
+  // model to rate alignment with "an undecided major" produces a
+  // meaningless-but-confident-looking percentage. Skip the AI call entirely
+  // (saving quota too) and prompt the student to set a major instead.
+  if ((profile?.intended_majors ?? []).length === 0) {
+    const analysis: Analysis = {
+      summary: NO_MAJOR_SUMMARY,
+      skills: [],
+      relevance: "",
+      relevance_score: null,
+      suggestions: [],
+      related: [],
+      needs_more_detail: false,
+      no_major_selected: true,
+    };
+
+    const { error: updErr } = await supabase
+      .from("activities")
+      .update({
+        ai_summary: analysis.summary,
+        ai_skills: analysis.skills,
+        ai_relevance: analysis.relevance,
+        ai_relevance_score: analysis.relevance_score,
+        ai_suggestions: analysis.suggestions,
+        ai_related: analysis.related,
+        ai_needs_more_detail: analysis.needs_more_detail,
+        ai_no_major_selected: analysis.no_major_selected,
+        ai_analyzed_at: new Date().toISOString(),
+      })
+      .eq("id", activityId)
+      .eq("user_id", user.id);
+    if (updErr) throw updErr;
+
+    revalidatePath(`/activities/${activityId}`);
+    revalidatePath("/activities");
+    revalidatePath("/dashboard");
+
+    return analysis;
+  }
+
+  const major = formatMajors(profile?.intended_majors ?? []);
   const grade = profile?.grade_level
     ? `grade ${profile.grade_level}`
     : "high school";
@@ -226,6 +270,7 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
         ? parsed.related.slice(0, 6).map(String)
         : [],
     needs_more_detail: needsMoreDetail,
+    no_major_selected: false,
   };
 
   const { error: updErr } = await supabase
@@ -238,6 +283,7 @@ export async function analyzeActivity(activityId: string): Promise<Analysis> {
       ai_suggestions: analysis.suggestions,
       ai_related: analysis.related,
       ai_needs_more_detail: analysis.needs_more_detail,
+      ai_no_major_selected: analysis.no_major_selected,
       ai_analyzed_at: new Date().toISOString(),
     })
     .eq("id", activityId)

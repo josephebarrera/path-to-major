@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActivityHeaderActions } from "~/components/activity-header-actions";
@@ -153,6 +154,22 @@ export default async function ActivityDetailPage({
             <p className="mt-3 text-sm text-muted-foreground">
               Analyzing your activity… this usually takes a few seconds.
             </p>
+          ) : activity.ai_no_major_selected ? (
+            <div className="mt-4 space-y-3 text-sm">
+              <div className="border border-dashed border-border p-4">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  No intended major set
+                </h3>
+                <p className="mt-1">{activity.ai_summary}</p>
+                <Link
+                  href="/profile"
+                  className="mt-3 inline-flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background hover:opacity-90"
+                >
+                  Set your intended major
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
           ) : activity.ai_needs_more_detail ? (
             <div className="mt-4 space-y-3 text-sm">
               <p className="text-xs text-muted-foreground">

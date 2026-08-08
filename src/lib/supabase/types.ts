@@ -43,6 +43,7 @@ export type Database = {
         Row: {
           ai_analyzed_at: string | null;
           ai_needs_more_detail: boolean;
+          ai_no_major_selected: boolean;
           ai_related: string[];
           ai_relevance: string | null;
           ai_relevance_score: number | null;
@@ -71,6 +72,7 @@ export type Database = {
         Insert: {
           ai_analyzed_at?: string | null;
           ai_needs_more_detail?: boolean;
+          ai_no_major_selected?: boolean;
           ai_related?: string[];
           ai_relevance?: string | null;
           ai_relevance_score?: number | null;
@@ -99,6 +101,7 @@ export type Database = {
         Update: {
           ai_analyzed_at?: string | null;
           ai_needs_more_detail?: boolean;
+          ai_no_major_selected?: boolean;
           ai_related?: string[];
           ai_relevance?: string | null;
           ai_relevance_score?: number | null;
